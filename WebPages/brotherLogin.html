@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>KΣ Login · ΘΟ</title>
+        <link rel="icon" type="image/png" href="../Images/magnusK∑.png">
+        <link rel="stylesheet" href="../CSSFiles/brotherLogin.css">
+    </head>
+
+    <body>
+        <table class="nav">
+            <tbody>
+                <tr>
+                    <td>
+                        <a id="navLogo" href="home.html">
+                            <img src="../Images/crestBW.png"/>
+                            <h3>KAPPA SIGMA</h3>
+                        </a>
+                    </td>
+                    <td style="width: 100%;"></td>
+                    <td><a href="brotherLogin.html">BROTHERS PORTAL</a></td>
+                    <td><a href="rush.html">RUSH</a></td>
+                    <td><a href="directory.php">BROTHERS DIRECTORY</a></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="filler"></div>
+
+        <div class="login">
+            <h1 class="header">Log In</h1><br>
+            <form id='loginForm' method="post" action="../Functions/process.php" onsubmit="return validateForm()">
+                <label for="username">Email:</label>
+                <input type="text" name="username"required/><br><br>
+                <label for="password">Password:</label>
+                <input type="password" name="password" required/><br><br>
+                <input type="submit" value="Submit"/>
+            </form>
+        </div>
+
+        <script src="../Javascript/jquery-3.7.1.min.js"></script>
+        <script src="../Javascript/brotherLogin.js"></script>
+    </body>
+</html>
