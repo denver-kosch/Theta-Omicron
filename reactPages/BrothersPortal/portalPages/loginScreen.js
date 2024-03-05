@@ -12,6 +12,7 @@ export function LoginScreen({navigation}) {
     const [password, setP] = useState('');
     const [register, setReg] = useState(false);
 
+//Test
 
     const RegisterForm = () => {
 
