@@ -1,0 +1,28 @@
+.logo {
+    height: 75px;
+}
+
+.navbar {
+    padding:15px;
+}
+
+.homeButton {
+    display: flex;
+}
+
+.navTable {
+    width: 100%;
+}
+
+.navTable td {
+    width: fit-content;
+    color: black;
+    padding: 0 2%;
+}
+.navTable td h3{
+    text-align: center;
+}
+
+body {
+    font-family: 'Courier New', Courier, monospace;
+}
