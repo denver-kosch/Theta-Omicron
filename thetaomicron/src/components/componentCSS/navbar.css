@@ -9,10 +9,19 @@
 .homeButton {
     display: flex;
 }
+.homeButton:hover{
+    cursor:pointer;
+}
 
 .navTable {
     width: 100%;
 }
+
+.navLink {
+    color: black !important;
+    text-decoration: none;
+}
+
 
 .navTable td {
     width: fit-content;
