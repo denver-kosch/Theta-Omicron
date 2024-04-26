@@ -12,7 +12,7 @@ const Rush = () => {
 
     const getRush = async () => {
         try {
-
+            
         } catch  (err) {
             console.log("Error getting Rush Committee: ", err);
         }
