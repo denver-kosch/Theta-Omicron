@@ -20,16 +20,17 @@
 .navLink {
     color: black !important;
     text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+    text-wrap: wrap;
 }
-
 
 .navTable td {
     width: fit-content;
     color: black;
     padding: 0 2%;
-}
-.navTable td h3{
     text-align: center;
+    /* border: 1px solid black; */
 }
 
 body {

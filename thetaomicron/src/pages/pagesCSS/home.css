@@ -1,0 +1,17 @@
+.container {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.about {
+    max-width: 80%;
+    align-self: center;
+}
+
+.mainPage {
+    height: 425px;
+}

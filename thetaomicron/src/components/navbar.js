@@ -43,22 +43,22 @@ const Navbar = () => {
                         </td>
                         <td style={{width: "100%"}}></td>
                         <td>
-                            <Link className="navLink" to="/rush">
-                                <h3 style={{color: rushColor, cursor: "pointer"}} onMouseOver={() => toggleRushColor("#ae1717")} onMouseOut={() => toggleRushColor("black")}>
+                            <Link className="navLink" to={"/rush"}>
+                                <h3 style={{color: rushColor}} onMouseOver={() => toggleRushColor("#ae1717")} onMouseOut={() => toggleRushColor("black")}>
                                     Rush
                                 </h3>
                             </Link>
                         </td>
                         <td>
-                            <Link className="navLink" to="/directory">
-                                <h3 style={{textAlign: "center", textWrap: "wrap", color: dirColor, cursor: "pointer"}} onMouseOver={() => toggleDirColor("#ae1717")} onMouseOut={() => toggleDirColor("black")}>
+                            <Link className="navLink" to={"/directory"}>
+                                <h3 style={{color: dirColor}} onMouseOver={() => toggleDirColor("#ae1717")} onMouseOut={() => toggleDirColor("black")}>
                                     Brothers Directory
                                 </h3>
                             </Link>
                         </td>
                         <td>
-                            <Link className="navLink" to="/portal">
-                                <h3 style={{textAlign: "center", textWrap: "wrap", color:portalColor, cursor: "pointer"}} onMouseOver={() => togglePortalColor("#ae1717")} onMouseOut={() => togglePortalColor("black")}>
+                            <Link className="navLink" to={"/portal"}>
+                                <h3 style={{color:portalColor}} onMouseOver={() => togglePortalColor("#ae1717")} onMouseOut={() => togglePortalColor("black")}>
                                     Brothers Portal
                                 </h3>
                             </Link>
