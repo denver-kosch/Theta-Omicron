@@ -42,7 +42,7 @@ app.post("/get-rush", (req, res) => {
   `;
   db.query(getRushCommittee, (err, results) => {
     if (err) return err ? res.status(500).json({ error: 'Failed to retrieve members', details: err }) : 
-    res.status(200).json(results);
+    res.status(200).json({members: results, msg: "Got Rush Committee!"});
 })});
 
 app.post('/add-member', async (req, res) => {
@@ -60,8 +60,4 @@ app.post('/add-member', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Server error', details: error });
   }
-});
-
-app.post('/test', (req, res) => {
-  res.send('Test route works!');
 });
