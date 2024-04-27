@@ -19,8 +19,8 @@ CREATE TABLE `Members`(
     `city` VARCHAR(50) NOT NULL,
     `state` VARCHAR(50) NOT NULL,
     `postalCode` VARCHAR(50) NOT NULL,
-    `initiationYear` VARCHAR(50) NULL,
-    `graduationYear` VARCHAR(50) NOT NULL
+    `initiationYear` INT NOT NULL,
+    `graduationYear` INT NOT NULL
 )ENGINE=InnoDB;
 
 CREATE TABLE `Chairmen`(
