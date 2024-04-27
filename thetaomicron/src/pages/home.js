@@ -1,13 +1,12 @@
 import React from "react";
 import "./pagesCSS/home.css";
-import Placeholder from "../images/formalSP23.jpeg";
 
 const Home = () => {
 
     return (
         <div className="container">
             <img 
-                src={Placeholder}
+                src={"/images/formalSP23.jpeg"}
                 alt="Brothers of the Theta-Omcrion Chapter of Kappa Sigma"
                 className="mainPage"
             />

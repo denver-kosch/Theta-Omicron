@@ -1,11 +1,11 @@
 import { useState } from "react";
 import "./componentCSS/navbar.css";
-import crestBW from "../images/crestBW.png";
-import crestC from "../images/crestC.png";
+// import crestBW from "/images/crestBW.png";
+// import crestC from "/images/crestC.png";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
-    const [logoPath, setLP] = useState(crestBW);
+    const [logoPath, setLP] = useState('/images/crestBW.png');
     const [logo, setL] = useState("Monochrome Kappa Sigma Crest");
     const [homeColor, toggleHomeColor] = useState("black");
     const [rushColor, toggleRushColor] = useState("black");
@@ -14,12 +14,12 @@ const Navbar = () => {
 
     
     const logoHover = () => {
-        setLP(crestC);
+        setLP('/images/crestC.png');
         setL("Colored Kappa Sigma Crest");
         toggleHomeColor("#ae1717");
     }
     const leaveLogo = () => {
-        setLP(crestBW);
+        setLP('/images/crestBW.png');
         setL("Monochrome Kappa Sigma Crest");
         toggleHomeColor("");
     }
