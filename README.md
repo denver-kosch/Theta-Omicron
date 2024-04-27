@@ -4,7 +4,7 @@ This project is currently being developed exclusively by (as new contributors ar
 * Brother Denver Kosch (Full Stack)
 
 Using: 
-Front End - React
-Back End - Node.js
-Database - MySQL
-Mobile App - React Native
+* Front End - React
+* Back End - Node.js
+* Database - MySQL
+* Mobile App - React Native
