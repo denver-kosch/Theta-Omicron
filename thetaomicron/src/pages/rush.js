@@ -6,9 +6,7 @@ const Rush = () => {
     const [rushCom, setRush] = useState([]);
     const [rushComErr, setRushErr] = useState("");
 
-    useEffect(()=>{
-        getRush();
-    },[]);
+    useEffect(()=>{getRush();},[]);
 
     const getRush = async () => {
         try {
@@ -52,14 +50,17 @@ const Rush = () => {
     }
 
     const renderRush = (member) => {
+        console.log(member);
         const name = `${member.firstName} ${member.lastName}`;
-        const img = `../images/profilePics/${member.memberId}.png`;
+        const img = `/images/profilePics/${member.memberId}.jpg`;
+        const emailLink  = `mailto:${member.email}?subject=Interested In Kappa Sigma`;
+        console.log(emailLink);
         
         return (
             <div key={member.memberId} className="card">
-                <img src={img} alt='name' style={{height: '200px', width: 'auto'}} />
+                <a href={emailLink}><img src={img} alt='name'/></a>
                 <p>{name}</p>
-                <p>{member.title}</p>
+                <p style={{fontWeight: 'bold'}}>{member.title}</p>
             </div>
         );
     };
@@ -70,14 +71,17 @@ const Rush = () => {
         <img src="/images/rush.jpeg" alt="Rush KΣ" className="rushPic" />
 
         <p>Kappa Sigma is a brotherhood that prides itself on being the best of the fraternal world. At an international level, Kappa Sigma has been the best at what it does for over two decades, and we've stayed just as committed on Muskingum University's campus since out charting one decade ago. We pride ourselves on being true gentlemen who distinguish themselves by emphazing the values of the 4 pillars of Kappa Sigma: Fellowship, Leadership, Scholarship, and Service.</p>
-        
         <br/>
-        
         <h4>If you are interested in joining the greatest in the world, reach out to any of the brothers of the Rush Committee:</h4>
         <h5 style={{color: 'red'}}>{rushComErr}</h5>
 
-        <div style={{direction: 'flex'}}>
-            {rushCom.map(member => renderRush(member))}
+        <div className='rushContainer'>
+            <div className="committee">
+                {rushCom.slice(0,2).map(member => renderRush(member))}
+            </div>
+            <div className="committee">
+                {rushCom.slice(2).map(member => renderRush(member))}
+            </div>
         </div>
       </div>
     );

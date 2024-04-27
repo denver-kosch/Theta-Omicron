@@ -24,23 +24,19 @@ db.connect((err) => {
 });
 
 // Define routes
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+app.get('/', (req, res) => res.send('Hello World!'));
 
-app.listen(3306, () => {
-  console.log(`Server is running on http://localhost:${3306}`);
-});
+app.listen(3306, () => console.log(`Server is running on http://localhost:${3306}`));
 
+// Get Members of the Rush Committee
 app.post("/get-rush", (req, res) => {
-  console.log('Request received for /get-rush');
   try {
     const getRushCommittee = `
-      SELECT M.memberId, M.firstName, M.lastName, M.initiationYear, C.title FROM Members AS M 
+      SELECT M.memberId, M.firstName, M.lastName, M.email, C.title FROM Members AS M 
       JOIN Chairmen AS CM ON CM.memberId=M.memberId 
       JOIN Chairs AS C ON C.chairId = CM.chairId
-      WHERE C.chairId IN (3, 14, 15) 
-      ORDER BY C.chairId DESC
+      WHERE C.chairId IN (3, 15, 16) 
+      ORDER BY C.chairId ASC
     `;
     db.query(getRushCommittee, [], (err, results) => {
       if (err) res.status(500).json({ error: 'Failed to retrieve members', details: err })
@@ -51,6 +47,7 @@ app.post("/get-rush", (req, res) => {
   }
 });
 
+//Add new member to database
 app.post('/add-member', async (req, res) => {
   console.log('Request received for /add-member');
   const {email, password, fName, lName, status, phone, street, city, state, zip, initiation, graduation} = req.body;
@@ -67,3 +64,4 @@ app.post('/add-member', async (req, res) => {
     res.status(500).json({ error: 'Server error', details: error });
   }
 });
+

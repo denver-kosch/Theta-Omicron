@@ -6,7 +6,7 @@ USE ThetaOmicron;
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Apr 27, 2024 at 05:45 AM
+-- Generation Time: Apr 27, 2024 at 08:37 PM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.0
 
@@ -40,7 +40,11 @@ CREATE TABLE `Chairmen` (
 --
 
 INSERT INTO `Chairmen` (`memberId`, `chairId`) VALUES
-(1, 3);
+(1, 3),
+(2, 15),
+(3, 16),
+(4, 16),
+(3, 30);
 
 -- --------------------------------------------------------
 
@@ -108,17 +112,17 @@ INSERT INTO `Chairs` (`chairId`, `title`) VALUES
 
 CREATE TABLE `Members` (
   `memberId` int(11) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
   `status` enum('Pledge','Initiate','Alumus') NOT NULL,
   `phoneNum` varchar(20) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `streetAddress` varchar(100) NOT NULL,
   `city` varchar(50) NOT NULL,
   `state` varchar(50) NOT NULL,
   `postalCode` varchar(50) NOT NULL,
-  `initiationYear` int(11) NOT NULL,
+  `initiationYear` int(11) DEFAULT NULL,
   `graduationYear` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -126,8 +130,11 @@ CREATE TABLE `Members` (
 -- Dumping data for table `Members`
 --
 
-INSERT INTO `Members` (`memberId`, `email`, `password`, `firstName`, `lastName`, `status`, `phoneNum`, `streetAddress`, `city`, `state`, `postalCode`, `initiationYear`, `graduationYear`) VALUES
-(1, 'dkosch2@gmail.com', '$2b$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', 'Denver', 'Kosch', 'Initiate', '17402437103', '12227 Ohio Ave', 'Millersport', 'OH', '43046', 2022, 2025);
+INSERT INTO `Members` (`memberId`, `firstName`, `lastName`, `status`, `phoneNum`, `email`, `password`, `streetAddress`, `city`, `state`, `postalCode`, `initiationYear`, `graduationYear`) VALUES
+(1, 'Denver', 'Kosch', 'Initiate', '17402437103', 'dkosch2@gmail.com', '$2b$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', '12227 Ohio Ave', 'Millersport', 'OH', '43046', 2022, 2025),
+(2, 'Caleb', 'Simpson', 'Initiate', '1 (740) 243-7103', 'calebmason62003@gmail.com', '$2y$10$Kpy9RHNqPaH6IQJd3is1/uecA1wxwZK3yHjCbZoYg.mfZciB8m2Ze', '162 N Franklin St', 'Richwood', 'OH', '43344', 2023, 2025),
+(3, 'Zach', 'Amato', 'Initiate', '8146501005', 'zachdbz88@gmail.com', '$2y$10$T.sQ5FP0S.asMYMhXRYiyOu/2tPB6w9HeLYIxIDYCi1ZTOtCGEowa', '526 Lowther St', 'Bellwood', 'PA', '16617', 2023, 2026),
+(4, 'Kacy', 'Perry', 'Initiate', '6144204472', 'kacyperry19@gmail.com', '$2y$10$xu6poXY3gqUFagtfR6ihte9yr4fck9YfNDRriwS9GI7owc9UxjNTa', '2155 Berry Hill Dr.', 'Grove City', 'OH', '43123', 2024, 2027);
 
 --
 -- Indexes for dumped tables
@@ -166,7 +173,7 @@ ALTER TABLE `Chairs`
 -- AUTO_INCREMENT for table `Members`
 --
 ALTER TABLE `Members`
-  MODIFY `memberId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `memberId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

@@ -12,3 +12,26 @@
     max-width: 90%;
     height: auto;
 }
+
+.rushContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.rushContainer img {
+    border-radius: 10px;
+    height: 200px;
+    width: auto;
+}
+.committee {
+    display: flex;
+    flex-direction: row;
+}
+
+.card {
+    /* border: 1px solid black; */
+    width: 200px;
+    text-wrap: wrap;
+}
