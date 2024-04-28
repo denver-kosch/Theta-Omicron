@@ -20,14 +20,23 @@
     justify-content: center;
 }
 
-.rushContainer img {
-    border-radius: 10px;
-    height: 200px;
-    width: auto;
-}
 .committee {
     display: flex;
     flex-direction: row;
+}
+
+.aboutRush {
+    display:flex;
+}
+
+.aboutRush > p {
+    font-size: larger;
+}
+
+.aboutRush > p, .aboutRush > img {
+    max-width: 45%;
+    text-wrap:  wrap;
+    margin: 5%;
 }
 
 .card {
@@ -35,3 +44,29 @@
     width: 200px;
     text-wrap: wrap;
 }
+
+.card a {
+    position: relative;
+}
+
+.profilePic {
+    border-radius: 10px;
+    height: 200px;
+    width: auto;
+}
+
+.emailIcon {
+    position: absolute;
+    top: 50%;  /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjusts the position to truly center the icon */
+    width: 100px; /* Size of the icon */
+    height: auto;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition for opacity */
+}
+
+.card:hover img.emailIcon {
+    opacity: 0.8; /* Show the icon on hover */
+}
+

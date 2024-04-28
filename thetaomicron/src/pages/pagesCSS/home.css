@@ -1,4 +1,4 @@
-.container {
+.homeContainer {
     text-align: center;
     width: 100%;
     display: flex;
@@ -7,14 +7,27 @@
     flex-direction: column;
 }
 
-.about {
+.aboutHome {
     max-width: 80%;
     align-self: center;
 }
 
-.mainPage {
+.mainPageImg {
     max-height: 425px;
     max-width: 90%;
     height: auto;
-    
+}
+.ExecContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.card {
+    /* border: 1px solid black; */
+    width: 200px;
+    text-wrap: wrap;
+}
+
+.homeContainer img {
+    border-radius: 3%;
 }

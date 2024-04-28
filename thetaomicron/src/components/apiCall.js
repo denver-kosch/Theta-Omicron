@@ -1,4 +1,4 @@
-export async function apiCall (api, body) {
+export async function apiCall (api, body = {}) {
     const apiLink = `http://localhost:3306/${api}`;
 
     try {

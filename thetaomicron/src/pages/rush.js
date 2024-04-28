@@ -10,7 +10,7 @@ const Rush = () => {
 
     const getRush = async () => {
         try {
-            let committee = await apiCall('get-rush', {});
+            let committee = await apiCall('getRush');
             if (committee) {
                 setRush(committee.members);
                 console.log(committee.msg);
@@ -40,7 +40,7 @@ const Rush = () => {
                 graduation: 2025
             };
 
-            let result = await apiCall('add-member', newMem);
+            let result = await apiCall('addMember', newMem);
 
             if (result) alert("Member added successfully!");
         } catch (error) {
@@ -58,7 +58,12 @@ const Rush = () => {
         
         return (
             <div key={member.memberId} className="card">
-                <a href={emailLink}><img src={img} alt='name'/></a>
+                <a href={emailLink}>
+                    <div>
+                        <img src={img} alt={name} className="profilePic"/>
+                        <img src="/images/mail.png" className="emailIcon" alt="Email" />
+                    </div>
+                </a>
                 <p>{name}</p>
                 <p style={{fontWeight: 'bold'}}>{member.title}</p>
             </div>
@@ -68,13 +73,16 @@ const Rush = () => {
     return (
       <div className="container">
         <h1>WHY KAPPA SIGMA?</h1>
-        <img src="/images/rush.jpeg" alt="Rush KΣ" className="rushPic" />
-
-        <p>Kappa Sigma is a brotherhood that prides itself on being the best of the fraternal world. At an international level, Kappa Sigma has been the best at what it does for over two decades, and we've stayed just as committed on Muskingum University's campus since out charting one decade ago. We pride ourselves on being true gentlemen who distinguish themselves by emphazing the values of the 4 pillars of Kappa Sigma: Fellowship, Leadership, Scholarship, and Service.</p>
+        <div className="aboutRush">
+            <p>Kappa Sigma is a brotherhood that prides itself on being the best of the fraternal world. At an international level, Kappa Sigma has been the best at what it does for over two decades, and we've stayed just as committed on Muskingum University's campus since out charting one decade ago. We pride ourselves on being true gentlemen who distinguish themselves by emphazing the values of the 4 pillars of Kappa Sigma: Fellowship, Leadership, Scholarship, and Service.</p>
+            <img src="/images/rush.jpeg" alt="Rush KΣ" className="rushPic" />
+        </div>
         <br/>
         <h4>If you are interested in joining the greatest in the world, reach out to any of the brothers of the Rush Committee:</h4>
-        <h5 style={{color: 'red'}}>{rushComErr}</h5>
-
+            {(() => {
+                if (rushComErr !== '') 
+                return <h5 style={{color: 'red'}}>{rushComErr}</h5>;
+            })()}
         <div className='rushContainer'>
             <div className="committee">
                 {rushCom.slice(0,2).map(member => renderRush(member))}
