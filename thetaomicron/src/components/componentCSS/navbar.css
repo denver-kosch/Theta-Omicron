@@ -4,6 +4,10 @@
 
 .navbar {
     padding:15px;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    background-color: #f5f5f5;
 }
 
 .homeButton {
@@ -35,4 +39,5 @@
 
 body {
     font-family: 'Courier New', Courier, monospace;
+    background-color: #f5f5f5;
 }

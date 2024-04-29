@@ -25,7 +25,6 @@ const Home = () => {
     };
 
     const renderEC = officer => {
-        console.log(officer);
         const name = `${officer.firstName} ${officer.lastName}`;
         const img = `/images/profilePics/${officer.memberId}.jpg`;
         
@@ -65,4 +64,4 @@ const Home = () => {
     );
 }
 
-  export default Home;
+export default Home;

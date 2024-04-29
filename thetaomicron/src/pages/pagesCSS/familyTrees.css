@@ -1,0 +1,9 @@
+.familyTreesContainer {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 8%;
+}

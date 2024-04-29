@@ -5,6 +5,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    padding-top: 8%;
 }
 
 .aboutHome {
@@ -15,7 +16,6 @@
 .mainPageImg {
     max-height: 425px;
     max-width: 90%;
-    height: auto;
 }
 .ExecContainer {
     display: flex;

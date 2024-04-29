@@ -13,8 +13,6 @@ const Rush = () => {
             let committee = await apiCall('getRush');
             if (committee) {
                 setRush(committee.members);
-                console.log(committee.msg);
-                console.log(committee.members);
             }
             else setRushErr("Could not gather rush committee at this time!");
         } catch (error) {
@@ -50,11 +48,9 @@ const Rush = () => {
     }
 
     const renderRush = (member) => {
-        console.log(member);
         const name = `${member.firstName} ${member.lastName}`;
         const img = `/images/profilePics/${member.memberId}.jpg`;
         const emailLink  = `mailto:${member.email}?subject=Interested In Kappa Sigma`;
-        console.log(emailLink);
         
         return (
             <div key={member.memberId} className="card">
