@@ -41,8 +41,7 @@
 }
 
 .card {
-    /* border: 1px solid black; */
-    width: 200px;
+    width: 250px;
     text-wrap: wrap;
 }
 

@@ -32,7 +32,7 @@ app.listen(3306, () => console.log(`Server is running on http://${process.env.DB
 app.post("/getRush", (req, res) => {
   try {
     const getRushCommittee = `
-      SELECT M.memberId, M.firstName, M.lastName, M.email, C.title FROM Members AS M 
+      SELECT M.memberId, M.firstName, M.lastName, M.schoolEmail, C.title FROM Members AS M 
       JOIN Chairmen AS CM ON CM.memberId=M.memberId 
       JOIN Chairs AS C ON C.chairId = CM.chairId
       WHERE C.chairId IN (3, 15, 16) 
@@ -82,3 +82,31 @@ app.post("/getEC", (req, res) => {
   }
 });
 
+app.post("/getBros", async (req, res) => {
+  try {
+    const brothersQuery = `
+      SELECT memberId, firstName, lastName, initiationYear FROM Members
+      WHERE status='Initiate'
+      ORDER BY lastName ASC
+    `;
+    const chairQuery = `
+      SELECT C.title FROM Chairs AS C
+      JOIN Chairmen AS CM USING (chairId)
+      WHERE CM.memberId=?
+      ORDER BY C.chairId ASC
+    `;
+
+    let bros = await new Promise((resolve, reject) => {
+      db.query(brothersQuery, [], (err, results) => err ? reject (err): resolve(results))
+    });
+
+    for (let i = 0; i < bros.length;  i++) {
+      bros[i].positions = await new Promise ((resolve, reject) => {
+        db.query(chairQuery, [bros[i].memberId], (err, results) => err ? reject (err): resolve(results))
+      });
+    }
+    res.status(200).json({brothers: bros, msg: "Got Chapter!"});
+  } catch (error) {
+    res.status(500).json({ error: 'Server error', details: error });
+  }
+});

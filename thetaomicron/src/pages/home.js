@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./pagesCSS/home.css";
 import { apiCall } from "../components/apiCall";
 
@@ -45,7 +45,7 @@ const Home = () => {
                 className="mainPageImg"
             />
             <div className="aboutHome">
-                <h2>Who are we:</h2>
+                <h2>WHO ARE WE:</h2>
                 <p>
                     Kappa Sigma's Theta-Omicron Chapter at Muskingum University originally began as the Sphinx Club.
                     <br/>In 1966, Sphinx Club was absorbed into and chartered by the International Kappa Sigma Fraternity

@@ -34,7 +34,8 @@
     color: black;
     padding: 0 2%;
     text-align: center;
-    /* border: 1px solid black; */
+    /* Invisible Border for some reason keeps columns from intruding on each other */
+    border: 1px;
 }
 
 body {

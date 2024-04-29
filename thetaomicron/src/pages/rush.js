@@ -50,7 +50,7 @@ const Rush = () => {
     const renderRush = (member) => {
         const name = `${member.firstName} ${member.lastName}`;
         const img = `/images/profilePics/${member.memberId}.jpg`;
-        const emailLink  = `mailto:${member.email}?subject=Interested In Kappa Sigma`;
+        const emailLink  = `mailto:${member.schoolEmail}@muskingum.edu?subject=Interested In Kappa Sigma`;
         
         return (
             <div key={member.memberId} className="card">
