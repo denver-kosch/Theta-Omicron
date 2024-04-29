@@ -18,7 +18,7 @@ function App() {
           <Route path='/directory' element={<Directory/>}/>
           <Route path='/directory/trees' element={<FamilyTree/>}/>
           <Route path='portal'>
-            <Route index element={<RequireAuth><PortalHome/></RequireAuth>} />
+            <Route index element={<Auth><PortalHome/></Auth>} />
             <Route path='login' element={<PortalLogin/>} />
           </Route>
           <Route path="*" element={<Navigate to="/" />} />
