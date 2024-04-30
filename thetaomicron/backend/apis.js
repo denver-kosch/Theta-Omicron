@@ -9,12 +9,12 @@ import session from 'express-session';
 const app = express();
 app.use(express.json());
 app.use(cors());
-dotenv.config();
+dotenv.config({options: '../.env'});
 const dbport = process.env.DB_PORT || 8888;
 const port = process.env.PORT  || 3001;
 
 app.use(session({
-  secret: "fill-in",  // A secret key for signing the session ID cookie (will be replaced with legitimate one in production)
+  secret: process.env.SESSION_SECRET,  // A secret key for signing the session ID cookie (will be replaced with legitimate one in production)
   resave: false,              // Forces the session to be saved back to the session store
   saveUninitialized: true,    // Forces a session that is "uninitialized" to be saved to the store
   cookie: { secure: false }   // True in production (requires HTTPS), false for HTTP
@@ -139,4 +139,16 @@ app.post("/getBros", async (req, res) => {
     res.status(500).json({ error: 'Server error', details: error });
   }
 });
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) return res.sendStatus(403);
+      req.user = user;
+      next();
+  });
+}
 
