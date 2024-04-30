@@ -14,7 +14,7 @@ const dbport = process.env.DB_PORT || 8888;
 const port = process.env.PORT  || 3001;
 
 app.use(session({
-  secret: 'zAoZIkgw7IyqQSAN5rlXpnsdSkTiOYLx',  // A secret key for signing the session ID cookie
+  secret: "fill-in",  // A secret key for signing the session ID cookie (will be replaced with legitimate one in production)
   resave: false,              // Forces the session to be saved back to the session store
   saveUninitialized: true,    // Forces a session that is "uninitialized" to be saved to the store
   cookie: { secure: false }   // True in production (requires HTTPS), false for HTTP
