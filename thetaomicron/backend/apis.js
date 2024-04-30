@@ -3,12 +3,22 @@ import mysql from 'mysql';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
+import session from 'express-session';
 
 const app = express();
-const dbport = process.env.DB_PORT || 8889;
 app.use(express.json());
 app.use(cors());
 dotenv.config();
+const dbport = process.env.DB_PORT || 8888;
+const port = process.env.PORT  || 3001;
+
+app.use(session({
+  secret: 'zAoZIkgw7IyqQSAN5rlXpnsdSkTiOYLx',  // A secret key for signing the session ID cookie
+  resave: false,              // Forces the session to be saved back to the session store
+  saveUninitialized: true,    // Forces a session that is "uninitialized" to be saved to the store
+  cookie: { secure: false }   // True in production (requires HTTPS), false for HTTP
+}));
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -23,10 +33,29 @@ db.connect((err) => {
   console.log('Connected to MySQL');
 });
 
-// Define routes
-app.get('/', (req, res) => res.send('Hello World!'));
+app.listen(port, () => console.log(`Server is running on http://${process.env.DB_HOST}:${port}`));
 
-app.listen(3306, () => console.log(`Server is running on http://${process.env.DB_HOST}:${3306}`));
+app.post('/login', (req, res) => {
+  const {email, password} = req.body;
+  let checkUser = `SELECT password FROM users WHERE email=?`;
+  db.query(checkUser, [email], (err, result) => {
+    if (err) res.status(500).json({ error: 'Failed to retrieve members', details: err });
+    if (!result.length) return res.status(401).send('Invalid Email or Password');
+    
+    // compare passwords using the hashed password stored in the DB
+    bcrypt.compare(password, result[0].password, (err, isValid) => {
+      if (!isValid) return res.status(401).send('Invalid Email or Password');
+    });
+
+  });
+
+
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.send('Logged out!');
+});
 
 // Get Members of the Rush Committee
 app.post("/getRush", (req, res) => {
@@ -39,7 +68,7 @@ app.post("/getRush", (req, res) => {
       ORDER BY C.chairId ASC
     `;
     db.query(getRushCommittee, [], (err, results) => {
-      if (err) res.status(500).json({ error: 'Failed to retrieve members', details: err })
+      if (err) res.status(500).json({ error: 'Failed to retrieve members', details: err });
       else res.status(200).json({members: results, msg: "Got Rush Committee!"});
     });
   } catch (error) {

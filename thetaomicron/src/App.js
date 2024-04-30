@@ -4,6 +4,8 @@ import Navbar from './components/navbar';
 import Rush from "./pages/rush";
 import Directory from "./pages/dir";
 import FamilyTree from "./pages/familyTrees";
+import { Auth, PortalLogin } from "./pages/portal/authLogin";
+import PortalHome from "./pages/portal/home";
 
 
 function App() {
@@ -18,10 +20,10 @@ function App() {
           <Route path='/directory' element={<Directory/>}/>
           <Route path='/directory/trees' element={<FamilyTree/>}/>
           <Route path='portal'>
-            <Route index element={<Auth><PortalHome/></Auth>} />
-            <Route path='login' element={<PortalLogin/>} />
+            <Route index element={<Auth><PortalHome/></Auth>}/>
+            <Route path='login' element={<PortalLogin/>}/>
           </Route>
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<Navigate to="/"/>} />
         </Routes>
       </Router>
     </>
