@@ -9,7 +9,7 @@ import session from 'express-session';
 const app = express();
 app.use(express.json());
 app.use(cors());
-dotenv.config({options: '../.env'});
+dotenv.config({path: '../.env'});
 const dbport = process.env.DB_PORT || 8888;
 const port = process.env.PORT  || 3001;
 

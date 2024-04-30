@@ -7,7 +7,7 @@ const Auth = ({children}) => {
 
     const authenticate = async () => {
         try{
-
+            
         }catch(err){
             return false;
         }

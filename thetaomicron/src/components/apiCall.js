@@ -1,7 +1,7 @@
 
 
 export async function apiCall (api, body = {}) {
-    const apiLink = `http://localhost:3306/${api}`;
+    const apiLink = `http://${process.env.DB_HOST}:${process.env.PORT}/${api}`;
 
     try {
         const result = await fetch(apiLink, {method: "POST",headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
