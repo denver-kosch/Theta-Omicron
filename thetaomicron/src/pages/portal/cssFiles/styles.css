@@ -1,0 +1,41 @@
+/* =========  Login Page  ========= */
+.loginContainer {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 8.5%;
+}
+
+.loginLogo {
+    max-height: 10% !important;
+}
+
+.loginForm {
+    border: 1px solid #242424;
+}
+
+.loginForm > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.loginForm > div > input {
+    max-height: fit-content;
+}
+
+/* =========  Home Page  ========= */
+
+.homeContainer {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 8%;
+}

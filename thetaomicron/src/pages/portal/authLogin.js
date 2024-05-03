@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import './cssFiles/styles.css';
 
 
 const Auth = ({children}) => {
@@ -25,9 +26,38 @@ const PortalLogin = () => {
     // Check if user is already logged in and redirect them accordingly.
     
     
+    
 
     return (
-        <div>
+        <div className='loginContainer'>
+            {/* <img
+            src="/images/thetaOmicronLogo.jpeg"
+            alt='Kappa Sigma - Theta-Omicron'
+            className="loginLogo"
+            /> */}
+
+            <div className='loginForm'>
+                <div>
+                    <p>Username:</p>
+                    <input
+                    type='text'
+                    placeholder='Username...'
+                    value={email}
+                    onChange={e=>setEmail(e.target.value)}
+                    />
+                </div>
+                <br/>
+                <div>
+                    <p>Password:</p>
+                    <input 
+                    type='password'
+                    placeholder='Password...'
+                    value={password}
+                    onChange={e=>setPassword(e.target.value)}
+                    />
+                </div>
+                {/* <button onClick={()=>handleSubmit()}>Login</button> */}
+            </div>
 
         </div>
     );

@@ -1,10 +1,17 @@
 import React from "react";
+import './cssFiles/styles.css';
 
 
 const PortalHome = () => {
+    
+
     return (
-        <div>
-            <h1>Logged in</h1>
+        <div className="homeContainer">
+            {/* <img
+            src="/images/thetaOmicronLogo.jpeg"
+            alt='Kappa Sigma - Theta-Omicron'
+            className="loginLogo"
+            /> */}
         </div>
     )};
 
