@@ -9,9 +9,9 @@ import session from 'express-session';
 const app = express();
 app.use(express.json());
 app.use(cors());
-dotenv.config({path: '../.env'});
+dotenv.config();
 const dbport = process.env.DB_PORT || 8888;
-const port = process.env.PORT  || 3001;
+const port = process.env.SERVERPORT  || 3001;
 
 app.use(session({
   secret: process.env.SESSION_SECRET,  // A secret key for signing the session ID cookie (will be replaced with legitimate one in production)

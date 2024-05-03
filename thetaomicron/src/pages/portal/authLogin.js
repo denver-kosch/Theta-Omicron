@@ -14,7 +14,7 @@ const Auth = ({children}) => {
     };
     const authenticated = authenticate();
     // Redirect them to the login page, but save the current location they were trying to go to if not authenticated
-    return (!authenticated) ?  <Navigate to="/portal/login" state={{from: location}} replace /> : children;
+    return (!authenticated) ?  <Navigate to="/portal/login" state={{from: location}} replace={true} /> : children;
 }
 
 const PortalLogin = () => {
