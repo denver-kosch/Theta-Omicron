@@ -12,16 +12,16 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar/>
-
         <Routes>
-          <Route index element={<Home/>}/>
-          <Route path='rush' element={<Rush/>}/>
-          <Route path='/directory' element={<Directory/>}/>
-          <Route path='/directory/trees' element={<FamilyTree/>}/>
+          <Route index element={<Navbar><Home/></Navbar>}/>
+          <Route path='rush' element={<Navbar><Rush/></Navbar>}/>
+          <Route path='directory'>
+            <Route index element={<Navbar><Directory/></Navbar>}/>
+            <Route path='trees' element={<Navbar><FamilyTree/></Navbar>}/>
+          </Route>
           <Route path='portal'>
             <Route index element={<Auth><PortalHome/></Auth>}/>
-            <Route path='login' element={<PortalLogin/>}/>
+            <Route path='login' element={<Navbar><PortalLogin/></Navbar>}/>
           </Route>
           <Route path="*" element={<Navigate to="/"/>} />
         </Routes>

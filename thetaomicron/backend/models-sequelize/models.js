@@ -1,9 +1,10 @@
 import { DataTypes, Model } from "sequelize";
-import sequelize from './sequelize_instance';
+import sequelize from './sequelize_instance.js';
 
 class Member extends Model {};
 
-Member.init({
+Member.init(
+{
     memberId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -26,5 +27,8 @@ Member.init({
     sequelize,
     modelName: "Member",
     tableName: "Members",
-    
+    timestamps: false,
+    paranoid: true //Allows for soft deletes
 });
+
+export default Member;

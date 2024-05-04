@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
-import session from 'express-session';
+import Member from './models-sequelize/models.js';
 
 const app = express();
 app.use(express.json());
@@ -12,13 +12,6 @@ app.use(cors());
 dotenv.config();
 const dbport = process.env.DB_PORT || 8888;
 const port = process.env.SERVERPORT  || 3001;
-
-app.use(session({
-  secret: process.env.SESSION_SECRET,  // A secret key for signing the session ID cookie (will be replaced with legitimate one in production)
-  resave: false,              // Forces the session to be saved back to the session store
-  saveUninitialized: true,    // Forces a session that is "uninitialized" to be saved to the store
-  cookie: { secure: false }   // True in production (requires HTTPS), false for HTTP
-}));
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -35,29 +28,38 @@ db.connect((err) => {
 
 app.listen(port, () => console.log(`Server is running on http://${process.env.DB_HOST}:${port}`));
 
-app.post('/login', (req, res) => {
+/* ================== Login / Authorization ================== */
+app.post('/login', async (req, res) => {
   const {email, password} = req.body;
-  let checkUser = `SELECT password FROM users WHERE email=?`;
-  db.query(checkUser, [email], (err, result) => {
-    if (err) res.status(500).json({ error: 'Failed to retrieve members', details: err });
-    if (!result.length) return res.status(401).send('Invalid Email or Password');
-    
-    // compare passwords using the hashed password stored in the DB
-    bcrypt.compare(password, result[0].password, (err, isValid) => {
-      if (!isValid) return res.status(401).send('Invalid Email or Password');
-    });
+  
+  const member = await Member.findOne({where: {email}});
 
-  });
+  if (member && bcrypt.compare(password, member.password)) {
+    const token = jwt.sign({memberId: member.memberId}, process.env.SESSION_SECRET, {expiresIn: '2h'});
+    return res.status(200).json({token, success: true});
+  } 
 
-
+  else return res.status(401).json({error: 'Could not authenticate User', success: false});
 });
 
-app.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.send('Logged out!');
+app.post('/auth', async (req, res) => {
+  // TODO: figure out how to get token from authorization header
+  let authHeader = req.headers['authorization'];
+  let token = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({valid: false, success: false});
+  try{
+    const payload = jwt.verify(token, process.env.SESSION_SECRET);
+    return res.status(200).json({valid: true, success:true});
+  } catch (err) {
+    if (err instanceof jwt.TokenExpiredError)
+    return res.status(401).json({valid: false, message: 'Token Expired', success: false});
+
+    return res.status(401).json({valid: false, message: err, success: false});
+  }
 });
 
-// Get Members of the Rush Committee
+
+/* ================== Getters ================== */
 app.post("/getRush", (req, res) => {
   try {
     const getRushCommittee = `
@@ -76,26 +78,7 @@ app.post("/getRush", (req, res) => {
   }
 });
 
-//Add new member to database
-app.post('/addMember', async (req, res) => {
-  console.log('Request received for /add-member');
-  const {email, password, fName, lName, status, phone, street, city, state, zip, initiation, graduation} = req.body;
-  try {
-    const insertMem =  `
-      INSERT INTO Members (email, password, firstName, lastName, status, phoneNum, streetAddress, city, state, postalCode, initiationYear, graduationYear)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    let hash = await bcrypt.hash(password, 10);
-    db.query(insertMem, [email, hash, fName, lName, status, phone, street, city, state, zip, initiation, graduation], (err, result) => {
-      return (err) ? res.status(500).json({ error: 'Failed to add member', details: err }) : res.status(200).json({ success: true});
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Server error', details: error });
-  }
-});
-
 app.post("/getEC", (req, res) => {
-  console.log("Getting EC...");
   try {
     const ECQuery = `SELECT M.memberId, M.firstName, M.lastName, C.title FROM Members AS M 
     JOIN Chairmen AS CM ON CM.memberId=M.memberId 
@@ -140,15 +123,21 @@ app.post("/getBros", async (req, res) => {
   }
 });
 
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (token == null) return res.sendStatus(401);
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) return res.sendStatus(403);
-      req.user = user;
-      next();
-  });
-}
-
+//Add new member to database
+app.post('/addMember', async (req, res) => {
+  console.log('Request received for /add-member');
+  const {email, password, fName, lName, status, phone, street, city, state, zip, initiation, graduation} = req.body;
+  try {
+    const insertMem =  `
+      INSERT INTO Members (email, password, firstName, lastName, status, phoneNum, streetAddress, city, state, postalCode, initiationYear, graduationYear)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    let hash = await bcrypt.hash(password, 10);
+    db.query(insertMem, [email, hash, fName, lName, status, phone, street, city, state, zip, initiation, graduation], (err, result) => {
+      return (err) ? res.status(500).json({ error: 'Failed to add member', details: err }) : res.status(200).json({ success: true});
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error', details: error });
+  }
+});

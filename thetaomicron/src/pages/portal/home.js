@@ -4,6 +4,11 @@ import './cssFiles/styles.css';
 
 const PortalHome = () => {
     
+    const logout = () => {
+        localStorage.removeItem("token");
+        window.location.reload(); 
+    };
+
 
     return (
         <div className="homeContainer">
@@ -12,6 +17,8 @@ const PortalHome = () => {
             alt='Kappa Sigma - Theta-Omicron'
             className="loginLogo"
             /> */}
+
+            <button onClick={logout}>Log Out</button>
         </div>
     )};
 
