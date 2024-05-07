@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import './cssFiles/styles.css';
 import { apiCall } from '../../components/apiCall';
 
@@ -15,37 +15,50 @@ const Auth = ({children}) => {
             setIsAuthenticated(result && result.valid);
         };
         checkAuth();
-    }, []);
+    }, [location]);
 
     if (isAuthenticated === null) return <div>Loading...</div>; // Or some other loading indicator
 
     // Redirect them to the login page, but save the current location they were trying to go to if not authenticated
-    return (!isAuthenticated) ?  <Navigate to="/portal/login" state={{from: location}} replace={true} /> : children;
+    if (!isAuthenticated) {
+        if (localStorage.getItem("token")) localStorage.removeItem("token");
+        return <Navigate to="/portal/login" state={{ from: location }} replace={true} />;
+    }
+    
+    return children;
 };
 
 const PortalLogin = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    //if token in storage but expired, get rid of it
 
     // Check if user is already logged in and redirect them accordingly.
-    if (localStorage.getItem("token")) return <Navigate to="/portal/"/>;
 
     const handleSubmit = async () => {
         if(!email || !password) {
             setErrorMessage("Please enter both email address and password.");
+            setPassword('');
             return;
         } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
             setErrorMessage("Please enter a valid email address.");
+            setPassword('');
             return;
         }
 
         const result = await apiCall("login", {email: email, password: password});
+        console.log(result);
         if (!result || !result.success) {
             setErrorMessage(result.error);
+            setPassword('');
         } else {
             localStorage.setItem("token", result.token);
-            window.location.reload();
+            const from = location.state?.from?.pathname ?? "/portal";
+            navigate(from, {replace: true});
         }
     };
     

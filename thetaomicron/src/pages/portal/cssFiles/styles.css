@@ -1,4 +1,47 @@
 /* =========  Login Page  ========= */
+.logo {
+    height: 75px;
+}
+
+.navbar {
+    padding:15px;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    background-color: #f5f5f5;
+}
+
+.homeButton {
+    display: flex;
+}
+.homeButton:hover{
+    cursor:pointer;
+}
+
+.navTable {
+    width: 100%;
+}
+.navLink {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+    text-wrap: wrap;
+}
+.navTable td {
+    width: fit-content;
+    color: black;
+    padding: 0 2%;
+    text-align: center;
+    /* border: 1px #f5f5f5; */
+}
+
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f5f5f5;
+}
+
+/* =========  Login Page  ========= */
 .loginContainer {
     text-align: center;
     width: 100%;
@@ -15,6 +58,7 @@
 
 .loginForm {
     border: 1px solid #242424;
+    padding: 0 25px;
 }
 
 .loginForm > div {

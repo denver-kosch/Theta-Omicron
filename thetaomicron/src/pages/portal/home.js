@@ -1,14 +1,21 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import './cssFiles/styles.css';
+import { apiCall } from "../../components/apiCall";
 
 
 const PortalHome = () => {
-    
-    const logout = () => {
-        localStorage.removeItem("token");
-        window.location.reload(); 
-    };
+    const [brother, setBro] = useState('');
 
+    useEffect(() => {
+        (async () => {
+        const brotherInfo = await apiCall('getBro', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+        const bI = brotherInfo.info;
+        console.log(bI);
+        const title = (bI.status === 'Pledge') ? "Mr. " + bI.lastName : `Brother ` + bI.lastName;
+        console.log(title);
+        setBro(title);
+        })();
+    }, []); 
 
     return (
         <div className="homeContainer">
@@ -18,7 +25,8 @@ const PortalHome = () => {
             className="loginLogo"
             /> */}
 
-            <button onClick={logout}>Log Out</button>
+            {brother === '' && <h2>Loading...</h2>}
+            {brother !== '' && <h2>Welcome, {brother}</h2>}
         </div>
     )};
 

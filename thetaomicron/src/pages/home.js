@@ -7,6 +7,9 @@ const Home = () => {
     const  [errorMessage, setErrorMessage] = useState("");
 
     useEffect(()=>{
+        //If token from previous session, remove it
+        if (localStorage.getItem('token')) localStorage.removeItem('token');
+        
         getEC();
     }, []);
 
@@ -56,7 +59,8 @@ const Home = () => {
             <h3 style={{fontWeight: 'bold'}}>Meet the Executive Committee:</h3>
             <div className="ExecContainer">
                 {errorMessage !== "" ? <p style={{color: 'red'}}>{errorMessage}</p> :
-                ec.map(officer => renderEC(officer))}
+                ec.map(officer => renderEC(officer))
+                }
             </div>
 
 
