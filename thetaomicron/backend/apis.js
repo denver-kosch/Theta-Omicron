@@ -10,20 +10,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 dotenv.config();
-const dbport = process.env.DB_PORT || 8888;
 const port = process.env.SERVERPORT  || 3001;
 
-const db = mysql.createConnection({
+
+const pool = mysql.createPool({
+  connectionLimit: 10, // the number of connections to create in the pool
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: dbport
-});
-
-db.connect((err) => {
-  if (err) throw err;
-  console.log('Connected to MySQL');
+  port: process.env.DB_PORT || 8888
 });
 
 app.listen(port, () => console.log(`Server is running on http://${process.env.DB_HOST}:${port}`));
@@ -68,7 +64,7 @@ app.post("/getRush", (req, res) => {
       WHERE C.chairId IN (3, 15, 16) 
       ORDER BY C.chairId ASC
     `;
-    db.query(getRushCommittee, [], (err, result) => {
+    pool.query(getRushCommittee, [], (err, result) => {
       if (err) res.status(200).json({ error: 'Failed to retrieve members', details: err });
       else res.status(200).json({members: result, msg: "Got Rush Committee!"});
     });
@@ -84,7 +80,7 @@ app.post("/getEC", (req, res) => {
     JOIN Chairs AS C ON C.chairId=CM.chairId
     WHERE C.chairId BETWEEN 1 AND 5 
     ORDER BY C.chairId ASC`;
-    db.query(ECQuery, [], (err, results) => {
+    pool.query(ECQuery, [], (err, results) => {
       if (err) res.status(200).json({ error: 'Failed to retrieve members', details: err })
       else res.status(200).json({members: results, msg: "Got EC!"});
     });
@@ -108,12 +104,12 @@ app.post("/getBros", async (req, res) => {
     `;
 
     let bros = await new Promise((resolve, reject) => {
-      db.query(brothersQuery, [], (err, results) => err ? reject (err): resolve(results))
+      pool.query(brothersQuery, [], (err, results) => err ? reject (err): resolve(results))
     });
 
     for (let i = 0; i < bros.length;  i++) {
       bros[i].positions = await new Promise ((resolve, reject) => {
-        db.query(chairQuery, [bros[i].memberId], (err, results) => err ? reject (err): resolve(results))
+        pool.query(chairQuery, [bros[i].memberId], (err, results) => err ? reject (err): resolve(results))
       });
     }
     res.status(200).json({brothers: bros, msg: "Got Chapter!"});
@@ -130,7 +126,7 @@ app.post("/getBro", (req, res) => {
   SELECT status, lastName FROM Members WHERE memberId=?
   `;
 
-  db.query(query, [id],  (err, result) => {
+  pool.query(query, [id],  (err, result) => {
     if (err || !result.length || result.length>1) return res.status(200).json({error: "Error Getting Information"});
     else res.status(200).json({info: result[0]});
   });
@@ -150,7 +146,7 @@ app.post('/addMember', async (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     let hash = await bcrypt.hash(password, 10);
-    db.query(insertMem, [email, hash, fName, lName, status, phone, street, city, state, zip, initiation, graduation], (err, result) => {
+    pool.query(insertMem, [email, hash, fName, lName, status, phone, street, city, state, zip, initiation, graduation], (err, result) => {
       if (err) throw err;
       return res.status(200).json({ success: true});
     });

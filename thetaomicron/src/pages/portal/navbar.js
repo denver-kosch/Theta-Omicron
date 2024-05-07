@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, } from 'react-router-dom';
 
 
 export const NavBar = ({children}) => {
@@ -10,6 +10,7 @@ export const NavBar = ({children}) => {
     const [portalColor, togglePortalColor] = useState("black");
     const [dirColor, toggleDirColor] = useState("black");
     const [loColor, toggleLoColor] = useState("black");
+    const navigate = useNavigate();
 
     
     const logoHover = () => {
@@ -25,7 +26,7 @@ export const NavBar = ({children}) => {
 
     const logout = () => {
         localStorage.removeItem("token");
-        window.location.reload(); 
+        navigate("/portal");
     };
 
     return (
@@ -42,7 +43,7 @@ export const NavBar = ({children}) => {
                                         alt={logo}
                                         className="logo"
                                     />
-                                    <h3 style={{color: homeColor, paddingLeft: '20px'}}>Kappa Sigma</h3>
+                                    <h3 style={{color: homeColor, paddingLeft: '20px'}}>Portal Home</h3>
                                 </div>
                             </Link>
                         </td>
