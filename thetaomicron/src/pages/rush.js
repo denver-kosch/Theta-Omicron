@@ -20,32 +20,7 @@ const Rush = () => {
             setRushErr("Could not gather rush committee at this time due to an error.");
         }
     }
-     //eslint-disable-next-line
-    const addMem = async () => {
-        try {
-            let newMem = {
-                email: "dkosch2@gmail.com",
-                password: "test",
-                fName: "Denver",
-                lName: "Kosch",
-                status: "Initiate",
-                phone: "17402437103",
-                street: "12227 Ohio Ave",
-                city: "Millersport",
-                state: "OH",
-                zip: "43046",
-                initiation: 2022,
-                graduation: 2025
-            };
 
-            let result = await apiCall('addMember', newMem);
-
-            if (result) alert("Member added successfully!");
-        } catch (error) {
-            alert(`Error adding member:\n${error}`);
-        }
-
-    }
 
     const renderRush = (member) => {
         const name = `${member.firstName} ${member.lastName}`;
@@ -70,7 +45,7 @@ const Rush = () => {
       <div className="container">
         <h1>WHY KAPPA SIGMA?</h1>
         <div className="aboutRush">
-            <p>Kappa Sigma is a Brotherhood that prides itself on being the best of the fraternal world. At an international level, Kappa Sigma has been the best at what it does for over two decades, and we've stayed just as committed on Muskingum University's campus since out charting one decade ago. We pride ourselves on being true gentlemen who distinguish themselves by emphazing the values of the 4 pillars of Kappa Sigma: Fellowship, Leadership, Scholarship, and Service.</p>
+            <p>Kappa Sigma is a Brotherhood that prides itself on being the best of the fraternal world. At an international level, Kappa Sigma has been the best at what it does for over two decades, and we've stayed just as committed on Muskingum University's campus since our charting one decade ago. We pride ourselves on being true gentlemen who distinguish themselves by emphazing the values of the 4 pillars of Kappa Sigma: Fellowship, Leadership, Scholarship, and Service.</p>
             <img src="/images/rush.jpeg" alt="Rush KΣ" className="rushPic" />
         </div>
         <br/>
