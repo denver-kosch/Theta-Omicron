@@ -51,7 +51,6 @@ const PortalLogin = () => {
         }
 
         const result = await apiCall("login", {email: email, password: password});
-        console.log(result);
         if (!result || !result.success) {
             setErrorMessage(result.error);
             setPassword('');

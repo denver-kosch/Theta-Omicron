@@ -4,7 +4,9 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
-import Member from './models-sequelize/models.js';
+import { Op, fn } from 'sequelize';
+import {Member, Chair} from './models-sequelize/models.js';
+import sequelize from './models-sequelize/sequelize_instance.js';
 
 const app = express();
 app.use(express.json());
@@ -22,7 +24,14 @@ const pool = mysql.createPool({
   port: process.env.DB_PORT || 8888
 });
 
-app.listen(port, () => console.log(`Server is running on http://${process.env.DB_HOST}:${port}`));
+sequelize.sync().then(() => {
+  console.log("Database synchronized");
+
+  app.listen(port, () => {
+      console.log(`Server running on http://localhost:${port}`);
+  });
+}).catch(err => console.error("Failed to synchronize database:", err));
+
 
 /* ================== Login / Authorization ================== */
 app.post('/login', async (req, res) => {
@@ -55,35 +64,39 @@ app.post('/auth', async (req, res) => {
 
 
 /* ================== Getters ================== */
-app.post("/getRush", (req, res) => {
+app.post("/getRush", async (req, res) => {
   try {
-    const getRushCommittee = `
-      SELECT M.memberId, M.firstName, M.lastName, M.schoolEmail, C.title FROM Members AS M 
-      JOIN Chairmen AS CM ON CM.memberId=M.memberId 
-      JOIN Chairs AS C ON C.chairId = CM.chairId
-      WHERE C.chairId IN (3, 15, 16) 
-      ORDER BY C.chairId ASC
-    `;
-    pool.query(getRushCommittee, [], (err, result) => {
-      if (err) res.status(200).json({ error: 'Failed to retrieve members', details: err });
-      else res.status(200).json({members: result, msg: "Got Rush Committee!"});
+    const rushCommittee = await Member.findAll({
+      attributes: ['memberId', 'firstName', 'lastName', 'schoolEmail'], // Select specific fields from Members
+      include: [{
+        model: Chair,
+        where: { chairId: {[Op.in]: [3, 15, 16]} }, // Condition on the included model
+        attributes: ['title'], // Fetch the title of the chair
+        through: {
+          attributes: [] // Exclude attributes from the joining table
+        }
+      }]
     });
+    res.status(200).json({members: rushCommittee, msg: "Got Rush Committee!"});
   } catch (error) {
-    res.status(200).json({ error: 'Server error', details: error });
+    res.status(200).json({ error: 'Server error', details: error.message });
   }
 });
 
-app.post("/getEC", (req, res) => {
+app.post("/getEC", async (req, res) => {
   try {
-    const ECQuery = `SELECT M.memberId, M.firstName, M.lastName, C.title FROM Members AS M 
-    JOIN Chairmen AS CM ON CM.memberId=M.memberId 
-    JOIN Chairs AS C ON C.chairId=CM.chairId
-    WHERE C.chairId BETWEEN 1 AND 5 
-    ORDER BY C.chairId ASC`;
-    pool.query(ECQuery, [], (err, results) => {
-      if (err) res.status(200).json({ error: 'Failed to retrieve members', details: err })
-      else res.status(200).json({members: results, msg: "Got EC!"});
+    const ec = await Member.findAll({
+      attributes: ['memberId', 'firstName', 'lastName'],
+      include: [{
+        model: Chair,
+        where: {chairId: {[Op.between]: [1,5]}},
+        attributes: ['title'],
+        through: {
+          attributes: []
+        }
+      }]
     });
+    res.status(200).json({members: ec, msg: "Got EC!"});
   } catch (error) {
     res.status(200).json({ error: 'Server error', details: error });
   }
@@ -91,46 +104,37 @@ app.post("/getEC", (req, res) => {
 
 app.post("/getBros", async (req, res) => {
   try {
-    const brothersQuery = `
-      SELECT memberId, firstName, lastName, initiationYear FROM Members
-      WHERE status='Initiate'
-      ORDER BY lastName ASC
-    `;
-    const chairQuery = `
-      SELECT C.title FROM Chairs AS C
-      JOIN Chairmen AS CM USING (chairId)
-      WHERE CM.memberId=?
-      ORDER BY C.chairId ASC
-    `;
-
-    let bros = await new Promise((resolve, reject) => {
-      pool.query(brothersQuery, [], (err, results) => err ? reject (err): resolve(results))
+    const bros = await Member.findAll({
+      where: { status: 'Initiate' },
+      attributes: ['memberId', 'firstName', 'lastName', 'initiationYear'], // Select specific fields
+      order: [['lastName', 'ASC']], // Order by last name
+      include: [{
+        model: Chair,
+        through: {
+          attributes: [] // Exclude attributes from the joining table
+        },
+        attributes: ['title'], // Fetch the title of the chair
+        order: [['chairId', 'ASC']] // Order chairs by chairId
+      }]
     });
-
-    for (let i = 0; i < bros.length;  i++) {
-      bros[i].positions = await new Promise ((resolve, reject) => {
-        pool.query(chairQuery, [bros[i].memberId], (err, results) => err ? reject (err): resolve(results))
-      });
-    }
     res.status(200).json({brothers: bros, msg: "Got Chapter!"});
   } catch (error) {
-    res.status(200).json({ error: 'Server error', details: error });
+    res.status(200).json({ error: 'Server error', details: error.message });
   }
 });
 
-app.post("/getBro", (req, res) => {
-  const token = req.headers['authorization'].split(' ')[1];
-  const id = (jwt.verify(token, process.env.SESSION_SECRET)).memberId;
-  
-  const query = `
-  SELECT status, lastName FROM Members WHERE memberId=?
-  `;
-
-  pool.query(query, [id],  (err, result) => {
-    if (err || !result.length || result.length>1) return res.status(200).json({error: "Error Getting Information"});
-    else res.status(200).json({info: result[0]});
-  });
-
+app.post("/getBro", async (req, res) => {
+  try {
+    const token = req.headers['authorization'].split(' ')[1];
+    const id = (jwt.verify(token, process.env.SESSION_SECRET)).memberId;
+    const brother = await Member.findOne({
+      where:{ memberId: id},
+      attributes: ['status', 'lastName']
+    });
+    res.status(200).json({info: brother});
+  } catch (error) {
+    res.status(200).json({ error: 'Server error', details: error });
+  }
 
 
 });
@@ -138,19 +142,30 @@ app.post("/getBro", (req, res) => {
 
 //Add new member to database
 app.post('/addMember', async (req, res) => {
-  console.log('Request received for /add-member');
-  const {email, password, fName, lName, status, phone, street, city, state, zip, initiation, graduation} = req.body;
   try {
-    const insertMem =  `
-      INSERT INTO Members (email, password, firstName, lastName, status, phoneNum, streetAddress, city, state, postalCode, initiationYear, graduationYear)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    let hash = await bcrypt.hash(password, 10);
-    pool.query(insertMem, [email, hash, fName, lName, status, phone, street, city, state, zip, initiation, graduation], (err, result) => {
-      if (err) throw err;
-      return res.status(200).json({ success: true});
+    const {email, fName, lName, status, phone, street, city, state, zip, country, initiation, graduation, school} = req.body;
+    //Hash the password before entering into db
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const ritualCerts = req.body.ritualCerts ?? 0;
+    const member = await Member.create({
+      firstName: fName,
+      lastName: lName,
+      email: email,
+      schoolEmail: school,
+      phoneNum: phone,
+      status: status,
+      password: hashedPassword,
+      streetAddress: street,
+      city: city,
+      state: state,
+      zipCode: zip,
+      country: country,
+      initiationYear: initiation,
+      graduationYear: graduation,
+      ritualCerts: ritualCerts
     });
+    res.status(201).json({ success: true});
   } catch (error) {
-    res.status(200).json({ error: 'Server error', details: error });
+    res.status(200).json({ success: false, error: error.message });
   }
 });

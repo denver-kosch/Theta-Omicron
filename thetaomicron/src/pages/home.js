@@ -35,7 +35,7 @@ const Home = () => {
             <div key={officer.memberId} className="card">
                 <img src={img} alt={name} className="profilePic"/>
                 <p>{name}</p>
-                <p style={{fontWeight: 'bold'}}>{officer.title}</p>
+                <p style={{fontWeight: 'bold'}}>{officer.Chairs[0].title}</p>
             </div>
         );
     };

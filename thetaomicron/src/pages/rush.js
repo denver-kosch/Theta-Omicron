@@ -13,6 +13,7 @@ const Rush = () => {
             let committee = await apiCall('getRush');
             if (committee) {
                 setRush(committee.members);
+                console.log(committee.members);
             }
             else setRushErr("Could not gather rush committee at this time!");
         } catch (error) {
@@ -36,7 +37,7 @@ const Rush = () => {
                     </div>
                 </a>
                 <p>{name}</p>
-                <p style={{fontWeight: 'bold'}}>{member.title}</p>
+                <p style={{fontWeight: 'bold'}}>{member.Chairs[0].title}</p>
             </div>
         );
     };
