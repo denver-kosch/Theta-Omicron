@@ -25,48 +25,29 @@ const Navbar = ({children}) => {
     return (
         <>
             <nav className="navbar">
-                <>
-                    <table className="navTable">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <Link to={"/"} className="navLink">
-                                        <div className="homeButton" onMouseOver={logoHover} onMouseOut={leaveLogo}>
-                                            <img
-                                                src={logoPath}
-                                                alt={logo}
-                                                className="logo"
-                                            />
-                                            <h3 style={{color: homeColor, paddingLeft: '20px'}}>Kappa Sigma</h3>
-                                        </div>
-                                    </Link>
-                                </td>
-                                <td style={{width: "100%"}}></td>
-                                <td>
-                                    <Link className="navLink" to={"/rush"}>
-                                        <h3 style={{color: rushColor}} onMouseOver={() => toggleRushColor("#ae1717")} onMouseOut={() => toggleRushColor("black")}>
-                                            Rush
-                                        </h3>
-                                    </Link>
-                                </td>
-                                <td>
-                                    <Link className="navLink" to={"/directory"}>
-                                        <h3 style={{color: dirColor}} onMouseOver={() => toggleDirColor("#ae1717")} onMouseOut={() => toggleDirColor("black")}>
-                                            Brothers Directory
-                                        </h3>
-                                    </Link>
-                                </td>
-                                <td>
-                                    <Link className="navLink" to={"/portal"}>
-                                        <h3 style={{color:portalColor}} onMouseOver={() => togglePortalColor("#ae1717")} onMouseOut={() => togglePortalColor("black")}>
-                                            Brothers Portal
-                                        </h3>
-                                    </Link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </>
+                <div className="navContainer">
+                    <Link to={"/"} className="homeButton" onMouseOver={logoHover} onMouseOut={leaveLogo}>
+                        <img src={logoPath} alt={logo} className="logo"/>
+                        <h3 style={{color: homeColor}}>Kappa<br/>Sigma</h3>
+                    </Link>
+                    <div className="navLinks">
+                        <Link className="navLink" to={"/rush"}  onMouseOver={() => toggleRushColor("#ae1717")} onMouseOut={() => toggleRushColor("black")} >
+                            <h3 style={{color: rushColor}}>
+                                Rush
+                            </h3>
+                        </Link>
+                        <Link className="navLink" to={"/directory"} onMouseOver={() => toggleDirColor("#ae1717")} onMouseOut={() => toggleDirColor("black")}>
+                            <h3 style={{color: dirColor}}>
+                                Brothers<br/>Directory
+                            </h3>
+                        </Link>
+                        <Link className="navLink" to={"/portal"} onMouseOver={() => togglePortalColor("#ae1717")} onMouseOut={() => togglePortalColor("black")}>
+                            <h3 style={{color: portalColor}}>
+                                Brothers<br/>Portal
+                            </h3>
+                        </Link>
+                    </div>
+                </div>
             </nav>
             {children}
         </>

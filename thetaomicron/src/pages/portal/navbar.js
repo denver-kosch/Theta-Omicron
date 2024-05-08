@@ -32,51 +32,34 @@ export const NavBar = ({children}) => {
     return (
     <>
         <nav className="navbar">
-            <table className="navTable">
-                <tbody>
-                    <tr>
-                        <td>
-                            <Link to={"/portal"} className="navLink">
-                                <div className="homeButton" onMouseOver={logoHover} onMouseOut={leaveLogo}>
-                                    <img
-                                        src={logoPath}
-                                        alt={logo}
-                                        className="logo"
-                                    />
-                                    <h3 style={{color: homeColor, paddingLeft: '20px'}}>Portal Home</h3>
-                                </div>
-                            </Link>
-                        </td>
-                        <td style={{width: "100%"}}></td>
-                        <td>
-                            <Link className="navLink" to={"/portal"}>
-                                <h3 style={{color: rushColor}} onMouseOver={() => toggleRushColor("#ae1717")} onMouseOut={() => toggleRushColor("black")}>
-                                    Rush
-                                </h3>
-                            </Link>
-                        </td>
-                        <td>
-                            <Link className="navLink" to={"/portal"}>
-                                <h3 style={{color: dirColor}} onMouseOver={() => toggleDirColor("#ae1717")} onMouseOut={() => toggleDirColor("black")}>
-                                    Brothers Directory
-                                </h3>
-                            </Link>
-                        </td>
-                        <td>
-                            <Link className="navLink" to={"/portal/gs"}>
-                                <h3 style={{color:portalColor}} onMouseOver={() => togglePortalColor("#ae1717")} onMouseOut={() => togglePortalColor("black")}>
-                                    Brothers Portal
-                                </h3>
-                            </Link>
-                        </td>
-                        <td>
-                            <Link className="navLink" onClick={logout}>
-                            <h3 style={{color: loColor}} onMouseOver={() => toggleLoColor("#ae1717")} onMouseOut={() => toggleLoColor("black")}>Log Out</h3>
-                            </Link>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div className="navContainer">
+                <Link to={"/portal"} className="homeButton" onMouseOver={logoHover} onMouseOut={leaveLogo}>
+                    <img src={logoPath} alt={logo} className="logo"/>
+                    <h3 style={{ color: homeColor }}>Portal Home</h3>
+                </Link>
+                <div className="navLinks">
+                    <Link className="navLink" to={"/portal"}>
+                        <h3 onMouseOver={() => toggleRushColor("#ae1717")} onMouseOut={() => toggleRushColor("black")} style={{ color: rushColor }}>
+                            Rush
+                        </h3>
+                    </Link>
+                    <Link className="navLink" to={"/portal"}>
+                        <h3 onMouseOver={() => toggleDirColor("#ae1717")} onMouseOut={() => toggleDirColor("black")} style={{ color: dirColor }}>
+                            Brothers<br/>Directory
+                        </h3>
+                    </Link>
+                    <Link className="navLink" to={"/portal"}>
+                        <h3 onMouseOver={() => togglePortalColor("#ae1717")} onMouseOut={() => togglePortalColor("black")} style={{ color: portalColor }}>
+                            Brothers<br/>Portal
+                        </h3>
+                    </Link>
+                    <Link className="navLink" to="/" onClick={logout}>
+                        <h3 onMouseOver={() => toggleLoColor("#ae1717")} onMouseOut={() => toggleLoColor("black")} style={{ color: loColor }}>
+                            Log<br/>Out
+                        </h3>
+                    </Link>
+                </div>
+            </div>
         </nav>
         {children}
     </>

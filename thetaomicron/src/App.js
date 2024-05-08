@@ -7,7 +7,6 @@ import FamilyTree from "./pages/familyTrees";
 import { Auth, PortalLogin } from "./pages/portal/authLogin";
 import PortalHome from "./pages/portal/home";
 import {NavBar as PortalNav} from "./pages/portal/navbar";
-import GrandScribe from "./pages/portal/gs";
 
 
 function App() {
@@ -23,7 +22,6 @@ function App() {
           </Route>
           <Route path='portal'>
             <Route index element={<Auth><PortalNav><PortalHome/></PortalNav></Auth>}/>
-            <Route path="gs" element={<Auth><PortalNav><GrandScribe/></PortalNav></Auth>}/>
             <Route path='login' element={<Navbar><PortalLogin/></Navbar>}/>
           </Route>
           <Route path="*" element={<Navigate to="/"/>} />

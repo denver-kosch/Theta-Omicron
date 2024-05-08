@@ -6,7 +6,7 @@ USE ThetaOmicron;
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Apr 29, 2024 at 08:17 PM
+-- Generation Time: May 08, 2024 at 02:46 AM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.0
 
@@ -142,12 +142,12 @@ CREATE TABLE `Members` (
   `status` enum('Pledge','Initiate','Alumus') NOT NULL,
   `phoneNum` varchar(20) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `schoolEmail` varchar(50) NOT NULL,
+  `schoolEmail` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `streetAddress` varchar(100) NOT NULL,
   `city` varchar(50) NOT NULL,
   `state` varchar(50) NOT NULL,
-  `postalCode` varchar(50) NOT NULL,
+  `zipCode` varchar(50) NOT NULL,
   `country` varchar(50) NOT NULL,
   `initiationYear` int(11) DEFAULT NULL,
   `graduationYear` int(11) NOT NULL,
@@ -158,16 +158,16 @@ CREATE TABLE `Members` (
 -- Dumping data for table `Members`
 --
 
-INSERT INTO `Members` (`memberId`, `firstName`, `lastName`, `status`, `phoneNum`, `email`, `schoolEmail`, `password`, `streetAddress`, `city`, `state`, `postalCode`, `country`, `initiationYear`, `graduationYear`, `ritualCerts`) VALUES
-(1, 'Denver', 'Kosch', 'Initiate', '17402437103', 'dkosch2@gmail.com', 'dkosch1', '$2y$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', '12227 Ohio Ave', 'Millersport', 'OH', '43046', 'USA', 2022, 2025, 6),
-(2, 'Caleb', 'Simpson', 'Initiate', '7402622969', 'calebmason62003@gmail.com', 'csimpson1', '$2y$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', '162 N Franklin St', 'Richwood', 'OH', '43344', 'USA', 2023, 2025, 6),
-(3, 'Zach', 'Amato', 'Initiate', '8146501005', 'zachdbz88@gmail.com', 'zamato1', '$2y$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', '526 Lowther St', 'Bellwood', 'PA', '16617', 'USA', 2023, 2026, 4),
-(4, 'Kacy', 'Perry', 'Initiate', '6144204472', 'kacyperry19@gmail.com', 'kperry1', '$2y$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', '2155 Berry Hill Dr.', 'Grove City', 'OH', '43123', 'USA', 2024, 2027, 0),
-(5, 'Tyler', 'Workman', 'Initiate', '3308424369', 'goldenty9@gmail.com', 'tworkman1', '$2y$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', '2122 Williamsburg Cr.', 'Stow', 'OH', '44224', 'USA', 2023, 2026, 2),
-(6, 'Drew', 'Schneider', 'Initiate', '7404050615', 'drewschneider34@gmail.com', 'andrews1', '$2y$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', '3253 Licking Valley Rd', 'Newark', 'OH', '43055', 'USA', 2021, 2025, 1),
-(7, 'Drew', 'Davis', 'Initiate', '5139399581', 'drewreecedavis@gmail.com', 'ddavis3', '$2y$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', '7134 Lookout Court', 'Hamilton', 'OH', '45011', 'USA', 2022, 2025, 1),
-(8, 'Jacob', 'McDermott', 'Initiate', '6144006686', 'mcdjacoblax@gmail.com', 'jacobm1', '$2y$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', '4454 Hunter Lake Dr.', 'Powell', 'OH', '43065', 'USA', 2023, 2026, 1),
-(9, 'Nate', 'Farmer', 'Initiate', '3049752105', 'nfarmer2020@gmail.com', 'nfarmer1', '$2y$10$TiUOc/pj19QgHOow5JEHnelptYQxf.yMtHPNe95yDX1Artf0KXH0u', '3609 Belmont St', 'Bellaire', 'OH', '43096', 'USA', 2023, 2025, 1);
+INSERT INTO `Members` (`memberId`, `firstName`, `lastName`, `status`, `phoneNum`, `email`, `schoolEmail`, `password`, `streetAddress`, `city`, `state`, `zipCode`, `country`, `initiationYear`, `graduationYear`, `ritualCerts`) VALUES
+(1, 'Denver', 'Kosch', 'Initiate', '17402437103', 'dkosch2@gmail.com', 'dkosch1', '$2b$10$RsSiGs1A4UJ57SYscYlZz.S4l5X2owJ8S3Q3nxYD9/fuZxWP2KGIa', '12227 Ohio Ave', 'Millersport', 'OH', '43046', 'USA', 2022, 2025, 6),
+(2, 'Caleb', 'Simpson', 'Initiate', '7402622969', 'calebmason62003@gmail.com', 'csimpson1', '$2b$10$RsSiGs1A4UJ57SYscYlZz.S4l5X2owJ8S3Q3nxYD9/fuZxWP2KGIa', '162 N Franklin St', 'Richwood', 'OH', '43344', 'USA', 2023, 2025, 6),
+(3, 'Zach', 'Amato', 'Initiate', '8146501005', 'zachdbz88@gmail.com', 'zamato1', '$2b$10$RsSiGs1A4UJ57SYscYlZz.S4l5X2owJ8S3Q3nxYD9/fuZxWP2KGIa', '526 Lowther St', 'Bellwood', 'PA', '16617', 'USA', 2023, 2026, 4),
+(4, 'Kacy', 'Perry', 'Initiate', '6144204472', 'kacyperry19@gmail.com', 'kperry1', '$2b$10$RsSiGs1A4UJ57SYscYlZz.S4l5X2owJ8S3Q3nxYD9/fuZxWP2KGIa', '2155 Berry Hill Dr.', 'Grove City', 'OH', '43123', 'USA', 2024, 2027, 0),
+(5, 'Tyler', 'Workman', 'Initiate', '3308424369', 'goldenty9@gmail.com', 'tworkman1', '$2b$10$RsSiGs1A4UJ57SYscYlZz.S4l5X2owJ8S3Q3nxYD9/fuZxWP2KGIa', '2122 Williamsburg Cr.', 'Stow', 'OH', '44224', 'USA', 2023, 2026, 2),
+(6, 'Drew', 'Schneider', 'Initiate', '7404050615', 'drewschneider34@gmail.com', 'andrews1', '$2b$10$RsSiGs1A4UJ57SYscYlZz.S4l5X2owJ8S3Q3nxYD9/fuZxWP2KGIa', '3253 Licking Valley Rd', 'Newark', 'OH', '43055', 'USA', 2021, 2025, 1),
+(7, 'Drew', 'Davis', 'Initiate', '5139399581', 'drewreecedavis@gmail.com', 'ddavis3', '$2b$10$RsSiGs1A4UJ57SYscYlZz.S4l5X2owJ8S3Q3nxYD9/fuZxWP2KGIa', '7134 Lookout Court', 'Hamilton', 'OH', '45011', 'USA', 2022, 2025, 1),
+(8, 'Jacob', 'McDermott', 'Initiate', '6144006686', 'mcdjacoblax@gmail.com', 'jacobm1', '$2b$10$RsSiGs1A4UJ57SYscYlZz.S4l5X2owJ8S3Q3nxYD9/fuZxWP2KGIa', '4454 Hunter Lake Dr.', 'Powell', 'OH', '43065', 'USA', 2023, 2026, 1),
+(9, 'Nate', 'Farmer', 'Initiate', '3049752105', 'nfarmer2020@gmail.com', 'nfarmer1', '$2b$10$RsSiGs1A4UJ57SYscYlZz.S4l5X2owJ8S3Q3nxYD9/fuZxWP2KGIa', '3609 Belmont St', 'Bellaire', 'OH', '43096', 'USA', 2023, 2025, 1);
 
 --
 -- Indexes for dumped tables
@@ -197,7 +197,8 @@ ALTER TABLE `Families`
 -- Indexes for table `Members`
 --
 ALTER TABLE `Members`
-  ADD PRIMARY KEY (`memberId`);
+  ADD PRIMARY KEY (`memberId`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
