@@ -90,54 +90,109 @@ Member.init({
     paranoid: true //Allows for soft deletes
 });
 
-class Chair extends Model {};
+class Officer extends Model {};
 
-Chair.init({
+Officer.init({
     title: {
         type: DataTypes.STRING(255)
     },
-    chairId: {
+    officeId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
         unique: true
     },
-}, {
-    sequelize,
-    modelName: "Chair",
-    tableName: "Chairs",
-    timestamps: false
-});
-
-class Chairman extends Model {};
-
-Chairman.init({
     memberId: {
         type: DataTypes.INTEGER,
         references: {
             model: Member,
-            key: 'memberId'
+            key: "memberId"
         },
-        primaryKey: true,
-        allowNull: false
-    },
-    chairId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Chair,
-            key: 'chairId'
-        },
-        primaryKey: true,
         allowNull: false
     }
 }, {
     sequelize,
-    modelName: "Chairman",
-    tableName: "Chairmen",
-    timestamps: false,
+    modelName: "Officer",
+    tableName: "Officers",
+    timestamps: false
 });
 
-Member.belongsToMany(Chair, { through: Chairman, foreignKey: 'memberId', otherKey: 'chairId' });
-Chair.belongsToMany(Member, { through: Chairman, foreignKey: 'chairId', otherKey: 'memberId' });
+class Committee extends Model {};
 
-export {Member, Chairman, Chair};
+Committee.init({
+    committeeId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        unique: true
+    },
+    name: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    },
+    //supervising officer Id
+    soId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Officer,
+            key: "officeId"
+        },
+        allowNull: false
+    }
+},{
+    sequelize,
+    modelName: "Committee",
+    tableName: "Committees",
+    timestamps: false
+});
+
+class CommitteeMember extends Model {};
+
+CommitteeMember.init({
+    memberId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Member,
+            key: "memberId"
+        },
+    },
+    committeeId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Committee,
+            key: "committeeId"
+        }
+    },
+    isChairman: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    }
+},{
+    sequelize,
+    modelName: "CommitteeMember",
+    tableName: "CommitteeMembers",
+    timestamps: false
+});
+
+//Officer relationships
+Member.hasOne(Officer, {foreignKey: 'memberId'});
+Officer.belongsTo(Member, {foreignKey: 'memberId'});
+
+//Committee Relationships
+Member.belongsToMany(Committee, {
+    through: CommitteeMember,
+    foreignKey: 'memberId',
+    otherKey: 'committeeId',
+});
+
+Committee.belongsToMany(Member, {
+through: CommitteeMember,
+foreignKey: 'committeeId',
+otherKey: 'memberId',
+});
+
+//Officer-Committee Relationship
+Officer.hasMany(Committee, { foreignKey: 'soId', as: 'supervisedCommittees' });
+Committee.belongsTo(Officer, { foreignKey: 'soId', as: 'supervisingOfficer' });
+
+export { Member, Officer, Committee, CommitteeMember };

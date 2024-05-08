@@ -14,15 +14,18 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route index element={<Navbar><Home/></Navbar>}/>
-          <Route path='rush' element={<Navbar><Rush/></Navbar>}/>
+          <Route index element={<Navbar> <Home/> </Navbar>}/>
+          <Route path='rush' element={<Navbar> <Rush/> </Navbar>}/>
           <Route path='directory'>
-            <Route index element={<Navbar><Directory/></Navbar>}/>
-            <Route path='trees' element={<Navbar><FamilyTree/></Navbar>}/>
+            <Route index element={<Navbar> <Directory/> </Navbar>}/>
+            <Route path='trees' element={<Navbar> <FamilyTree/> </Navbar>}/>
           </Route>
           <Route path='portal'>
-            <Route index element={<Auth><PortalNav><PortalHome/></PortalNav></Auth>}/>
-            <Route path='login' element={<Navbar><PortalLogin/></Navbar>}/>
+            <Route index element={<Auth> <PortalNav> <PortalHome/> </PortalNav> </Auth>}/>
+            <Route path='login' element={<Navbar> <PortalLogin/> </Navbar>}/>
+            <Route path='position'>
+              <Route path='redirect' element={<PortalNav> <></> </PortalNav>}/>
+            </Route>
           </Route>
           <Route path="*" element={<Navigate to="/"/>} />
         </Routes>

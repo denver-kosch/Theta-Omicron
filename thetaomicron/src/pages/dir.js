@@ -17,7 +17,7 @@ const Directory = () => {
     setIsLoading(false);
     if (response && response.brothers) {
       setBrothers(response.brothers);
-      console.log(response.brothers);
+      console.log(response);
     }
     else {
       setError("Could not load directory at this time");
@@ -35,14 +35,15 @@ const Directory = () => {
 
     const filteredData = brothers.filter(item => item.firstName.toLowerCase().includes(criteria.toLowerCase()) 
     || item.lastName.toLowerCase().includes(criteria.toLowerCase())
-    || item.Chairs.some(pos => pos.title.toLowerCase().includes(criteria.toLowerCase())));
+    || item.roles.some(pos => pos.title.toLowerCase().includes(criteria.toLowerCase())));
 
     const chapter = chunk(filteredData, 4);
 
     const renderBrother = brother => {
+      console.log(brother);
       const name = `${brother.firstName} ${brother.lastName}`;
       const img = `/images/profilePics/${brother.memberId}.jpg`;
-      const positionsElements = brother.Chairs.map((position, index, array) => (
+      const positionsElements = brother.roles.map((position, index, array) => (
         <Fragment key={index}>
             {position.title}{index < array.length - 1 && <br />}
         </Fragment>

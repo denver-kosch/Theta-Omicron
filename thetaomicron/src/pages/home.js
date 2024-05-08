@@ -18,7 +18,6 @@ const Home = () => {
             let ec =  await apiCall("getEC");
             if (ec) {
                 setEC(ec.members);
-                console.log(ec.msg);
             }
             else setErrorMessage("Could not gather Executive Committee at this time!");
         } catch (error) {
@@ -35,7 +34,7 @@ const Home = () => {
             <div key={officer.memberId} className="card">
                 <img src={img} alt={name} className="profilePic"/>
                 <p>{name}</p>
-                <p style={{fontWeight: 'bold'}}>{officer.Chairs[0].title}</p>
+                <p style={{fontWeight: 'bold'}}>{officer.Officer.title}</p>
             </div>
         );
     };

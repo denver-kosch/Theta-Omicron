@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./pagesCSS/rush.css";
 import { apiCall } from "../components/apiCall";
+import Card from "../components/card";
 
 const Rush = () => {
     const [rushCom, setRush] = useState([]);
     const [rushComErr, setRushErr] = useState("");
 
-    useEffect(()=>{getRush();},[]);
+    useEffect(()=>{
+        getRush();
+    },[]);
+
+    useEffect(()=>{
+        console.log("Rush Com: " + rushCom);
+    }, [rushCom]);
 
     const getRush = async () => {
         try {
@@ -22,8 +29,7 @@ const Rush = () => {
         }
     }
 
-
-    const renderRush = (member) => {
+    const renderRush = (member, title) => {
         const name = `${member.firstName} ${member.lastName}`;
         const img = `/images/profilePics/${member.memberId}.jpg`;
         const emailLink  = `mailto:${member.schoolEmail}@muskingum.edu?subject=Interested In Kappa Sigma`;
@@ -37,9 +43,29 @@ const Rush = () => {
                     </div>
                 </a>
                 <p>{name}</p>
-                <p style={{fontWeight: 'bold'}}>{member.Chairs[0].title}</p>
+                <p style={{fontWeight: 'bold'}}>{title}</p>
             </div>
         );
+    };
+
+    const newRush = () => {
+        console.log('rendering...');
+        const gmc = rushCom.supervisingOfficer;
+        const chairman = rushCom.Members.find(r => r.CommitteeMember.isChairman);
+        const committee = rushCom.Members.filter(r => !r.CommitteeMember.isChairman);
+
+        return (
+            <>
+            <div className="committee">
+                {renderRush(gmc.Member, gmc.title)}
+                {renderRush(chairman, "Rush Chairman")}
+            </div>
+            <div className="committee">
+                {committee.map(member => renderRush(member, "Rush Committee"))}
+            </div>
+            </>
+        );
+
     };
 
     return (
@@ -55,14 +81,11 @@ const Rush = () => {
                 if (rushComErr !== '') 
                 return <h5 style={{color: 'red'}}>{rushComErr}</h5>;
             })()}
-        <div className='rushContainer'>
-            <div className="committee">
-                {rushCom.slice(0,2).map(member => renderRush(member))}
+        {rushCom.length !== 0 &&
+            <div className='rushContainer'>
+                {newRush()}
             </div>
-            <div className="committee">
-                {rushCom.slice(2).map(member => renderRush(member))}
-            </div>
-        </div>
+        }
       </div>
     );
   }

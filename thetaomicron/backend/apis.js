@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import { Op, fn } from 'sequelize';
-import {Member, Chair} from './models-sequelize/models.js';
+import {Member, Officer, Committee, CommitteeMember} from './models-sequelize/models.js';
 import sequelize from './models-sequelize/sequelize_instance.js';
 
 const app = express();
@@ -66,18 +66,32 @@ app.post('/auth', async (req, res) => {
 /* ================== Getters ================== */
 app.post("/getRush", async (req, res) => {
   try {
-    const rushCommittee = await Member.findAll({
-      attributes: ['memberId', 'firstName', 'lastName', 'schoolEmail'], // Select specific fields from Members
-      include: [{
-        model: Chair,
-        where: { chairId: {[Op.in]: [3, 15, 16]} }, // Condition on the included model
-        attributes: ['title'], // Fetch the title of the chair
-        through: {
-          attributes: [] // Exclude attributes from the joining table
-        }
-      }]
+    const rushCommittee = await Committee.findAll({
+      where: { committeeId: 4 },  // Updated to the specific committeeId you mentioned
+      include: [
+          {
+              model: Member,  // Include the Member model
+              attributes: ['memberId', 'firstName', 'lastName', 'schoolEmail'],  // Select specific fields from Members
+              through: {
+                  attributes: ['isChairman']  // Include the chairman status from the joining table
+              }
+          },
+          {
+              model: Officer,  // Include the Officer model
+              as: 'supervisingOfficer',  // Use the correct alias as defined in Officer to Committee relationship
+              where: { officeId: 3 },  // Specify the officer ID if needed to filter committees by supervising officer
+              attributes: ['title'],  // Select specific fields from Officers
+              include: [
+                  {
+                      model: Member,
+                      attributes: ['memberId', 'firstName', 'lastName', 'schoolEmail'],  // Include details of the officer as a member
+                  }
+              ]
+          }
+      ],
+      attributes: ['committeeId', 'name']  // Fetch committee ID and name
     });
-    res.status(200).json({members: rushCommittee, msg: "Got Rush Committee!"});
+    res.status(200).json({members: rushCommittee[0], msg: "Got Rush Committee!"});
   } catch (error) {
     res.status(200).json({ error: 'Server error', details: error.message });
   }
@@ -88,17 +102,14 @@ app.post("/getEC", async (req, res) => {
     const ec = await Member.findAll({
       attributes: ['memberId', 'firstName', 'lastName'],
       include: [{
-        model: Chair,
-        where: {chairId: {[Op.between]: [1,5]}},
+        model: Officer,
         attributes: ['title'],
-        through: {
-          attributes: []
-        }
+        required: true
       }]
     });
     res.status(200).json({members: ec, msg: "Got EC!"});
   } catch (error) {
-    res.status(200).json({ error: 'Server error', details: error });
+    res.status(200).json({ error: 'Server error', details: error.message });
   }
 });
 
@@ -108,16 +119,47 @@ app.post("/getBros", async (req, res) => {
       where: { status: 'Initiate' },
       attributes: ['memberId', 'firstName', 'lastName', 'initiationYear'], // Select specific fields
       order: [['lastName', 'ASC']], // Order by last name
-      include: [{
-        model: Chair,
-        through: {
-          attributes: [] // Exclude attributes from the joining table
-        },
-        attributes: ['title'], // Fetch the title of the chair
-        order: [['chairId', 'ASC']] // Order chairs by chairId
-      }]
+      include: [
+          {
+              model: Officer, // Assumes you want to include Officer data
+              attributes: ['title'], // Assuming 'title' is relevant in Officer model
+              required: false // Include members regardless of being an officer
+          },
+          {
+              model: Committee, // Include Committee data through CommitteeMember
+              attributes: ['name'], // Assuming you want to fetch the committee's name
+              through: {
+                  attributes: ['isChairman'] // Include if they are the chairman
+              },
+              required: false // Include all, regardless of committee membership
+          }
+      ]
     });
-    res.status(200).json({brothers: bros, msg: "Got Chapter!"});
+    const reshapedBros = bros.map(bro => {
+      const { memberId, firstName, lastName, initiationYear, Officer, Committees } = bro;
+      let roles = [];
+      
+      // Check if the Officer data exists and append
+      if (Officer) roles.push({ type: 'Officer', title: Officer.title });
+      
+  
+      // Append all committee roles
+      Committees.forEach(committee => {
+          roles.push({ 
+              type: 'Committee', 
+              title: committee.CommitteeMember.isChairman ? committee.name.replace(/Committee/g, 'Chairman') : committee.name
+          });
+      });
+  
+      return {
+          memberId,
+          firstName,
+          lastName,
+          initiationYear,
+          roles
+      };
+    });
+    res.status(200).json({brothers: reshapedBros, msg: "Got Chapter!"});
   } catch (error) {
     res.status(200).json({ error: 'Server error', details: error.message });
   }
