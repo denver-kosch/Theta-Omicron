@@ -4,8 +4,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
-import { Op, fn } from 'sequelize';
-import {Member, Officer, Committee, CommitteeMember} from './models-sequelize/models.js';
+import {Member, Officer, Committee, Role} from './models-sequelize/models.js';
 import sequelize from './models-sequelize/sequelize_instance.js';
 
 const app = express();
@@ -13,16 +12,6 @@ app.use(express.json());
 app.use(cors());
 dotenv.config();
 const port = process.env.SERVERPORT  || 3001;
-
-
-const pool = mysql.createPool({
-  connectionLimit: 10, // the number of connections to create in the pool
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 8888
-});
 
 sequelize.sync().then(() => {
   console.log("Database synchronized");
@@ -38,7 +27,6 @@ app.post('/login', async (req, res) => {
   const {email, password} = req.body;
   
   const member = await Member.findOne({where: {email}});
-
 
   if (member && await bcrypt.compare(password, member.password)) {
     const token = jwt.sign({memberId: member.memberId}, process.env.SESSION_SECRET, {expiresIn: '1h'});
@@ -91,9 +79,9 @@ app.post("/getRush", async (req, res) => {
       ],
       attributes: ['committeeId', 'name']  // Fetch committee ID and name
     });
-    res.status(200).json({members: rushCommittee[0], msg: "Got Rush Committee!"});
+    res.status(200).json({success: true, members: rushCommittee[0], msg: "Got Rush Committee!"});
   } catch (error) {
-    res.status(200).json({ error: 'Server error', details: error.message });
+    res.status(200).json({success: false, error: error.message });
   }
 });
 
@@ -107,9 +95,9 @@ app.post("/getEC", async (req, res) => {
         required: true
       }]
     });
-    res.status(200).json({members: ec, msg: "Got EC!"});
+    res.status(200).json({success: true, members: ec, msg: "Got EC!"});
   } catch (error) {
-    res.status(200).json({ error: 'Server error', details: error.message });
+    res.status(200).json({success: false, error: error.message });
   }
 });
 
@@ -159,9 +147,9 @@ app.post("/getBros", async (req, res) => {
           roles
       };
     });
-    res.status(200).json({brothers: reshapedBros, msg: "Got Chapter!"});
+    res.status(200).json({success: true, brothers: reshapedBros, msg: "Got Chapter!"});
   } catch (error) {
-    res.status(200).json({ error: 'Server error', details: error.message });
+    res.status(200).json({success: false, error: error.message });
   }
 });
 
@@ -173,16 +161,16 @@ app.post("/getBro", async (req, res) => {
       where:{ memberId: id},
       attributes: ['status', 'lastName']
     });
-    res.status(200).json({info: brother});
+    res.status(200).json({success: true, info: brother});
   } catch (error) {
-    res.status(200).json({ error: 'Server error', details: error });
+    res.status(200).json({ success: false, error: error.message });
   }
 
 
 });
 
 
-//Add new member to database
+/* ================== Setters ================== */
 app.post('/addMember', async (req, res) => {
   try {
     const {email, fName, lName, status, phone, street, city, state, zip, country, initiation, graduation, school} = req.body;
@@ -207,6 +195,19 @@ app.post('/addMember', async (req, res) => {
       ritualCerts: ritualCerts
     });
     res.status(201).json({ success: true});
+  } catch (error) {
+    res.status(200).json({ success: false, error: error.message });
+  }
+});
+
+
+/* ================== Editors ================== */
+app.post('/expel', async (req, res) => {
+  let id = req.body.id;
+  //Using member model, change status to Expelled
+  try{
+    let user = await Member.findByIdAndUpdate(id, {status:"Expelled"});
+    res.status(200).json({success: true});
   } catch (error) {
     res.status(200).json({ success: false, error: error.message });
   }

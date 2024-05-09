@@ -1,8 +1,16 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from './sequelize_instance.js';
 
-class Member extends Model {};
 
+// Extensions
+class Member extends Model {};
+class Officer extends Model {};
+class Committee extends Model {};
+class CommitteeMember extends Model {};
+class Role extends Model {};
+class MemberRole extends Model {};
+
+//Initializations
 Member.init({
     memberId: {
         type: DataTypes.INTEGER,
@@ -90,8 +98,6 @@ Member.init({
     paranoid: true //Allows for soft deletes
 });
 
-class Officer extends Model {};
-
 Officer.init({
     title: {
         type: DataTypes.STRING(255)
@@ -116,8 +122,6 @@ Officer.init({
     tableName: "Officers",
     timestamps: false
 });
-
-class Committee extends Model {};
 
 Committee.init({
     committeeId: {
@@ -146,8 +150,6 @@ Committee.init({
     timestamps: false
 });
 
-class CommitteeMember extends Model {};
-
 CommitteeMember.init({
     memberId: {
         type: DataTypes.INTEGER,
@@ -174,6 +176,57 @@ CommitteeMember.init({
     timestamps: false
 });
 
+Role.init({
+    roleId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true, 
+        autoIncrement: true
+    },
+    name: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    },
+    canAssign: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    }
+}, {
+    sequelize,
+    modelName: "Role",
+    tableName: "Roles",
+    timestamps: false
+});
+
+MemberRole.init({
+    memberId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Member,
+            key: 'memberId'
+        }
+    },
+    roleId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Role,
+            key: 'roleId'
+        }
+    },
+    dateAdded: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    }
+},{
+    sequelize,
+    modelName: "MemberRole",
+    tableName: "MembersRoles",
+    timestamps: false
+});
+
+
+
+/* Establish Relationships */
+
 //Officer relationships
 Member.hasOne(Officer, {foreignKey: 'memberId'});
 Officer.belongsTo(Member, {foreignKey: 'memberId'});
@@ -184,7 +237,6 @@ Member.belongsToMany(Committee, {
     foreignKey: 'memberId',
     otherKey: 'committeeId',
 });
-
 Committee.belongsToMany(Member, {
 through: CommitteeMember,
 foreignKey: 'committeeId',
@@ -195,4 +247,8 @@ otherKey: 'memberId',
 Officer.hasMany(Committee, { foreignKey: 'soId', as: 'supervisedCommittees' });
 Committee.belongsTo(Officer, { foreignKey: 'soId', as: 'supervisingOfficer' });
 
-export { Member, Officer, Committee, CommitteeMember };
+//Member-Role Relationships
+Member.belongsToMany(Role, { through: MemberRole });
+Role.belongsToMany(Member, { through: MemberRole });
+
+export { Member, Officer, Committee, CommitteeMember, Role, MemberRole };
