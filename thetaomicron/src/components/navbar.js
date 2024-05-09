@@ -24,7 +24,7 @@ const Navbar = ({children}) => {
 
     return (
         <>
-            <nav className="navbar">
+            <nav>
                 <div className="navContainer">
                     <Link to={"/"} className="homeButton" onMouseOver={logoHover} onMouseOut={leaveLogo}>
                         <img src={logoPath} alt={logo} className="logo"/>

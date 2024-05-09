@@ -1,5 +1,5 @@
 import { useEffect, useState, Fragment } from "react";
-import './pagesCSS/dir.css';
+import './styles.css';
 import { apiCall } from "../components/apiCall";
 
 const Directory = () => {
@@ -61,7 +61,7 @@ const Directory = () => {
     return (
       <tbody>
         {chapter.map((row, index) => 
-          <tr key={index} style={{height: 'fit-content', verticalAlign: 'top'}}>
+          <tr key={index} className="directoryRow">
             {row.map((item, idx) => <td>{renderBrother(item)}</td>)}
             {row.length < 4 && new Array(4 - row.length).fill(null).map((_, idx) => <td></td>)}
           </tr>
@@ -71,7 +71,7 @@ const Directory = () => {
   }
 
   return (
-    <div className="dirContainer">
+    <div className="container">
       <div className="topBar">
       <div>
           {/* <Link to="trees" className="famTree">
@@ -95,7 +95,7 @@ const Directory = () => {
 
       {isLoading && <h3>Loading...</h3>}
       {!isLoading &&
-      <table>
+      <table className="directory">
         {renderChapter()}
       </table>
       }

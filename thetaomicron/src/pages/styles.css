@@ -1,0 +1,148 @@
+/* =========================== Generic CSS ========================= */
+.container {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.card {
+    /* border: 1px solid black; */
+    width: 200px;
+    padding:0 10px;
+    text-wrap: wrap;
+}
+
+
+/* =========================== Home Page ========================= */
+.homeContainer {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.aboutHome {
+    max-width: 80%;
+    align-self: center;
+}
+.mainPageImg {
+    max-height: 425px;
+    max-width: 90%;
+    border-radius: 3%;
+}
+.ExecContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+    max-width:1500px;
+}
+.ExecContainer > .card {
+    width: 20%;
+}
+
+/* =========================== Rush Page ========================= */
+
+.rushPic {
+    max-height: 425px;
+    max-width: 90%;
+    height: auto;
+    border-radius: 3%;
+}
+.committeeContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.committee {
+    display: flex;
+    flex-direction: row;
+}
+.aboutRush {
+    display:flex;
+}
+.aboutRush > p {
+    font-size: larger;
+}
+.aboutRush > p, .aboutRush > img {
+    max-width: 45%;
+    text-wrap:  wrap;
+    margin: 5%;
+}
+.card a {
+    position: relative;
+}
+.profilePic {
+    border-radius: 10px;
+    height: 200px;
+    width: auto;
+}
+.emailIcon {
+    position: absolute;
+    top: 50%;  /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjusts the position to truly center the icon */
+    width: 100px; /* Size of the icon */
+    height: auto;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease-in-out; /* Smooth transition for opacity */
+}
+.card:hover img.emailIcon {
+    opacity: 0.8; /* Show the icon on hover */
+}
+
+/* ======================== Directory Page ======================= */
+
+.topBar {
+    display: flex;
+    width: 90%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-wrap: wrap;
+}
+.topBar > div {
+    width: 33%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.topBar > div > * {
+    width:fit-content;
+}
+.directory {
+    width: 80%;
+}
+.directoryRow {
+    height: fit-content;
+    vertical-align: top;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+}
+.directoryRow > td {
+
+    width: 25%;
+}
+.directoryRow .card {
+    width: 100%;
+}
+.famTreeBtn {
+    color: #f5f5f5;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: #a31717;
+    border-radius: 5%;
+    margin-left: 50%;
+    width: fit-content;
+}
+.famTreeBtn > h3 {
+    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+}
+
+/* ======================= Family Tree Page ====================== */

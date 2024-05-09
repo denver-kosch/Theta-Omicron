@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "./pagesCSS/rush.css";
+import "./styles.css";
 import { apiCall } from "../components/apiCall";
-import Card from "../components/card";
 
 const Rush = () => {
     const [rushCom, setRush] = useState([]);
@@ -82,7 +81,7 @@ const Rush = () => {
                 return <h5 style={{color: 'red'}}>{rushComErr}</h5>;
             })()}
         {rushCom.length !== 0 &&
-            <div className='rushContainer'>
+            <div className='committeeContainer'>
                 {newRush()}
             </div>
         }

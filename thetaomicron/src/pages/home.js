@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./pagesCSS/home.css";
+import "./styles.css";
 import { apiCall } from "../components/apiCall";
 
 const Home = () => {
@@ -40,7 +40,7 @@ const Home = () => {
     };
 
     return (
-        <div className="homeContainer">
+        <div className="container">
             <img 
                 src={"/images/formalSP23.jpeg"}
                 alt="Brothers of the Theta-Omcrion Chapter of Kappa Sigma"
@@ -50,14 +50,15 @@ const Home = () => {
                 <h2>WHO ARE WE:</h2>
                 <p>
                     Kappa Sigma's Theta-Omicron Chapter at Muskingum University originally began as the Sphinx Club.
-                    <br/>In 1966, Sphinx Club was absorbed into and chartered by the International Kappa Sigma Fraternity
-                    <br/>on Muskingum's campus and has continued to thrive since then.
+                    In 1966, Sphinx Club was absorbed into and chartered by the International Kappa Sigma Fraternity
+                    on Muskingum's campus and has continued to thrive since then.
                 </p>
             </div>
             <br/>
             <h3 style={{fontWeight: 'bold'}}>Meet the Executive Committee:</h3>
             <div className="ExecContainer">
-                {errorMessage !== "" ? <p style={{color: 'red'}}>{errorMessage}</p> :
+                {(ec.length === 0 && errorMessage === "") ? <p>Loading...</p>:
+                errorMessage !== "" ? <p style={{color: 'red'}}>{errorMessage}</p> :
                 ec.map(officer => renderEC(officer))
                 }
             </div>

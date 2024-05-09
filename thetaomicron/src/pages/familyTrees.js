@@ -1,5 +1,5 @@
 import React from "react";
-import './pagesCSS/familyTrees.css';
+import './styles.css';
 
 
 
