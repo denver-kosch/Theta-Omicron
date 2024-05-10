@@ -71,7 +71,12 @@ const Rush = () => {
       <div className="container">
         <h1>WHY KAPPA SIGMA?</h1>
         <div className="aboutRush">
-            <p>Kappa Sigma is a Brotherhood that prides itself on being the best of the fraternal world. At an international level, Kappa Sigma has been the best at what it does for over two decades, and we've stayed just as committed on Muskingum University's campus since our charting one decade ago. We pride ourselves on being true gentlemen who distinguish themselves by emphazing the values of the 4 pillars of Kappa Sigma: Fellowship, Leadership, Scholarship, and Service.</p>
+            <div>
+                <p>Kappa Sigma is a Brotherhood that prides itself on being the best of the fraternal world. At an international level, Kappa Sigma has been the best at what it does for over two decades, and we've stayed just as committed on Muskingum University's campus since our charting one decade ago. We pride ourselves on being true gentlemen who distinguish themselves by emphazing the values of the 4 pillars of Kappa Sigma: Fellowship, Leadership, Scholarship, and Service.</p>
+                <a className='rushFormBtn' href="https://forms.gle/oEf4BuAA4agaAHo56" target="_blank" rel="noopener noreferrer">
+                    <p>Interested in Kappa Sigma?<br/>Click Here</p>
+                </a>
+            </div>
             <img src="/images/rush.jpg" alt="Rush KΣ" className="rushPic" />
         </div>
         <br/>
