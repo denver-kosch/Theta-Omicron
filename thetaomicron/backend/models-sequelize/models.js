@@ -9,6 +9,7 @@ class Committee extends Model {};
 class CommitteeMember extends Model {};
 class Role extends Model {};
 class MemberRole extends Model {};
+class Family extends Model {};
 
 //Initializations
 Member.init({
@@ -89,18 +90,22 @@ Member.init({
             min: 0,
             max: 6,
         }
+    },
+    deleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 }, {
     sequelize,
     modelName: "Member",
     tableName: "Members",
     timestamps: false,
-    paranoid: true //Allows for soft deletes
 });
 
 Officer.init({
     title: {
-        type: DataTypes.STRING(255)
+        type: DataTypes.STRING(255),
+        allowNull: false
     },
     officeId: {
         type: DataTypes.INTEGER,
@@ -153,16 +158,18 @@ Committee.init({
 CommitteeMember.init({
     memberId: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         references: {
             model: Member,
-            key: "memberId"
-        },
+            key: 'memberId'
+        }
     },
     committeeId: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         references: {
             model: Committee,
-            key: "committeeId"
+            key: 'committeeId'
         }
     },
     isChairman: {
@@ -223,6 +230,28 @@ MemberRole.init({
     timestamps: false
 });
 
+Family.init({
+    littleId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Member,
+            key: 'memberId'
+        }
+    },
+    bigId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Member,
+            key: 'memberId'
+        }
+    }
+}, {
+    sequelize,
+    modelName: "BigLittle",
+    tableName: "Families",
+    timestamps: false
+});
+
 
 
 /* Establish Relationships */
@@ -251,4 +280,8 @@ Committee.belongsTo(Officer, { foreignKey: 'soId', as: 'supervisingOfficer' });
 Member.belongsToMany(Role, { through: MemberRole });
 Role.belongsToMany(Member, { through: MemberRole });
 
-export { Member, Officer, Committee, CommitteeMember, Role, MemberRole };
+//BigLittle Relationship
+Member.belongsTo(Member, {as: "Big", foreignKey: "bigId"});
+Member.hasMany(Member, {as: "Little", foreignKey: "littleId"});
+
+export { Member, Officer, Committee, CommitteeMember, Role, MemberRole, Family };

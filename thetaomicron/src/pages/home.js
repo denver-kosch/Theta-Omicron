@@ -14,15 +14,11 @@ const Home = () => {
     }, []);
 
     const getEC = async () => {
-        try {
-            let ec =  await apiCall("getEC");
-            if (ec) {
-                setEC(ec.members);
-            }
-            else setErrorMessage("Could not gather Executive Committee at this time!");
-        } catch (error) {
-            console.error("Failed to fetch EC:", error);
-            setErrorMessage("Could not gather Executive Committee at this time due to an error.");
+        let ec =  await apiCall("getEC");
+        if (ec.success) setEC(ec.members);
+        else {
+            setErrorMessage("Could not gather Executive Committee at this time!");
+            console.log(ec.error);
         }
     };
 
@@ -42,7 +38,7 @@ const Home = () => {
     return (
         <div className="container">
             <img 
-                src={"/images/formalSP23.jpeg"}
+                src={`/images/formalSP23.jpg`}
                 alt="Brothers of the Theta-Omcrion Chapter of Kappa Sigma"
                 className="mainPageImg"
             />
