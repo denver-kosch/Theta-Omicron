@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
-import {Member, Officer, Committee, Role} from './models-sequelize/models.js';
+import {Member, Officer, Committee, Role, } from './models-sequelize/models.js';
 import sequelize from './models-sequelize/sequelize_instance.js';
 
 const app = express();
