@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "./styles.css";
-import { apiCall } from "../components/apiCall";
+import "./../styles.css";
+import { apiCall } from "../../../components/apiCall";
 
 const Rush = () => {
     const [rushCom, setRush] = useState([]);

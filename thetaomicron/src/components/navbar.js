@@ -31,7 +31,7 @@ const Navbar = ({children}) => {
                         <h3 style={{color: homeColor}}>Kappa<br/>Sigma</h3>
                     </Link>
                     <div className="navLinks">
-                        <Link className="navLink" to={"/rush"}  onMouseOver={() => toggleRushColor("#ae1717")} onMouseOut={() => toggleRushColor("black")} >
+                        <Link className="navLink" to={"/about/rush"}  onMouseOver={() => toggleRushColor("#ae1717")} onMouseOut={() => toggleRushColor("black")} >
                             <h3 style={{color: rushColor}}>
                                 Rush
                             </h3>

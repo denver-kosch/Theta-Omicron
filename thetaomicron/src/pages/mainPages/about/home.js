@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import "./styles.css";
-import { apiCall } from "../components/apiCall";
+import "./../styles.css";
+import { apiCall } from "../../../components/apiCall";
 
-const Home = () => {
+const AboutUs = () => {
     const [ec, setEC] = useState([]);
     const  [errorMessage, setErrorMessage] = useState("");
 
@@ -37,13 +37,14 @@ const Home = () => {
 
     return (
         <div className="container">
+            <h2>WHO ARE WE:</h2>
             <img 
                 src={`/images/formalSP23.jpg`}
                 alt="Brothers of the Theta-Omcrion Chapter of Kappa Sigma"
                 className="mainPageImg"
             />
+            <br/>
             <div className="aboutHome">
-                <h2>WHO ARE WE:</h2>
                 <p>
                     Kappa Sigma's Theta-Omicron Chapter at Muskingum University originally began as the Sphinx Club.
                     In 1966, Sphinx Club was absorbed into and chartered by the International Kappa Sigma Fraternity
@@ -64,4 +65,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default AboutUs;

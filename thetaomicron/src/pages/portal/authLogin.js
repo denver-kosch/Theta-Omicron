@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import './cssFiles/styles.css';
+import './styles.css';
 import { apiCall } from '../../components/apiCall';
 
 

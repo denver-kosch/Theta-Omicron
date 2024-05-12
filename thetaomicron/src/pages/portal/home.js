@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import './cssFiles/styles.css';
+import './styles.css';
 import { apiCall } from "../../components/apiCall";
 
 
