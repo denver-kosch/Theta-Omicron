@@ -8,6 +8,7 @@ import { Auth, PortalLogin } from "./pages/portal/authLogin";
 import PortalHome from "./pages/portal/home";
 import {NavBar as PortalNav} from "./pages/portal/navbar";
 import Home from "./pages/mainPages/home";
+import Leadership from "./pages/mainPages/about/leadership";
 
 
 function App() {
@@ -21,7 +22,8 @@ function App() {
             <Route path='trees' element={<Navbar> <FamilyTree/> </Navbar>}/>
           </Route>
           <Route path='about'>
-          <Route index element={<Navbar> <AboutUs/> </Navbar>}/>
+            <Route index element={<Navbar> <AboutUs/> </Navbar>}/>
+            <Route path='leadership' element={<Navbar> <Leadership/> </Navbar>}/>
             <Route path='rush' element={<Navbar> <Rush/> </Navbar>}/>
           </Route>
           <Route path='portal'>

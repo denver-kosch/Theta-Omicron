@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import "./componentCSS/navbar.css";
 import { Link } from "react-router-dom";
+import { DropDown } from "./navDropdown";
 
 const Navbar = ({children}) => {
     const [logoPath, setLP] = useState('/images/crestBW.png');
     const [logo, setL] = useState("Monochrome Kappa Sigma Crest");
-    const [aboutOpen, toggleAboutOpen] = useState(false);
 
     
     const logoHover = () => {
@@ -17,6 +17,27 @@ const Navbar = ({children}) => {
         setL("Monochrome Kappa Sigma Crest");
     }
 
+    const about = {
+        parent: {
+            link: '/about/',
+            title: <>About Us</>
+        },
+        children: [
+            {title: "Leadership", link: "/about/leadership"},
+            {title: "Rush", link: "/about/rush"},
+        ]
+    };
+
+    const directory= {
+        parent: {
+            link: '/directory/',
+            title: <>Brothers<br/>Directory</>
+        },
+        children: [
+            {title: "Family Trees", link: "/directory/trees"},
+        ]
+    };
+
     return (
         <>
             <nav>
@@ -26,24 +47,8 @@ const Navbar = ({children}) => {
                         <h3>Kappa<br/>Sigma</h3>
                     </Link>
                     <div className="navLinks">
-                        <div className="dropButton" onMouseOver={() => toggleAboutOpen(true)} onMouseOut={() => toggleAboutOpen(false)}>
-                            <Link className="navLink" to={"/about/"}>
-                                <h3>About Us</h3>
-                            </Link>
-                            {aboutOpen &&
-                            <div className="dropdown">
-                                <Link className="navLink" to={"/about/rush"}>
-                                    <h4>Leadership</h4>
-                                </Link>
-                                <Link className="navLink" to={"/about/rush"}>
-                                    <h4>Rush</h4>
-                                </Link>
-                            </div>
-                            }
-                        </div>
-                        <Link className="navLink" to={"/directory"}>
-                            <h3>Brothers<br/>Directory</h3>
-                        </Link>
+                        <DropDown content={about}/>
+                        <DropDown content={directory}/>
                         <Link className="navLink" to={"/portal"}>
                             <h3>Brothers<br/>Portal</h3>
                         </Link>

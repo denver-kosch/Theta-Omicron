@@ -1,4 +1,3 @@
-
 export async function apiCall (api, body = {}, headers = {}) {
     const apiLink = `http://localhost:3306/${api}`;
     console.log(apiLink);
