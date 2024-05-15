@@ -1,25 +1,20 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./componentCSS/navbar.css";
 import { Link } from "react-router-dom";
 
 const Navbar = ({children}) => {
     const [logoPath, setLP] = useState('/images/crestBW.png');
     const [logo, setL] = useState("Monochrome Kappa Sigma Crest");
-    const [homeColor, toggleHomeColor] = useState("black");
-    const [rushColor, toggleRushColor] = useState("black");
-    const [portalColor, togglePortalColor] = useState("black");
-    const [dirColor, toggleDirColor] = useState("black");
+    const [aboutOpen, toggleAboutOpen] = useState(false);
 
     
     const logoHover = () => {
         setLP('/images/crestC.png');
         setL("Colored Kappa Sigma Crest");
-        toggleHomeColor("#ae1717");
     }
     const leaveLogo = () => {
         setLP('/images/crestBW.png');
         setL("Monochrome Kappa Sigma Crest");
-        toggleHomeColor("");
     }
 
     return (
@@ -28,23 +23,29 @@ const Navbar = ({children}) => {
                 <div className="navContainer">
                     <Link to={"/"} className="homeButton" onMouseOver={logoHover} onMouseOut={leaveLogo}>
                         <img src={logoPath} alt={logo} className="logo"/>
-                        <h3 style={{color: homeColor}}>Kappa<br/>Sigma</h3>
+                        <h3>Kappa<br/>Sigma</h3>
                     </Link>
                     <div className="navLinks">
-                        <Link className="navLink" to={"/about/rush"}  onMouseOver={() => toggleRushColor("#ae1717")} onMouseOut={() => toggleRushColor("black")} >
-                            <h3 style={{color: rushColor}}>
-                                Rush
-                            </h3>
+                        <div className="dropButton" onMouseOver={() => toggleAboutOpen(true)} onMouseOut={() => toggleAboutOpen(false)}>
+                            <Link className="navLink" to={"/about/"}>
+                                <h3>About Us</h3>
+                            </Link>
+                            {aboutOpen &&
+                            <div className="dropdown">
+                                <Link className="navLink" to={"/about/rush"}>
+                                    <h4>Leadership</h4>
+                                </Link>
+                                <Link className="navLink" to={"/about/rush"}>
+                                    <h4>Rush</h4>
+                                </Link>
+                            </div>
+                            }
+                        </div>
+                        <Link className="navLink" to={"/directory"}>
+                            <h3>Brothers<br/>Directory</h3>
                         </Link>
-                        <Link className="navLink" to={"/directory"} onMouseOver={() => toggleDirColor("#ae1717")} onMouseOut={() => toggleDirColor("black")}>
-                            <h3 style={{color: dirColor}}>
-                                Brothers<br/>Directory
-                            </h3>
-                        </Link>
-                        <Link className="navLink" to={"/portal"} onMouseOver={() => togglePortalColor("#ae1717")} onMouseOut={() => togglePortalColor("black")}>
-                            <h3 style={{color: portalColor}}>
-                                Brothers<br/>Portal
-                            </h3>
+                        <Link className="navLink" to={"/portal"}>
+                            <h3>Brothers<br/>Portal</h3>
                         </Link>
                     </div>
                 </div>

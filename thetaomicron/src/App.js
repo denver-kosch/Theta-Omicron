@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import AboutUs from './pages/mainPages/about/home';
+import AboutUs from './pages/mainPages/about/about';
 import Navbar from './components/navbar';
 import Rush from "./pages/mainPages/about/rush";
 import Directory from "./pages/mainPages/directory/dir";
