@@ -35,6 +35,27 @@ const AboutUs = () => {
         );
     };
 
+    const vertLine = () => {
+        return (<div style={{
+            height: '75px', // Adjust height as needed
+            width: '1px', // Line thickness
+            backgroundColor: 'black', // Line color
+            margin: 'auto', // Center the line
+        }} />
+    )};
+
+    const converge = () => {
+        return (
+            
+            <div className="convergeCon">
+                <div className="diagonal left"></div>
+                <div className="diagonal right"></div>
+                <div className="vertical"></div>
+            </div>
+            
+        );
+    };
+
     return (
         <div className="container">
             <h2>WHO ARE WE:</h2>
@@ -44,13 +65,57 @@ const AboutUs = () => {
                 className="mainPageImg"
             />
             <br/>
-            <div className="aboutHome">
+            <div className="aboutBasic">
                 <p>
                     Kappa Sigma's Theta-Omicron Chapter at Muskingum University originally began as the Sphinx Club.
                     In 1966, Sphinx Club was absorbed into and chartered by the International Kappa Sigma Fraternity
                     on Muskingum's campus and has continued to thrive since then.
                 </p>
             </div>
+
+            <div style={{border:'1px solid black', width:'fit-content', padding: '30px 0'}}>
+                <h2>HISTORY OF THE CHAPTER</h2>
+                <div className="storyContainer">
+                    <div className="flexContainer">
+                        <div className="column">
+                            <h3>SPHINX CLUB</h3>
+                            <p>
+                                The Sigma Phi Chi "Sphinx" Club was founded in 1920 by a group of students at Muskingum University.
+                                The club was founded on the principles of friendship, truth, and honor, and acted 
+                                a social club that focused on promoting brotherhood and camaraderie among its members.
+                            </p>
+                            {vertLine()}
+                            <p>
+                                In 1966, Sphinx Club Presidential Candiddate Richard L. Smith recommended that in order to more effectively 
+                                grow and spread their brotherhood, Sphinx should incorporate into a larger fraternity. Hence they started 
+                                their search until they came across Kappa Sigma.
+                            </p>
+                        </div>
+                        <div className="column">
+                            <h3>KAPPA SIGMA</h3>
+                            <p>
+                                Kappa Sigma was originally founded at the University of Virginia in Charlottesville in 1869.
+                                Founders Boyd, Rogers, McCormick, Arnold, and Nicodemus started the fraternity as formal structure
+                                of their friendship, which might be further spread across campus. Thus, the Zeta Chapter was born.
+                            </p>
+                            {vertLine()}
+                            {/* Explain SAJ's impact on the expansions of Kappa Sigma */}
+                            <p>
+                                Zeta Initiate Stephen Alonzo Jackson dreamed of and inspired the desire in every Brother to
+                                make Kappa Sigma the biggest Fraternity, and a pride and joy of every college campus. 
+                                Thus, Champion quest was formed. <br/>
+                            </p>
+                        </div>
+                    </div>
+                    {converge()}
+                    <p style={{width: '60%'}}>
+                        In 1966, the Sphinx Club formally incorporated into the Kappa Sigma Fraternity,
+                        and the Theta-Omicron Chapter was born. Since then, the chapter has grown and thrived,
+                        and has become a hallmark of fraternal success in the Muskingum University community.
+                    </p>
+                </div>
+            </div>
+
             <br/>
             <h3 style={{fontWeight: 'bold'}}>Meet the Executive Committee:</h3>
             <div className="ExecContainer">

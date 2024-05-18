@@ -16,15 +16,7 @@
 
 
 /* =========================== About Us Page ========================= */
-.homeContainer {
-    text-align: center;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-.aboutHome {
+.aboutBasic {
     max-width: 80%;
     align-self: center;
 }
@@ -43,6 +35,63 @@
 .ExecContainer > .card {
     width: 20%;
 }
+.storyContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.flexContainer {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    height: 400px; /* Adjust based on your content */
+}
+.column {
+    width: 50%; /* Adjust based on gutter space */
+    padding: 20px;
+    height: 300px; /* Adjust based on your content */
+}
+.column > p {
+    max-width: 90%;
+}
+.convergeCon {
+    position: relative;
+    height: 50px; /* Adjust based on your needs */
+    width: 200px;  /* Adjust based on your needs */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Align items at the bottom */
+    margin-bottom: 75px;
+}
+.diagonal {
+    position: absolute;
+    width: 1px; /* Line thickness */
+    height: 350px; /* Adjust based on your needs */
+    background-color: black; /* Line color */
+    transform-origin: bottom;
+}
+.diagonal.left {
+    transform: rotate(80deg); /* Adjust angle based on your needs */
+    bottom: 0;
+    left: 50%;
+}
+.diagonal.right {
+    transform: rotate(-80deg); /* Adjust angle based on your needs */
+    bottom: 0;
+    right: 50%;
+}
+.vertical {
+    position: absolute;
+    height: 75px; /* Height of the vertical section */
+    width: 1px; /* Line thickness */
+    background-color: black; /* Line color */
+    /* bottom: 0; Align at the bottom */
+    top: 100%;
+}
+
 
 /* =========================== Rush Page ========================= */
 
