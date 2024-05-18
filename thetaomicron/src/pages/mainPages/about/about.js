@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./../styles.css";
 import { apiCall } from "../../../components/apiCall";
+import { Link } from "react-router-dom";
 
 const AboutUs = () => {
     const [ec, setEC] = useState([]);
@@ -124,6 +125,7 @@ const AboutUs = () => {
                 ec.map(officer => renderEC(officer))
                 }
             </div>
+            <p>Meet them and other Leaders in the Chapter <Link to={"/about/leadership"} className="easyLink">here</Link></p>
 
 
         </div>

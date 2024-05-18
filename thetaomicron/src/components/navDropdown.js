@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 export const DropDown = ({content}) => {
     const [isOpen, setIsOpen] = useState(false);
     const {parent, children} = content;
-    console.log(children);
 
     return (
     <div className="dropButton" onMouseOver={() => setIsOpen(true)} onMouseOut={() => setIsOpen(false)}>

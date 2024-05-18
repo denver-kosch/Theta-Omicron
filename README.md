@@ -1,7 +1,7 @@
 This repository stores a WIP web application designed for usage by the Brothers of the Theta-Omiron Chapter of the Kappa Sigma Fraternity for both advertisement of the chapter and utility of officers and chairmen/committees. The app contains/will contain various pages, and will in due time also include a mobile app for Brothers' utility.
 
 This project is currently being developed exclusively by (as new contributors arise, they will be included here, along with their contributions):
-* Brother Denver Kosch (Full Stack)
+* Brother Denver Kosch '22 (Full Stack)
 
 Using: 
 * Front End - React

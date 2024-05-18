@@ -26,7 +26,10 @@ sequelize.sync().then(() => {
 app.post('/login', async (req, res) => {
   const {email, password} = req.body;
   
-  const member = await Member.findOne({where: {email}});
+  const member = await Member.findOne({
+    where: {email: email},
+    attributes: ['password', 'memberId']
+  });
 
   if (member && await bcrypt.compare(password, member.password)) {
     const token = jwt.sign({memberId: member.memberId}, process.env.SESSION_SECRET, {expiresIn: '1h'});

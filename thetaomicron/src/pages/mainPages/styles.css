@@ -13,6 +13,15 @@
     padding:0 10px;
     text-wrap: wrap;
 }
+.easyLink {
+    text-decoration: none;
+    font-weight: bold;
+}
+.easyLink:hover {
+    color: #ae1717;
+}
+
+/* =========================== About Us Page ========================= */
 
 
 /* =========================== About Us Page ========================= */
@@ -164,6 +173,9 @@
     border-radius: 3%;
     padding: 3%;
 }
+
+/* ======================== Directory Page ======================= */
+
 
 /* ======================== Directory Page ======================= */
 

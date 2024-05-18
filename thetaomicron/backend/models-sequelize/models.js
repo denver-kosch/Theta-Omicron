@@ -120,6 +120,10 @@ Officer.init({
             key: "memberId"
         },
         allowNull: false
+    },
+    bio: {
+        type: DataTypes.TEXT,
+        allowNull: false
     }
 }, {
     sequelize,
