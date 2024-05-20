@@ -5,11 +5,6 @@ import { Link, useNavigate, } from 'react-router-dom';
 export const NavBar = ({children}) => {
     const [logoPath, setLP] = useState('/images/crestBW.png');
     const [logo, setL] = useState("Monochrome Kappa Sigma Crest");
-    const [homeColor, toggleHomeColor] = useState("black");
-    const [rushColor, toggleRushColor] = useState("black");
-    const [portalColor, togglePortalColor] = useState("black");
-    const [dirColor, toggleDirColor] = useState("black");
-    const [loColor, toggleLoColor] = useState("black");
     const navigate = useNavigate();
 
     
