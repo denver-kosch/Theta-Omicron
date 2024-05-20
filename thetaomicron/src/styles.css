@@ -1,3 +1,31 @@
+/* ===========================  CSS Variables ========================= */
+:root {
+    --background-color: #f5f5f5;
+    --text-color: black;
+    --link-color: #ae1717;
+    --invert: 0;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #1d1d1d;
+        --text-color: white;
+        --link-color: #f03434;
+        --invert: 1;
+    }
+}
+
+[data-theme="light"] {
+    --background-color: #f5f5f5;
+    --text-color: black;
+    --link-color: #ae1717;
+}
+
+[data-theme="dark"] {
+    --background-color: #1d1d1d;
+    --text-color: white;
+    --link-color: #f03434;
+}
+
 /* =========================== Generic CSS ========================= */
 .container {
     text-align: center;
@@ -8,7 +36,7 @@
     flex-direction: column;
 }
 .card {
-    /* border: 1px solid black; */
+    /* border: 1px solid var(--text-color); */
     width: 200px;
     padding:0 10px;
     text-wrap: wrap;
@@ -16,9 +44,15 @@
 .easyLink {
     text-decoration: none;
     font-weight: bold;
+    color: var(--text-color);
 }
 .easyLink:hover {
-    color: #ae1717;
+    color: var(--link-color);
+}
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 /* =========================== About Us Page ========================= */
@@ -79,7 +113,7 @@
     position: absolute;
     width: 1px; /* Line thickness */
     height: 350px; /* Adjust based on your needs */
-    background-color: black; /* Line color */
+    background-color: var(--text-color); /* Line color */
     transform-origin: bottom;
 }
 .diagonal.left {
@@ -92,13 +126,19 @@
     bottom: 0;
     right: 50%;
 }
-.vertical {
+.convertical {
     position: absolute;
     height: 75px; /* Height of the vertical section */
     width: 1px; /* Line thickness */
-    background-color: black; /* Line color */
+    background-color: var(--text-color); /* Line color */
     /* bottom: 0; Align at the bottom */
     top: 100%;
+}
+.vertical {
+    height: 75px;
+    width: 1px;
+    background-color: var(--text-color);
+    margin: auto;
 }
 
 
@@ -167,15 +207,12 @@
 }
 .rushFormBtn > p {
     background-color: #a31717;
-    color:#f5f5f5;
+    color:var(--background-color);
     font-weight: bold;
     width: 100%;
     border-radius: 3%;
     padding: 3%;
 }
-
-/* ======================== Directory Page ======================= */
-
 
 /* ======================== Directory Page ======================= */
 
@@ -215,7 +252,7 @@
     width: 100%;
 }
 .famTreeBtn {
-    color: #f5f5f5;
+    color: var(--background-color);
     text-decoration: none;
     cursor: pointer;
     background-color: #a31717;
@@ -224,7 +261,113 @@
     width: fit-content;
 }
 .famTreeBtn > h3 {
-    text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+    text-shadow: -1px -1px 0 var(--text-color), 1px -1px 0 var(--text-color), -1px 1px 0 var(--text-color), 1px 1px 0 var(--text-color);
 }
 
 /* ======================= Family Tree Page ====================== */
+
+
+/* ======================= Navbar ====================== */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 900;
+    background-color: var(--background-color);
+}
+.navContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.homeButton {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    margin: 0 10px;
+    color: var(--text-color);
+    text-align: center;
+}
+.homeButton:hover h3 {
+    color: var(--link-color)
+}
+.homeButton:hover .logo {
+    filter: invert(0);
+}
+.navLinks {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.navLink {
+    text-decoration: none;
+    margin: 0 10px;
+    color: var(--text-color);
+    text-align: center;
+    padding: 0 25px;
+    height:fit-content;
+    width: fit-content;
+    /* border: 1px solid var(--text-color); */
+}
+.navLink:hover {
+    color:var(--link-color)
+}
+.logo {
+    height: 75px;
+    margin-right: 20px;
+    filter: invert(var(--invert));
+}
+.dropButton {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+.dropdown {
+    position: absolute;
+    z-index: 1001;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%,0%);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--text-color);
+    background-color: var(--background-color);
+} 
+.dropdown .navLink {
+    height: fit-content;
+    padding: 0 10px;
+    margin: 0;
+}
+
+/* ======================= Login Page ====================== */
+.loginContainer {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 120px;
+}
+.loginLogo {
+    max-height: 10% !important;
+}
+.loginForm {
+    border: 1px solid var(--text-color);
+    padding: 0 25px 25px 25px;
+}
+.loginForm > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.loginForm > div > input {
+    max-height: fit-content;
+}

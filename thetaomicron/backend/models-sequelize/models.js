@@ -1,7 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from './sequelize_instance.js';
 
-
 // Extensions
 class Member extends Model {};
 class Officer extends Model {};
@@ -10,6 +9,7 @@ class CommitteeMember extends Model {};
 class Role extends Model {};
 class MemberRole extends Model {};
 class Family extends Model {};
+class Event extends Model {};
 
 //Initializations
 Member.init({
@@ -29,7 +29,8 @@ Member.init({
     },
     status: {
         type: DataTypes.ENUM('Pledge', 'Initiate', 'Alumnus'),
-        allowNull: false
+        allowNull: false,
+        defaultValue: 'Pledge'
     },
     phoneNum: {
         type: DataTypes.STRING(20),
@@ -52,8 +53,8 @@ Member.init({
         }
     },
     password: {
-        type: DataTypes.STRING(255),
-        allowNull: false
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     streetAddress: {
         type: DataTypes.STRING(100),
@@ -77,7 +78,11 @@ Member.init({
     },
     initiationYear:  {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: true,
+        validate: {
+            max: new Date().getFullYear(),
+            min: 1900,
+        }
     },
     graduationYear:  {
         type: DataTypes.INTEGER,
@@ -86,10 +91,7 @@ Member.init({
     ritualCerts: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
-        validate: {
-            min: 0,
-            max: 6,
-        }
+        validate: { min: 0, max: 6 }
     },
     deleted: {
         type: DataTypes.BOOLEAN,
@@ -104,7 +106,7 @@ Member.init({
 
 Officer.init({
     title: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING,
         allowNull: false
     },
     officeId: {
@@ -140,7 +142,7 @@ Committee.init({
         unique: true
     },
     name: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING,
         allowNull: false
     },
     //supervising officer Id
@@ -194,12 +196,12 @@ Role.init({
         autoIncrement: true
     },
     name: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING,
         allowNull: false
     },
     canAssign: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false,
+        defaultValue: false
     }
 }, {
     sequelize,
@@ -256,6 +258,54 @@ Family.init({
     timestamps: false
 });
 
+Event.init({
+    eventId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true, 
+        autoIncrement: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        defaultValue: ""
+    },
+    start: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    end: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    location: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    type: {
+        type: DataTypes.STRING(100),
+        allowNull: false
+    },
+    facilitatingCommittee: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Committee,
+            key: 'committeeId'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    }
+}, {
+    sequelize,
+    modelName: "Events",
+    tableName: "Events",
+    timestamps: false
+});
+
 
 
 /* Establish Relationships */
@@ -288,4 +338,7 @@ Role.belongsToMany(Member, { through: MemberRole });
 Member.belongsTo(Member, {as: "Big", foreignKey: "bigId"});
 Member.hasMany(Member, {as: "Little", foreignKey: "littleId"});
 
-export { Member, Officer, Committee, CommitteeMember, Role, MemberRole, Family };
+//Event-Committee Relationship
+Event.belongsTo(Committee, {foreignKey: 'facilitatingCommittee'});
+
+export { Member, Officer, Committee, CommitteeMember, Role, MemberRole, Family, Event };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./../styles.css";
+// import "./../styles.css";
 import { apiCall } from "../../../components/apiCall";
 import { Link } from "react-router-dom";
 
@@ -37,12 +37,7 @@ const AboutUs = () => {
     };
 
     const vertLine = () => {
-        return (<div style={{
-            height: '75px', // Adjust height as needed
-            width: '1px', // Line thickness
-            backgroundColor: 'black', // Line color
-            margin: 'auto', // Center the line
-        }} />
+        return (<div className="vertical" />
     )};
 
     const converge = () => {

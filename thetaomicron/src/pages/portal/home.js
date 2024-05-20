@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import './styles.css';
 import { apiCall } from "../../components/apiCall";
 
 
@@ -18,13 +17,7 @@ const PortalHome = () => {
     }, []); 
 
     return (
-        <div className="homeContainer">
-            {/* <img
-            src="/images/thetaOmicronLogo.jpeg"
-            alt='Kappa Sigma - Theta-Omicron'
-            className="loginLogo"
-            /> */}
-
+        <div className="container">
             {brother === '' && <h2>Loading...</h2>}
             {brother !== '' && <h2>Welcome, {brother}</h2>}
         </div>

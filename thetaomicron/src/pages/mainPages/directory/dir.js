@@ -1,5 +1,5 @@
 import { useEffect, useState, Fragment } from "react";
-import './../styles.css';
+// import './../styles.css';
 import { apiCall } from "../../../components/apiCall";
 
 const Directory = () => {
@@ -15,7 +15,7 @@ const Directory = () => {
   const getBrothers = async () => {
     let response = await apiCall("getBros");
     setIsLoading(false);
-    if (response && response.brothers) {
+    if (response && response.success) {
       setBrothers(response.brothers);
       console.log(response);
     }
@@ -23,7 +23,7 @@ const Directory = () => {
       setError("Could not load directory at this time");
       console.log(response);
     }
-  }
+  };
 
   const renderChapter = () => {
 
@@ -68,7 +68,7 @@ const Directory = () => {
         )}
       </tbody>
     );
-  }
+  };
 
   return (
     <div className="container">

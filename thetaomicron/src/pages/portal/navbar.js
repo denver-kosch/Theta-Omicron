@@ -17,12 +17,12 @@ export const NavBar = ({children}) => {
         setLP('/images/crestC.png');
         setL("Colored Kappa Sigma Crest");
         toggleHomeColor("#ae1717");
-    }
+    };
     const leaveLogo = () => {
         setLP('/images/crestBW.png');
         setL("Monochrome Kappa Sigma Crest");
         toggleHomeColor("");
-    }
+    };
 
     const logout = () => {
         localStorage.removeItem("token");
@@ -31,32 +31,24 @@ export const NavBar = ({children}) => {
 
     return (
     <>
-        <nav className="navbar">
+        <nav>
             <div className="navContainer">
                 <Link to={"/portal"} className="homeButton" onMouseOver={logoHover} onMouseOut={leaveLogo}>
                     <img src={logoPath} alt={logo} className="logo"/>
-                    <h3 style={{ color: homeColor }}>Portal Home</h3>
+                    <h3>Portal Home</h3>
                 </Link>
                 <div className="navLinks">
                     <Link className="navLink" to={"/portal"}>
-                        <h3 onMouseOver={() => toggleRushColor("#ae1717")} onMouseOut={() => toggleRushColor("black")} style={{ color: rushColor }}>
-                            Rush
-                        </h3>
+                        <h3>Rush</h3>
                     </Link>
                     <Link className="navLink" to={"/portal"}>
-                        <h3 onMouseOver={() => toggleDirColor("#ae1717")} onMouseOut={() => toggleDirColor("black")} style={{ color: dirColor }}>
-                            Brothers<br/>Directory
-                        </h3>
+                        <h3>Brothers<br/>Directory</h3>
                     </Link>
                     <Link className="navLink" to={"/portal"}>
-                        <h3 onMouseOver={() => togglePortalColor("#ae1717")} onMouseOut={() => togglePortalColor("black")} style={{ color: portalColor }}>
-                            Brothers<br/>Portal
-                        </h3>
+                        <h3>Brothers<br/>Portal</h3>
                     </Link>
                     <Link className="navLink" to="/" onClick={logout}>
-                        <h3 onMouseOver={() => toggleLoColor("#ae1717")} onMouseOut={() => toggleLoColor("black")} style={{ color: loColor }}>
-                            Log<br/>Out
-                        </h3>
+                        <h3>Log<br/>Out</h3>
                     </Link>
                 </div>
             </div>

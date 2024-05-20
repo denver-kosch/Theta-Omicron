@@ -1,10 +1,9 @@
 import express from 'express';
-import mysql from 'mysql';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
-import {Member, Officer, Committee, Role, } from './models-sequelize/models.js';
+import { Member, Officer, Committee, Role, Event } from './models-sequelize/models.js';
 import sequelize from './models-sequelize/sequelize_instance.js';
 
 const app = express();
@@ -168,8 +167,23 @@ app.post("/getBro", async (req, res) => {
   } catch (error) {
     res.status(200).json({ success: false, error: error.message });
   }
+});
 
-
+app.post("/getEvents", async (req, res) => {
+  try {
+    const {days} = req.body;
+    const upcoming = Event.findAll({
+        where: {
+          date: {
+            [Op.gte]: new Date(),
+            [Op.lte]: new Date(new Date().setDate(new Date().getDate() + days))
+          }
+        }
+    });
+    res.status(200).json({ success: true, events: upcoming })
+  } catch (error) {
+    res.status(200).json({ success: false, error: error.message });
+  }
 });
 
 
@@ -198,6 +212,17 @@ app.post('/addMember', async (req, res) => {
       ritualCerts: ritualCerts
     });
     res.status(201).json({ success: true});
+  } catch (error) {
+    res.status(200).json({ success: false, error: error.message });
+  }
+});
+
+app.post('/addEvent', async (req, res) => {
+  try {
+    const {name, description, start, end, type, location} = req.body;
+    const facilitatingCommittee = req.body.fComm;
+    const event = await Event.create({name, description, start, end, type, location, facilitatingCommittee});
+    res.status(201).json({ success: true });
   } catch (error) {
     res.status(200).json({ success: false, error: error.message });
   }
