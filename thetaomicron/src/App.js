@@ -9,7 +9,7 @@ import PortalHome from "./pages/portal/home";
 import {NavBar as PortalNav} from "./pages/portal/navbar";
 import Home from "./pages/mainPages/home";
 import Leadership from "./pages/mainPages/about/leadership";
-import './styles.css';
+import './App.css';
 
 
 function App() {

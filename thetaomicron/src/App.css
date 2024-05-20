@@ -28,7 +28,7 @@
 .card {
     /* border: 1px solid var(--text-color); */
     width: 200px;
-    padding:0 10px;
+    margin: 0 10px;
     text-wrap: wrap;
 }
 .easyLink {
