@@ -11,12 +11,10 @@ export const NavBar = ({children}) => {
     const logoHover = () => {
         setLP('/images/crestC.png');
         setL("Colored Kappa Sigma Crest");
-        toggleHomeColor("#ae1717");
     };
     const leaveLogo = () => {
         setLP('/images/crestBW.png');
         setL("Monochrome Kappa Sigma Crest");
-        toggleHomeColor("");
     };
 
     const logout = () => {
