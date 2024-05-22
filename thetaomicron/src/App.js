@@ -1,3 +1,4 @@
+import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AboutUs from './pages/mainPages/about/about';
 import Navbar from './components/navbar';
@@ -9,7 +10,7 @@ import PortalHome from "./pages/portal/home";
 import {NavBar as PortalNav} from "./pages/portal/navbar";
 import Home from "./pages/mainPages/home";
 import Leadership from "./pages/mainPages/about/leadership";
-import './App.css';
+import Alumni from "./pages/mainPages/directory/alumni";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path='directory'>
             <Route index element={<Navbar> <Directory/> </Navbar>}/>
             <Route path='trees' element={<Navbar> <FamilyTree/> </Navbar>}/>
+            <Route path='alumni' element={<Navbar> <Alumni/> </Navbar>}/>
           </Route>
           <Route path='about'>
             <Route index element={<Navbar> <AboutUs/> </Navbar>}/>

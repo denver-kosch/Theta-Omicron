@@ -5,6 +5,7 @@ import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import { Member, Officer, Committee, Role, Event } from './models-sequelize/models.js';
 import sequelize from './models-sequelize/sequelize_instance.js';
+import { Op } from 'sequelize';
 
 const app = express();
 app.use(express.json());
@@ -173,13 +174,16 @@ app.post("/getEvents", async (req, res) => {
   try {
     const days = req.body.days;
     const vis = req.body.vis || 'Public';
-    const upcoming = Event.findAll({
+    const upcoming = await Event.findAll({
         where: {
-          date: {
+          start: {
             [Op.gte]: new Date(),
             [Op.lte]: new Date(new Date().setDate(new Date().getDate() + days))
           },
           visibility: vis
+        },
+        attributes: {
+          include: ['eventId', 'name', 'description', 'start', 'end', 'location']
         }
     });
     res.status(200).json({ success: true, events: upcoming })

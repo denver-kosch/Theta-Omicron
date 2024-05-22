@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 // import "./../styles.css";
 import { apiCall } from "../../../components/apiCall";
 import { Link } from "react-router-dom";
+import Divider from "../../../components/divider";
 
 const AboutUs = () => {
     const [ec, setEC] = useState([]);
@@ -54,7 +55,7 @@ const AboutUs = () => {
             <img 
                 src={`/images/formalSP23.jpg`}
                 alt="Brothers of the Theta-Omcrion Chapter of Kappa Sigma"
-                className="mainPageImg"
+                className="aboutPageImg"
             />
             <br/>
             <div className="aboutBasic">
@@ -65,7 +66,9 @@ const AboutUs = () => {
                 </p>
             </div>
 
-            <div style={{border:'1px solid black', width:'fit-content', padding: '30px 0'}}>
+            <Divider/>
+
+            <div className='story'>
                 <h2>HISTORY OF THE CHAPTER</h2>
                 <div className="storyContainer">
                     <div className="flexContainer">
@@ -107,6 +110,8 @@ const AboutUs = () => {
                 </div>
             </div>
 
+            <Divider/>
+            
             <br/>
             <h3 style={{fontWeight: 'bold'}}>Meet the Executive Committee:</h3>
             <div className="ExecContainer">

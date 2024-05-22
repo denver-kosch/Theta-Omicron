@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { DropDown } from "./navDropdown";
 
@@ -14,13 +14,14 @@ const Navbar = ({children}) => {
         ]
     };
 
-    const directory= {
+    const directory = {
         parent: {
             link: '/directory/',
             title: <>Brothers<br/>Directory</>
         },
         children: [
             {title: "Family Trees", link: "/directory/trees"},
+            {title: "Alumni", link: "/directory/alumni"},
         ]
     };
 

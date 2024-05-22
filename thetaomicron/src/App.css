@@ -1,20 +1,22 @@
 /* ===========================  CSS Variables ========================= */
 :root {
     --background-color: #f5f5f5;
-    --text-color: black;
+    --text-color: #000;
     --link-color: #ae1717;
     --invert: 0;
     --rushBtn: #f5f5f5;
-    --igLogo: url('/public/images/ig.png')
+    --igLogo: url('/public/images/ig.png');
+    --hover-color: #bbb;
 }
 @media (prefers-color-scheme: dark) {
     :root {
         --background-color: #1d1d1d;
-        --text-color: white;
+        --text-color: #fff;
         --link-color: #f03434;
         --invert: 1;
         --rushBtn: white;
-        --igLogo: url('/public/images/igInvert.png')
+        --igLogo: url('/public/images/igInvert.png');
+        --hover-color: #444;
     }
 }
 
@@ -65,16 +67,95 @@ footer {
     font-size: 0.8em;
     grid-area: footer;
 }
+.divider {
+    border: 1px solid var(--text-color);
+    width: 100%;
+    margin: 10px 0;
+}
 
 /* =========================== Home Page ========================= */
-
+.eventPanel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 25%;
+    max-height: 100%;
+    margin-left: auto;
+    margin-right: 3%;
+    border: 1px solid var(--text-color);
+    overflow-y: auto;
+    padding: 0 20px 20px 20px;
+}
+.eventPanel a {
+    text-decoration: none;
+}
+.eventCard {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 94%;
+    padding: 2.5%;
+    border: 1px solid red;
+    border-radius: 10px;
+}
+.eventCard > img {
+    max-width: 18%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+    margin-right: 4%;
+}
+.eventCard > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex: 1; /* Allow the event details to take up the remaining space */
+    color: var(--text-color);
+    text-decoration: none;
+}
+.eventCard p {
+    margin: 0;
+    text-align:start;
+}
+.eventCard div.location {
+    font-size: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.eventCard div.location > img {
+    height: 1em;
+    max-width: fit-content;
+    filter: invert(var(--invert));
+    object-fit: contain;
+    
+}
+.eventCard:hover {
+    background-color: var(--hover-color);
+}
+.eventCard .description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* Number of lines to show */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
 /* =========================== About Us Page ========================= */
 .aboutBasic {
     max-width: 80%;
     align-self: center;
 }
-.mainPageImg {
+.aboutPageImg {
     max-height: 425px;
     max-width: 90%;
     border-radius: 3%;
@@ -88,6 +169,10 @@ footer {
 }
 .ExecContainer > .card {
     width: 20%;
+}
+.story {
+    width: 1fr;
+    padding: 30px 1%;
 }
 .storyContainer {
     display: flex;
@@ -349,6 +434,9 @@ nav {
     flex-direction: column;
     border: 1px solid var(--text-color);
     background-color: var(--background-color);
+    min-width: 75%;
+    width: fit-content;
+    max-width: 120%;
 } 
 .dropdown .navLink {
     height: fit-content;
@@ -372,7 +460,6 @@ nav {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding-top: 120px;
 }
 .loginLogo {
     max-height: 10% !important;
