@@ -5,6 +5,7 @@
     --link-color: #ae1717;
     --invert: 0;
     --rushBtn: #f5f5f5;
+    --igLogo: url('/public/images/ig.png')
 }
 @media (prefers-color-scheme: dark) {
     :root {
@@ -13,10 +14,28 @@
         --link-color: #f03434;
         --invert: 1;
         --rushBtn: white;
+        --igLogo: url('/public/images/igInvert.png')
     }
 }
 
 /* =========================== Generic CSS ========================= */
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+html, body, #root {
+    height: 100%;
+    margin: 0;
+}
+#root {
+    display: grid;
+    grid-template-areas:
+    "header"
+    "center"
+    "footer";
+    grid-template-rows: auto 1fr auto;
+}
 main {
     text-align: center;
     width: 100%;
@@ -24,7 +43,7 @@ main {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    /* border: 1px solid black; */
+    grid-area: center;
 }
 .card {
     /* border: 1px solid var(--text-color); */
@@ -40,15 +59,11 @@ main {
 .easyLink:hover {
     color: var(--link-color);
 }
-body {
-    font-family: 'Courier New', Courier, monospace;
-    background-color: var(--background-color);
-    color: var(--text-color);
-}
 footer {
     text-align: center;
     margin-top: 20px;
     font-size: 0.8em;
+    grid-area: footer;
 }
 
 /* =========================== Home Page ========================= */
@@ -271,6 +286,8 @@ nav {
     width: 100%;
     z-index: 900;
     background-color: var(--background-color);
+    grid-area: header;
+    padding-top: 10px;
 }
 .navContainer {
     display: flex;
@@ -290,6 +307,7 @@ nav {
 }
 .homeButton:hover .logo {
     filter: invert(0);
+    content: url('/public/images/crestC.png');
 }
 .navLinks {
     display: flex;
@@ -313,6 +331,7 @@ nav {
     height: 75px;
     margin-right: 20px;
     filter: invert(var(--invert));
+    content: url('/public/images/crestBW.png');
 }
 .dropButton {
     position: relative;
@@ -340,7 +359,8 @@ nav {
 /* ======================= Footer ====================== */
 .smLogo {
     height: 50px;
-    margin-right: 20px;
+    margin: 20px;
+    content: var(--igLogo);
 }
 
 

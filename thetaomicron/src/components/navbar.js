@@ -3,19 +3,6 @@ import { Link } from "react-router-dom";
 import { DropDown } from "./navDropdown";
 
 const Navbar = ({children}) => {
-    const [logoPath, setLP] = useState('/images/crestBW.png');
-    const [logo, setL] = useState("Monochrome Kappa Sigma Crest");
-
-    
-    const logoHover = () => {
-        setLP('/images/crestC.png');
-        setL("Colored Kappa Sigma Crest");
-    }
-    const leaveLogo = () => {
-        setLP('/images/crestBW.png');
-        setL("Monochrome Kappa Sigma Crest");
-    }
-
     const about = {
         parent: {
             link: '/about/',
@@ -41,8 +28,8 @@ const Navbar = ({children}) => {
         <>
             <nav>
                 <div className="navContainer">
-                    <Link to={"/"} className="homeButton" onMouseOver={logoHover} onMouseOut={leaveLogo}>
-                        <img src={logoPath} alt={logo} className="logo"/>
+                    <Link to={"/"} className="homeButton navLink">
+                        <img alt='Kappa Sigma Crest' className="logo"/>
                         <h3>Kappa<br/>Sigma</h3>
                     </Link>
                     <div className="navLinks">
@@ -59,7 +46,7 @@ const Navbar = ({children}) => {
             </main>
             <footer>
                 <a href="https://www.instagram.com/kappasigma_mu/" target="_blank" rel="noopener noreferrer">
-                    <img  className="smLogo" src="/images/ig.png" alt="Instagram"/>
+                    <img  className="smLogo" alt="Instagram"/>
                 </a>
             </footer>
         </>
