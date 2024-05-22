@@ -67,7 +67,7 @@ const Rush = () => {
     };
 
     return (
-      <div className="container">
+      <>
         <h1>WHY KAPPA SIGMA?</h1>
         <div className="aboutRush">
             <div>
@@ -89,7 +89,7 @@ const Rush = () => {
                 {newRush()}
             </div>
         }
-      </div>
+      </>
     );
   }
 

@@ -25,7 +25,7 @@ const Directory = () => {
     }
   };
 
-  const renderChapter = () => {
+  const Chapter = () => {
 
     const chunk = (arr, size) => {
       const chunkedArr = [];
@@ -71,7 +71,7 @@ const Directory = () => {
   };
 
   return (
-    <div className="container">
+    <>
       <div className="topBar">
       <div>
           {/* <Link to="trees" className="famTree">
@@ -96,11 +96,11 @@ const Directory = () => {
       {isLoading && <h3>Loading...</h3>}
       {!isLoading &&
       <table className="directory">
-        {renderChapter()}
+        <Chapter/>
       </table>
       }
       {(!isLoading && error !== '') && <h4 style={{color: 'red'}}>{error}</h4>}
-    </div>
+    </>
   );
 }
 

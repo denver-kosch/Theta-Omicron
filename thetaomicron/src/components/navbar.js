@@ -54,7 +54,14 @@ const Navbar = ({children}) => {
                     </div>
                 </div>
             </nav>
-            {children}
+            <main>
+                {children}
+            </main>
+            <footer>
+                <a href="https://www.instagram.com/kappasigma_mu/" target="_blank" rel="noopener noreferrer">
+                    <img  className="smLogo" src="/images/ig.png" alt="Instagram"/>
+                </a>
+            </footer>
         </>
     )
 }

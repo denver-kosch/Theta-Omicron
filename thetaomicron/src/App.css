@@ -17,13 +17,14 @@
 }
 
 /* =========================== Generic CSS ========================= */
-.container {
+main {
     text-align: center;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    /* border: 1px solid black; */
 }
 .card {
     /* border: 1px solid var(--text-color); */
@@ -44,8 +45,13 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
 }
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.8em;
+}
 
-/* =========================== About Us Page ========================= */
+/* =========================== Home Page ========================= */
 
 
 /* =========================== About Us Page ========================= */
@@ -330,6 +336,13 @@ nav {
     padding: 0 10px;
     margin: 0;
 }
+
+/* ======================= Footer ====================== */
+.smLogo {
+    height: 50px;
+    margin-right: 20px;
+}
+
 
 /* ======================= Login Page ====================== */
 .loginContainer {

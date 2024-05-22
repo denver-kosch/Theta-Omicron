@@ -36,24 +36,20 @@ const AboutUs = () => {
         );
     };
 
-    const vertLine = () => {
-        return (<div className="vertical" />
-    )};
+    const VertLine = () => {return (<div className="vertical" />)};
 
-    const converge = () => {
+    const Converge = () => {
         return (
-            
             <div className="convergeCon">
                 <div className="diagonal left"></div>
                 <div className="diagonal right"></div>
-                <div className="vertical"></div>
+                <div className="convertical"></div>
             </div>
-            
         );
     };
 
     return (
-        <div className="container">
+        <>
             <h2>WHO ARE WE:</h2>
             <img 
                 src={`/images/formalSP23.jpg`}
@@ -80,7 +76,7 @@ const AboutUs = () => {
                                 The club was founded on the principles of friendship, truth, and honor, and acted 
                                 a social club that focused on promoting brotherhood and camaraderie among its members.
                             </p>
-                            {vertLine()}
+                            <VertLine/>
                             <p>
                                 In 1966, Sphinx Club Presidential Candiddate Richard L. Smith recommended that in order to more effectively 
                                 grow and spread their brotherhood, Sphinx should incorporate into a larger fraternity. Hence they started 
@@ -94,8 +90,7 @@ const AboutUs = () => {
                                 Founders Boyd, Rogers, McCormick, Arnold, and Nicodemus started the fraternity as formal structure
                                 of their friendship, which might be further spread across campus. Thus, the Zeta Chapter was born.
                             </p>
-                            {vertLine()}
-                            {/* Explain SAJ's impact on the expansions of Kappa Sigma */}
+                            <VertLine/>
                             <p>
                                 Zeta Initiate Stephen Alonzo Jackson dreamed of and inspired the desire in every Brother to
                                 make Kappa Sigma the biggest Fraternity, and a pride and joy of every college campus. 
@@ -103,7 +98,7 @@ const AboutUs = () => {
                             </p>
                         </div>
                     </div>
-                    {converge()}
+                    <Converge/>
                     <p style={{width: '60%'}}>
                         In 1966, the Sphinx Club formally incorporated into the Kappa Sigma Fraternity,
                         and the Theta-Omicron Chapter was born. Since then, the chapter has grown and thrived,
@@ -123,7 +118,7 @@ const AboutUs = () => {
             <p>Meet them and other Leaders in the Chapter <Link to={"/about/leadership"} className="easyLink">here</Link></p>
 
 
-        </div>
+        </>
     );
 }
 

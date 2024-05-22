@@ -298,6 +298,11 @@ Event.init({
         },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
+    },
+    visibility: {
+        type: DataTypes.ENUM('Public','Members','Initiates','EC','Committee'),
+        allowNull: false,
+        defaultValue: 'Public',
     }
 }, {
     sequelize,

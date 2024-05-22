@@ -171,13 +171,15 @@ app.post("/getBro", async (req, res) => {
 
 app.post("/getEvents", async (req, res) => {
   try {
-    const {days} = req.body;
+    const days = req.body.days;
+    const vis = req.body.vis || 'Public';
     const upcoming = Event.findAll({
         where: {
           date: {
             [Op.gte]: new Date(),
             [Op.lte]: new Date(new Date().setDate(new Date().getDate() + days))
-          }
+          },
+          visibility: vis
         }
     });
     res.status(200).json({ success: true, events: upcoming })
