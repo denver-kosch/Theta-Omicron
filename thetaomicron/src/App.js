@@ -11,9 +11,28 @@ import {NavBar as PortalNav} from "./pages/portal/navbar";
 import Home from "./pages/mainPages/home";
 import Leadership from "./pages/mainPages/about/leadership";
 import Alumni from "./pages/mainPages/directory/alumni";
+import { useEffect, useState } from 'react';
+import { apiCall } from './components/apiCall';
+import Event from './pages/mainPages/eventDetails';
+import CreateEvent from './pages/portal/createEvent';
 
 
 function App() {
+  const [events, setEvents] = useState([]);
+
+  //Get all events initially
+  useEffect(() => {
+      const initEvents = async () => {
+        const result = await apiCall("getEvents");
+        if (result && result.success) setEvents(result.events);
+        console.log("couldn't get events");
+      };
+      initEvents();
+  }, []);
+
+  const updateEvents = newEvent => setEvents([...events, newEvent]);
+
+
   return (
     <>
       <Router>
@@ -35,6 +54,10 @@ function App() {
             <Route path='position'>
               <Route path='redirect' element={<PortalNav> </PortalNav>}/>
             </Route>
+            <Route path="event/create" element={<Auth><PortalNav> <CreateEvent addEvent={updateEvents} /> </PortalNav></Auth>}/>
+          </Route>
+          <Route path='event'>
+            <Route path=':id' element={<Navbar> <Event/> </Navbar>}/>
           </Route>
           <Route path="*" element={<Navigate to="/"/>} />
         </Routes>

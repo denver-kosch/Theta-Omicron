@@ -184,17 +184,23 @@ footer {
     position: relative;
     width: 100%;
     display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
-    height: 400px; /* Adjust based on your content */
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 1fr; /* Adjust based on your content */
 }
 .column {
     width: 50%; /* Adjust based on gutter space */
     padding: 20px;
     height: 300px; /* Adjust based on your content */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-.column > p {
+.column > * {
     max-width: 90%;
+    margin: auto;
+
 }
 .convergeCon {
     position: relative;

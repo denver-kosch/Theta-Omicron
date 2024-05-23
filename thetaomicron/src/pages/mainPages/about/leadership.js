@@ -1,8 +1,10 @@
 import React from "react";
+// eslint-disable-next-line
 import { apiCall } from "../../../components/apiCall";
 
 
 const Leadership = () => {
+    // eslint-disable-next-line
     const [leadership, setLeadership] = React.useState([]);
 
     

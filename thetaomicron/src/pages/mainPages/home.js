@@ -6,14 +6,14 @@ const Home = () => {
     const [events, setEvents] = useState([]);
 
     useEffect(() => {
+        const getEvents = async () => {
+            const get = await apiCall('getEvents', {days: 200});
+            if (get.success) setEvents(get.events);
+            else console.error(get.error);
+        };
         getEvents();
     }, []);
 
-    const getEvents = async () => {
-        const get = await apiCall('getEvents', {days: 200});
-        if (get.success) setEvents(get.events);
-        else console.error(get.error);
-    };
 
 
     const EventPanel = () => {

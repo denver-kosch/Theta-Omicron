@@ -172,9 +172,10 @@ app.post("/getBro", async (req, res) => {
 
 app.post("/getEvents", async (req, res) => {
   try {
-    const days = req.body.days;
+
+    const days = req.body.days || False;
     const vis = req.body.vis || 'Public';
-    const upcoming = await Event.findAll({
+    const upcoming = (req.body.days) ? await Event.findAll({
         where: {
           start: {
             [Op.gte]: new Date(),
@@ -185,12 +186,18 @@ app.post("/getEvents", async (req, res) => {
         attributes: {
           include: ['eventId', 'name', 'description', 'start', 'end', 'location']
         }
+    }): 
+    await Event.findAll({
+      attributes: {
+        include: ['eventId']
+      }
     });
     res.status(200).json({ success: true, events: upcoming })
   } catch (error) {
     res.status(200).json({ success: false, error: error.message });
   }
 });
+
 
 
 /* ================== Setters ================== */
