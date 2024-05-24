@@ -6,9 +6,16 @@ import jwt from 'jsonwebtoken';
 import { Member, Officer, Committee, Role, Event } from './models-sequelize/models.js';
 import sequelize from './models-sequelize/sequelize_instance.js';
 import { Op } from 'sequelize';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const app = express();
+const storage = multer.memoryStorage(); // Storing files in memory
+const upload = multer({ storage: storage });
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 dotenv.config();
 const port = process.env.SERVERPORT  || 3001;
@@ -173,21 +180,27 @@ app.post("/getBro", async (req, res) => {
 app.post("/getEvents", async (req, res) => {
   try {
 
-    const days = req.body.days || False;
+    const days = req.body.days || false;
     const vis = req.body.vis || 'Public';
+    const mandatory = req.body.mandatory || false;
     const upcoming = (req.body.days) ? await Event.findAll({
         where: {
           start: {
             [Op.gte]: new Date(),
             [Op.lte]: new Date(new Date().setDate(new Date().getDate() + days))
           },
-          visibility: vis
+          visibility: vis,
+          status: "Approval"
         },
         attributes: {
           include: ['eventId', 'name', 'description', 'start', 'end', 'location']
         }
     }): 
     await Event.findAll({
+      where: {
+        visibility: vis,
+        approved: true
+      },
       attributes: {
         include: ['eventId']
       }
@@ -198,6 +211,31 @@ app.post("/getEvents", async (req, res) => {
   }
 });
 
+app.post("/getCommittees", async (req, res) => {
+  try {
+    //if searching for user's committees, get committees of user, otherwise get all comittees
+    let committees = false;
+    if (req.body.user && req.body.user == true) {
+      let authHeader = req.headers['authorization'];
+      let token = authHeader && authHeader.split(' ')[1];
+      const memberId = jwt.verify(token, process.env.SESSION_SECRET).memberId;
+      committees = await Committee.findAll(
+        {include: [{
+          model: Member,
+          where: { memberId },
+          attributes: []
+          
+      }]}
+      );
+    }
+    else committees = await Committee.findAll();
+    
+    if (committees) res.status(200).json({ success: true, committees: committees });
+    else throw Error("Committees not found");
+  } catch (error) {
+    res.status(200).json({ success: false, error: error.message });
+  }
+});
 
 
 /* ================== Setters ================== */
@@ -230,16 +268,22 @@ app.post('/addMember', async (req, res) => {
   }
 });
 
-app.post('/addEvent', async (req, res) => {
+app.post('/addEvent', upload.single('image'), async (req, res) => {
   try {
-    const {name, description, start, end, type, location} = req.body;
-    const facilitatingCommittee = req.body.fComm;
-    const event = await Event.create({name, description, start, end, type, location, facilitatingCommittee});
-    res.status(201).json({ success: true });
+    const {name, description, start, end, type, location, visibility} = req.body.data;
+    const event = await Event.create({name, description, start, end, type, location, facilitatingCommittee: req.body.data.committee, visibility});
+    const uploadPath = path.join(__dirname,'images','eventPosters', `${event.eventId}${path.extname(req.file.originalname)}`);
+
+    // Save the file from memory to disk
+    fs.writeFileSync(uploadPath, req.file.buffer);
+
+    res.status(201).json({ success: true, newId: event.eventId});
   } catch (error) {
-    res.status(200).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
+
+
 
 
 /* ================== Editors ================== */

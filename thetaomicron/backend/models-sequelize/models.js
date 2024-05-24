@@ -303,7 +303,22 @@ Event.init({
         type: DataTypes.ENUM('Public','Members','Initiates','EC','Committee'),
         allowNull: false,
         defaultValue: 'Public',
-    }
+    },
+    status: {
+        type: DataTypes.ENUM("Pending", "Approved", "Denied"),
+        allowNull: false,
+        defaultValue: false
+    },
+    mandatory: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
+    },
 }, {
     sequelize,
     modelName: "Events",
@@ -340,8 +355,11 @@ Member.belongsToMany(Role, { through: MemberRole });
 Role.belongsToMany(Member, { through: MemberRole });
 
 //BigLittle Relationship
-Member.belongsTo(Member, {as: "Big", foreignKey: "bigId"});
-Member.hasMany(Member, {as: "Little", foreignKey: "littleId"});
+Member.hasMany(Family, { as: 'Littles', foreignKey: 'bigId' });
+
+// Optional: If you want to access the Member model directly from a Family instance
+Family.belongsTo(Member, { as: 'Big', foreignKey: 'bigId' });
+Family.belongsTo(Member, { as: 'Little', foreignKey: 'littleId' });
 
 //Event-Committee Relationship
 Event.belongsTo(Committee, {foreignKey: 'facilitatingCommittee'});

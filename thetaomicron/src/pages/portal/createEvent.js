@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { apiCall } from "../../components/apiCall";
 
-const CreateEvent = ({addEvent}) => {
-    const [loaded, setLoaded] = useState(true);
+const CreateEvent = ({addEventId}) => {
+    const [loaded, setLoaded] = useState(false);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [location, setLocation] = useState('');
@@ -16,61 +16,114 @@ const CreateEvent = ({addEvent}) => {
 
     useEffect(() => {
         const fetchCommittees = async () => {
-            const res = await apiCall("getCommittees", {user: true});
+            const token = localStorage.getItem('token');
+            const res = await apiCall("getCommittees", {user: true}, {'Authorization': `Bearer ${token}`});
             setCommOptions(res.committees);
         };
-        // fetchCommittees();
+        fetchCommittees();
+        setLoaded(true);
     },[]);
 
-    const add = () => {
+    const add = async e => {
+        e.preventDefault();
+        const data = new FormData();
+        data.append('name', name);
+        data.append('description', description);
+        data.append('location', location);
+        data.append('start', start);
+        data.append('end', end);
+        data.append('image', image);
+        data.append('committee', committee);
+        data.append('visibility', visibility);
+        data.append('type', 'eventPosters');
 
+        const newEvent = await apiCall('addEvent', {data});
+        if (newEvent.success) addEventId(newEvent.eventId);
+        else console.error(newEvent.error);
     };
     
     return(
         <>
             { loaded ? 
-            <div className="form">
+            <div className="create">
                 <h1>Create Event</h1>
                 <form onSubmit={add}>
-                    <label htmlFor="name">Name: </label>
-                    <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
+                    <div className="field">
+                        <label htmlFor="name">Name: </label>
+                        <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
+                    </div>
+
                     <br/>
-                    <label htmlFor="description">Description: </label>
-                    <input type="text" id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                    <div className="field longtext">
+                        <label htmlFor="description">Description: </label>
+                        <br/>
+                        <textarea
+                        id="description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        rows={3}
+                        />
+                    </div>
+
                     <br/>
-                    <label htmlFor="location">Location: </label>
-                    <input type="text" id="location" value={location} onChange={(e) => setLocation(e.target.value)} />
+
+                    <div className="field">
+                        <label htmlFor="location">Location: </label>
+                        <input type="text" id="location" value={location} onChange={(e) => setLocation(e.target.value)} />
+                    </div>
+
                     <br/>
-                    <label htmlFor="start">Start: </label>
-                    <input type="datetime-local" id="start" value={start} onChange={(e) => setStart(e.target.value)} />
+
+                    <div className="field">
+                        <label htmlFor="start">Start: </label>
+                        <input type="datetime-local" id="start" value={start} onChange={(e) => setStart(e.target.value)} />
+                    </div>
+
                     <br/>
-                    <label htmlFor="end">End: </label>
-                    <input type="datetime-local" id="end" value={end} onChange={(e) => setEnd(e.target.value)} />
+
+                    <div className="field">
+                        <label htmlFor="end">End: </label>
+                        <input type="datetime-local" id="end" value={end} onChange={(e) => setEnd(e.target.value)} />
+                    </div>
+
                     <br/>
-                    <label htmlFor="image">Image: </label>
-                    <input type="file" id="image" value={image} onChange={(e) => setImage(e.target.value)} />
+
+                    <div className="field">
+                        <label htmlFor="image">Image: </label>
+                        <input type="file" id="image" onChange={(e) => setImage(e.target.value)} />
+                    </div>
+
                     <br/>
-                    <label htmlFor="committee">Committee: </label>
-                    <select id="committee" value={committee} onChange={(e) => setCommittee(e.target.value)}>
-                        {commOptions.map((option) => (
-                            <option key={option.id} value={option.id}>{option.name}</option>
-                        ))}
-                    </select>
+
+                    <div className="field">
+                        <label htmlFor="committee">Committee: </label>
+                        <select id="committee" value={committee} onChange={(e) => setCommittee(e.target.value)}>
+                            {commOptions.map(option => (
+                                <option key={option.id} value={option.id}>{option.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
                     <br/>
-                    <label htmlFor="visibility">Visibility: </label>
-                    <select id="visibility" value={visibility} onChange={(e) => setVisibility(e.target.value)}>
-                        <option value="Public">Public</option>
-                        <option value="Members">Members Only</option>
-                        <option value="Initiates">Initiates Only</option>
-                        {commOptions.includes("Pledge Educator") &&
-                        <option value="Pledges">Pledges Only</option>
+
+                    <div className="field">
+                        <label htmlFor="visibility">Visibility: </label>
+                        <select id="visibility" value={visibility} onChange={(e) => setVisibility(e.target.value)}>
+                            <option value="Public">Public</option>
+                            <option value="Members">Members Only</option>
+                            <option value="Initiates">Initiates Only</option>
+                            {commOptions.includes("Pledge Educator") &&
+                            <option value="Pledges">Pledges Only</option>
                         }
-                        <option value="Committee">Committee Only</option>
-                        {commOptions.includes("Executive Committee") &&
-                        <option value="Executive Committee">EC Only</option>
+                            <option value="Committee">Committee Only</option>
+                            {commOptions.includes("Executive Committee") &&
+                            <option value="Executive Committee">EC Only</option>
                         }
-                    </select>
+                        </select>
+                    </div>
+
                     <br/>
+
                     <input type="submit" value="Create"/>
                 </form>
                 

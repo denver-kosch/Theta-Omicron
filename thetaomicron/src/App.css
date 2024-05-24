@@ -483,3 +483,35 @@ nav {
 .loginForm > div > input {
     max-height: fit-content;
 }
+
+/* ======================= Even Create Page ====================== */
+.create {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+}
+.create * {
+    margin: 1% auto;
+}
+.field {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.field label {
+    width: fit-content;
+}
+.field input, .field select, .field textarea {
+    width: 100%;
+}
+.longtext {
+    display: flex;
+    flex-direction: column;
+}
+.longtext * {
+    margin: 0;
+}

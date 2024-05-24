@@ -18,19 +18,19 @@ import CreateEvent from './pages/portal/createEvent';
 
 
 function App() {
-  const [events, setEvents] = useState([]);
+  const [eventIds, setEventIds] = useState([]);
 
   //Get all events initially
   useEffect(() => {
       const initEvents = async () => {
         const result = await apiCall("getEvents");
-        if (result && result.success) setEvents(result.events);
-        console.log("couldn't get events");
+        if (result && result.success) setEventIds(result.events);
+        else console.log("couldn't get events");
       };
       initEvents();
   }, []);
 
-  const updateEvents = newEvent => setEvents([...events, newEvent]);
+  const updateEvents = newEvent => setEventIds([...eventIds, newEvent]);
 
 
   return (
@@ -54,7 +54,7 @@ function App() {
             <Route path='position'>
               <Route path='redirect' element={<PortalNav> </PortalNav>}/>
             </Route>
-            <Route path="event/create" element={<Auth><PortalNav> <CreateEvent addEvent={updateEvents} /> </PortalNav></Auth>}/>
+            <Route path="event/create" element={<Auth><PortalNav> <CreateEvent addEventId={updateEvents} /> </PortalNav></Auth>}/>
           </Route>
           <Route path='event'>
             <Route path=':id' element={<Navbar> <Event/> </Navbar>}/>

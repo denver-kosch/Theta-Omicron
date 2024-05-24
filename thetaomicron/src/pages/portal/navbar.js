@@ -46,6 +46,8 @@ export const NavBar = ({children}) => {
                 </div>
             </div>
         </nav>
+        <main>
         {children}
+        </main>
     </>
 )};
