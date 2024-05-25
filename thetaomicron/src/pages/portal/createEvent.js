@@ -90,7 +90,7 @@ const CreateEvent = ({addEventId}) => {
 
                     <div className="field">
                         <label htmlFor="image">Image: </label>
-                        <input type="file" id="image" onChange={(e) => setImage(e.target.value)} />
+                        <input type="file" id="image" onChange={(e) => setImage(e.target.value)} accept="image/png, image/jpeg, image/jpg" />
                     </div>
 
                     <br/>

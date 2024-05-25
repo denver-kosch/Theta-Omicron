@@ -16,8 +16,7 @@ Member.init({
     memberId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        allowNull: false,
-        unique: true
+        allowNull: false
     },
     firstName: {
         type: DataTypes.STRING(50),
@@ -39,7 +38,6 @@ Member.init({
     email: {
         type: DataTypes.STRING(100),
         allowNull: false,
-        unique: true,
         validate: {
           isEmail: true // checks for email format
         }
@@ -47,7 +45,6 @@ Member.init({
     schoolEmail: {
         type: DataTypes.STRING(100),
         allowNull: false,
-        unique: true,
         validate: {
           isEmail: true // checks for email format
         }
@@ -101,7 +98,6 @@ Member.init({
     sequelize,
     modelName: "Member",
     tableName: "Members",
-    timestamps: false,
 });
 
 Officer.init({
@@ -126,12 +122,19 @@ Officer.init({
     bio: {
         type: DataTypes.TEXT,
         allowNull: false
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
     }
 }, {
     sequelize,
     modelName: "Officer",
     tableName: "Officers",
-    timestamps: false
 });
 
 Committee.init({
@@ -153,12 +156,19 @@ Committee.init({
             key: "officeId"
         },
         allowNull: false
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
     }
 },{
     sequelize,
     modelName: "Committee",
     tableName: "Committees",
-    timestamps: false
 });
 
 CommitteeMember.init({
@@ -181,12 +191,19 @@ CommitteeMember.init({
     isChairman: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
     }
 },{
     sequelize,
     modelName: "CommitteeMember",
     tableName: "CommitteeMembers",
-    timestamps: false
 });
 
 Role.init({
@@ -202,17 +219,25 @@ Role.init({
     canAssign: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
     }
 }, {
     sequelize,
     modelName: "Role",
     tableName: "Roles",
-    timestamps: false
 });
 
 MemberRole.init({
     memberId: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         references: {
             model: Member,
             key: 'memberId'
@@ -220,25 +245,30 @@ MemberRole.init({
     },
     roleId: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         references: {
             model: Role,
             key: 'roleId'
         }
     },
-    dateAdded: {
+    createdAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
     }
 },{
     sequelize,
     modelName: "MemberRole",
-    tableName: "MembersRoles",
-    timestamps: false
+    tableName: "MemberRoles"
 });
 
 Family.init({
     littleId: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         references: {
             model: Member,
             key: 'memberId'
@@ -246,16 +276,24 @@ Family.init({
     },
     bigId: {
         type: DataTypes.INTEGER,
+        primaryKey: true,
         references: {
             model: Member,
             key: 'memberId'
         }
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
     }
 }, {
     sequelize,
     modelName: "BigLittle",
-    tableName: "Families",
-    timestamps: false
+    tableName: "Families"
 });
 
 Event.init({
@@ -307,23 +345,17 @@ Event.init({
     status: {
         type: DataTypes.ENUM("Pending", "Approved", "Denied"),
         allowNull: false,
-        defaultValue: false
+        defaultValue: "Pending"
     },
     mandatory: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    },
+    }
 }, {
     sequelize,
     modelName: "Events",
-    tableName: "Events",
-    timestamps: false
+    tableName: "Events"
 });
 
 

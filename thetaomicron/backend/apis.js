@@ -20,7 +20,7 @@ app.use(cors());
 dotenv.config();
 const port = process.env.SERVERPORT  || 3001;
 
-sequelize.sync().then(() => {
+sequelize.sync({alter: true}).then(() => {
   console.log("Database synchronized");
 
   app.listen(port, () => {
