@@ -20,12 +20,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 dotenv.config();
 const port = process.env.SERVERPORT  || 3001;
+const host = process.env.HOST || 'localhost';
 
 sequelize.sync({alter: true}).then(() => {
   console.log("Database synchronized");
 
-  app.listen(port, () => {
-      console.log(`Server running on http://localhost:${port}`);
+  app.listen(port, host,() => {
+      console.log(`Server running on http://${host}:${port}`);
   });
 }).catch(err => console.error("Failed to synchronize database:", err));
 

@@ -117,8 +117,7 @@ export const DropDown = ({content}) => {
 )};
 
 export async function apiCall (api, body = {}, headers = {}) {
-    const apiLink = `http://localhost:3306/${api}`;
-    console.log(apiLink);
+    const apiLink = `http://${process.env.REACT_APP_SERVERHOST}:${process.env.REACT_APP_SERVERPORT}/${api}`;
 
     const isFormData = body instanceof FormData;
     try {
