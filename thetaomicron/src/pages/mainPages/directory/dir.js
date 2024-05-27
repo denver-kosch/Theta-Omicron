@@ -1,6 +1,5 @@
 import { useEffect, useState, Fragment } from "react";
-// import './../styles.css';
-import { apiCall } from "../../../components/apiCall";
+import { apiCall } from "../../../components";
 
 const Directory = () => {
   const [brothers, setBrothers] = useState([]);

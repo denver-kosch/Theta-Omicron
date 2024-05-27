@@ -3,11 +3,12 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
-import { Member, Officer, Committee, Role, Event } from './models-sequelize/models.js';
+import { Member, Officer, Committee, Role, Event, Location, EventType } from './models-sequelize/models.js';
 import sequelize from './models-sequelize/sequelize_instance.js';
 import { Op } from 'sequelize';
 import multer from 'multer';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import fs from 'fs';
 
 const app = express();
@@ -190,11 +191,17 @@ app.post("/getEvents", async (req, res) => {
             [Op.lte]: new Date(new Date().setDate(new Date().getDate() + days))
           },
           visibility: vis,
-          status: "Approval"
+          status: "Approved",
         },
         attributes: {
           include: ['eventId', 'name', 'description', 'start', 'end', 'location']
-        }
+        },
+        include: [
+            {
+              model: Location,
+              attributes: ['name', 'address', 'city', 'state', 'zipCode'],
+            },
+        ]
     }): 
     await Event.findAll({
       where: {
@@ -237,6 +244,44 @@ app.post("/getCommittees", async (req, res) => {
   }
 });
 
+app.post('/getLocations', async (req, res) => {
+  try {
+    let locations = await Location.findAll();
+    if (locations) res.status(200).json({ success: true, locations: locations });
+    else throw Error("Locations not found");
+  } catch (error) {
+    res.status(200).json({ success: false, error: error.message });
+  }
+});
+
+app.post("/getEventDetails", async (req, res) => {
+  try {
+    const event = await Event.findOne({
+      where: {
+        eventId: req.body.id
+      },
+      attributes: {
+        include: ['name', 'description', 'start', 'end', 'location'],
+        exclude: ['type','location', 'createdBy','updatedAt', 'createdAt', 'status']
+      },
+      include: [
+          {
+            model: Location,
+            attributes: ['name', 'address', 'city', 'state', 'zipCode'],
+          },
+          {
+            model: EventType,
+            attributes: ['name'],
+          }
+      ]
+  });
+  if (event) res.status(200).json({ success: true, event: event });
+  else throw Error("Event not found");
+  } catch (error) {
+    res.status(200).json({ success: false, error: error.message });
+  }
+});
+
 
 /* ================== Setters ================== */
 app.post('/addMember', async (req, res) => {
@@ -270,8 +315,28 @@ app.post('/addMember', async (req, res) => {
 
 app.post('/addEvent', upload.single('image'), async (req, res) => {
   try {
-    const {name, description, start, end, type, location, visibility} = req.body.data;
-    const event = await Event.create({name, description, start, end, type, location, facilitatingCommittee: req.body.data.committee, visibility});
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: "No file uploaded" });
+    }
+    
+    const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+    const {memberId} = jwt.verify(token, process.env.SESSION_SECRET);
+    const {name, description, start, end, type, visibility, committee} = req.body;
+    let {location} = req.body;
+    
+    if (location == 0) {
+      const {newLoc} = req.body.data;
+      const [address, city, sz] = newLoc.address.split(', ');
+      const [state, zipCode] = sz.split(' ');
+      const loc = await Location.create({ address, city, state, zipCode, name: newLoc.name });
+      location = loc.locationId;
+    }
+9
+    const event = await Event.create({name, description, start, end, type, location, facilitatingCommittee: committee, visibility, createdBy: memberId});
+    
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
     const uploadPath = path.join(__dirname,'images','eventPosters', `${event.eventId}${path.extname(req.file.originalname)}`);
 
     // Save the file from memory to disk

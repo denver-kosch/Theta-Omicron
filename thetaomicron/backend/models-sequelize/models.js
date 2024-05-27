@@ -10,6 +10,8 @@ class Role extends Model {};
 class MemberRole extends Model {};
 class Family extends Model {};
 class Event extends Model {};
+class Location extends Model {};
+class EventType extends Model {};
 
 //Initializations
 Member.init({
@@ -237,19 +239,19 @@ Role.init({
 MemberRole.init({
     memberId: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
         references: {
             model: Member,
             key: 'memberId'
-        }
+        },
+        primaryKey: true
     },
     roleId: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
         references: {
             model: Role,
             key: 'roleId'
-        }
+        },
+        primaryKey: true
     },
     createdAt: {
         type: DataTypes.DATE,
@@ -259,7 +261,7 @@ MemberRole.init({
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
     }
-},{
+}, {
     sequelize,
     modelName: "MemberRole",
     tableName: "MemberRoles"
@@ -296,6 +298,64 @@ Family.init({
     tableName: "Families"
 });
 
+Location.init({
+    locationId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    address: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    city: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    state: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    zipCode: {
+        type: DataTypes.STRING(10),
+        allowNull: false
+    }
+}, {
+    sequelize,
+    modelName: "Location",
+    tableName: "Locations",
+    timestamps: true
+});
+
+EventType.init({
+    typeId: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    committee: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Committee,
+            key: "committeeId"
+        },
+        onUpdate: "CASCADE"
+    }
+}, {
+    sequelize,
+    modelName: "EventType",
+    tableName: "EventTypes"
+});
+
 Event.init({
     eventId: {
         type: DataTypes.INTEGER,
@@ -319,23 +379,13 @@ Event.init({
         type: DataTypes.DATE,
         allowNull: false
     },
-    location: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
     type: {
-        type: DataTypes.STRING(100),
-        allowNull: false
-    },
-    facilitatingCommittee: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Committee,
-            key: 'committeeId'
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
+            model: EventType,
+            key: "typeId"
+        }
     },
     visibility: {
         type: DataTypes.ENUM('Public','Members','Initiates','EC','Committee'),
@@ -351,13 +401,30 @@ Event.init({
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
+    },
+    location: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Location,
+            key: 'locationId'
+        },
+    },
+    createdBy: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Member,
+            key: 'memberId'
+        },
+        onDelete: 'SET NULL',
     }
 }, {
     sequelize,
-    modelName: "Events",
-    tableName: "Events"
+    modelName: "Event",
+    tableName: "Events",
+    timestamps: true,
 });
-
 
 
 /* Establish Relationships */
@@ -388,12 +455,14 @@ Role.belongsToMany(Member, { through: MemberRole });
 
 //BigLittle Relationship
 Member.hasMany(Family, { as: 'Littles', foreignKey: 'bigId' });
-
-// Optional: If you want to access the Member model directly from a Family instance
-Family.belongsTo(Member, { as: 'Big', foreignKey: 'bigId' });
-Family.belongsTo(Member, { as: 'Little', foreignKey: 'littleId' });
+Member.hasOne(Family, { as: 'Big', foreignKey: 'littleId' });
 
 //Event-Committee Relationship
-Event.belongsTo(Committee, {foreignKey: 'facilitatingCommittee'});
+Event.belongsTo(EventType, {foreignKey: 'type'});
+EventType.belongsTo(Committee, {foreignKey: 'committee'});
 
-export { Member, Officer, Committee, CommitteeMember, Role, MemberRole, Family, Event };
+// Event-Location Relationship
+Event.belongsTo(Location, { foreignKey: 'location'});
+Location.hasMany(Event, { foreignKey: 'location', as: 'events' });
+
+export { Member, Officer, Committee, CommitteeMember, Role, MemberRole, Family, Event, Location, EventType};

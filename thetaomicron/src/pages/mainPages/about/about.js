@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-// import "./../styles.css";
-import { apiCall } from "../../../components/apiCall";
+import { apiCall, Divider } from "../../../components";
 import { Link } from "react-router-dom";
-import Divider from "../../../components/divider";
 
 const AboutUs = () => {
     const [ec, setEC] = useState([]);

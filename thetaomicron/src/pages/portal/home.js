@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiCall } from "../../components/apiCall";
+import { apiCall } from "../../components";
 
 
 const PortalHome = () => {

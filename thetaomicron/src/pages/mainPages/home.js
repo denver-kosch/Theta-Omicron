@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { apiCall } from "../../components/apiCall";
+import { apiCall } from '../../components';
 
 const Home = () => {
     const [events, setEvents] = useState([]);
@@ -18,7 +18,7 @@ const Home = () => {
 
     const EventPanel = () => {
         const eventCard = event => {
-            const {eventId, name, description, start, end, location} = event;
+            const {eventId, name, description, start, end, Location} = event;
             
             const FormatDates = ({date1, date2}) => {
                 const options = {
@@ -50,7 +50,7 @@ const Home = () => {
                             <FormatDates date1={new Date(start)} date2={new Date(end)}/>
                             <div className="location">
                                 <img src='/images/locPin.png' alt="pin"/>
-                                <p>{location}</p>
+                                <p>{Location.name}</p>
                             </div>
                             <p className="description">{description}</p>
                         </div>

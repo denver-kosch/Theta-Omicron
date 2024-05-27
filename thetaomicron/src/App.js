@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AboutUs from './pages/mainPages/about/about';
-import Navbar from './components/navbar';
+import { Navbar } from './components';
 import Rush from "./pages/mainPages/about/rush";
 import Directory from "./pages/mainPages/directory/dir";
 import FamilyTree from "./pages/mainPages/directory/familyTrees";
@@ -11,28 +11,12 @@ import {NavBar as PortalNav} from "./pages/portal/navbar";
 import Home from "./pages/mainPages/home";
 import Leadership from "./pages/mainPages/about/leadership";
 import Alumni from "./pages/mainPages/directory/alumni";
-import { useEffect, useState } from 'react';
-import { apiCall } from './components/apiCall';
 import Event from './pages/mainPages/eventDetails';
-import CreateEvent from './pages/portal/createEvent';
+import CreateEvent from './pages/portal/events/createEvent';
+import PortalEvent from './pages/portal/events/portalEvent';
 
 
 function App() {
-  const [eventIds, setEventIds] = useState([]);
-
-  //Get all events initially
-  useEffect(() => {
-      const initEvents = async () => {
-        const result = await apiCall("getEvents");
-        if (result && result.success) setEventIds(result.events);
-        else console.log("couldn't get events");
-      };
-      initEvents();
-  }, []);
-
-  const updateEvents = newEvent => setEventIds([...eventIds, newEvent]);
-
-
   return (
     <>
       <Router>
@@ -54,7 +38,10 @@ function App() {
             <Route path='position'>
               <Route path='redirect' element={<PortalNav> </PortalNav>}/>
             </Route>
-            <Route path="event/create" element={<Auth><PortalNav> <CreateEvent addEventId={updateEvents} /> </PortalNav></Auth>}/>
+            <Route path='event'>
+              <Route path="create" element={<Auth><PortalNav> <CreateEvent/> </PortalNav></Auth>}/>
+              <Route path=":id" element={<Auth><PortalNav> <PortalEvent/> </PortalNav></Auth>}/>
+            </Route>
           </Route>
           <Route path='event'>
             <Route path=':id' element={<Navbar> <Event/> </Navbar>}/>

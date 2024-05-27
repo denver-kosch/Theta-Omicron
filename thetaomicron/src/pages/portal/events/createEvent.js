@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
-import { apiCall } from "../../components/apiCall";
+import { useNavigate } from 'react-router-dom';
+import { apiCall } from "../../../components";
 
-const CreateEvent = ({addEventId}) => {
+const CreateEvent = () => {
+    const navigate = useNavigate();
     const [loaded, setLoaded] = useState(false);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [location, setLocation] = useState('');
+    const [locOptions, setLocOptions] = useState([]);
+    const [location, setLocation] = useState(-1);
+    const [newLocName, setNewLocName] = useState('');
+    const [newLocAddress, setNewLocAddress] = useState('');
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');
     const [image, setImage] = useState(null);
-    const [committee, setCommittee] = useState('');
+    const [committee, setCommittee] = useState('init');
     const [commOptions, setCommOptions] = useState([]);
-    const [visibility, setVisibility] = useState('');
+    const [visibility, setVisibility] = useState('init');
     
 
     useEffect(() => {
@@ -20,25 +25,42 @@ const CreateEvent = ({addEventId}) => {
             const res = await apiCall("getCommittees", {user: true}, {'Authorization': `Bearer ${token}`});
             setCommOptions(res.committees);
         };
+        const getLocations = async () => {
+            const locOptions = await apiCall('getLocations');
+            setLocOptions(locOptions.locations);
+        };
         fetchCommittees();
+        getLocations();
         setLoaded(true);
     },[]);
 
     const add = async e => {
         e.preventDefault();
+        const token = localStorage.getItem('token');
+
         const data = new FormData();
         data.append('name', name);
         data.append('description', description);
+
         data.append('location', location);
+        if (location === 0) {
+            const newLoc = {name: newLocName, address: newLocAddress};
+            data.append('newLoc', newLoc);
+        }
+
         data.append('start', start);
         data.append('end', end);
+
+        console.log(image);
         data.append('image', image);
         data.append('committee', committee);
         data.append('visibility', visibility);
         data.append('type', 'eventPosters');
 
-        const newEvent = await apiCall('addEvent', {data});
-        if (newEvent.success) addEventId(newEvent.eventId);
+        const newEvent = await apiCall('addEvent', data, {'Authorization': `Bearer ${token}`});
+        if (newEvent.success) {
+            navigate('/event/'+newEvent.newId);
+        }
         else console.error(newEvent.error);
     };
     
@@ -61,7 +83,7 @@ const CreateEvent = ({addEventId}) => {
                         id="description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        rows={3}
+                        rows={5}
                         />
                     </div>
 
@@ -69,8 +91,29 @@ const CreateEvent = ({addEventId}) => {
 
                     <div className="field">
                         <label htmlFor="location">Location: </label>
-                        <input type="text" id="location" value={location} onChange={(e) => setLocation(e.target.value)} />
+                        <select id="location" value={location} onChange={(e) => setLocation(parseInt(e.target.value))}>
+                            <option key='location-disabled' value={-1} disabled>Please select a location</option>
+                            {locOptions.map(location => {
+                                return <option key={location.locationId} value={location.locationId}>{location.name}</option>
+                            })}
+                            <option key='location-0' value={0}>Other</option>
+                        </select>
                     </div>
+
+                    {location === 0 ?
+                        <>
+                            <br/>
+                            <div className="field">
+                                <label htmlFor="locationName">New Location Name: </label>
+                                <input type="text" id="locationName" value={newLocName} onChange={(e) => setNewLocName(e.target.value)} />
+                            </div>
+                            <br/>
+                            <div className="field">
+                                <label htmlFor="locationAddress">New Location Address: </label>
+                                <input type="text" id="locationAddress" value={newLocAddress} onChange={(e) => setNewLocAddress(e.target.value)} />
+                            </div>
+                        </>:<></>
+                    }
 
                     <br/>
 
@@ -90,16 +133,17 @@ const CreateEvent = ({addEventId}) => {
 
                     <div className="field">
                         <label htmlFor="image">Image: </label>
-                        <input type="file" id="image" onChange={(e) => setImage(e.target.value)} accept="image/png, image/jpeg, image/jpg" />
+                        <input type="file" id="image" onChange={(e) => setImage(e.target.files[0])} accept="image/png, image/jpeg, image/jpg" />
                     </div>
 
                     <br/>
 
                     <div className="field">
-                        <label htmlFor="committee">Committee: </label>
+                        <label htmlFor="committee">Facilitating committee: </label>
                         <select id="committee" value={committee} onChange={(e) => setCommittee(e.target.value)}>
+                            <option key={"committee"} value='init' disabled>Please select a committee</option>
                             {commOptions.map(option => (
-                                <option key={option.id} value={option.id}>{option.name}</option>
+                                <option key={`committee-${option.committeeId}`} value={option.committeeId}>{option.name}</option>
                             ))}
                         </select>
                     </div>
@@ -109,6 +153,7 @@ const CreateEvent = ({addEventId}) => {
                     <div className="field">
                         <label htmlFor="visibility">Visibility: </label>
                         <select id="visibility" value={visibility} onChange={(e) => setVisibility(e.target.value)}>
+                            <option value='init' disabled>Please select event visibility</option>
                             <option value="Public">Public</option>
                             <option value="Members">Members Only</option>
                             <option value="Initiates">Initiates Only</option>
