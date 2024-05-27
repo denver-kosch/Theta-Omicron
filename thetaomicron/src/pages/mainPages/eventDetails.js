@@ -16,7 +16,7 @@ const Event = () => {
             const result = await apiCall(`getEventDetails`, {id});
             if (result && result.success) setEvent(result.event);
             
-            setGeocodeKey('AIzaSyAzHp0TVw9ILHRFcKQyBJMez7gRKKhTB9g');
+            setGeocodeKey(process.env.REACT_APP_GEO_API_KEY);
             fromAddress(`${result.event.Location.address}, ${result.event.Location.city}, ${result.event.Location.state} ${result.event.Location.zipcode}`)
             .then(({ results }) => {
                 const { lat, lng } = results[0].geometry.location;

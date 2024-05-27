@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {APIProvider, Map, Marker} from '@vis.gl/react-google-maps';
 
+
 export const Card = ({ name, emailLink, memberId, title }) => {
     const img = `/images/profilePics/${memberId}.jpg`;
 
@@ -22,7 +23,7 @@ export const Divider = () => <div className="divider"></div>;
 
 export const MapView = ({c}) => {
     return (
-        <APIProvider apiKey={'AIzaSyBCDVwpaqHkW18Sraojy_tVvn4F8BxIvas'}>
+        <APIProvider apiKey={process.env.REACT_APP_GOOGLE_API_KEY}>
             <Map
             className='map'
             center={c}
