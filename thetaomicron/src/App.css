@@ -91,18 +91,42 @@ footer .IG {
 }
 
 /* =========================== Home Page ========================= */
+.main {
+    display: grid;
+    grid-template-areas: 
+    "header header header header header header"
+    "left left center center right right"
+    "left left center center right right"
+    "left left bottom bottom right right";
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: 1fr 1.5fr 1.5fr 1fr;
+    width: 100%;
+}
+.main h1{
+    grid-area: header;
+}
+.main .right {
+    grid-area: right;
+    width: 100%;
+    height: 100%;
+}
 .eventPanel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    margin: 0 auto;
+    border: 1px solid var(--text-color);
+    padding: 0 20px 20px 20px;
+    height: 100%
+}
+.eventCards {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    width: 25%;
-    max-height: 100%;
-    margin-left: auto;
-    margin-right: 3%;
-    border: 1px solid var(--text-color);
     overflow-y: auto;
-    padding: 0 20px 20px 20px;
+    max-height: 100%;
 }
 .eventPanel a {
     text-decoration: none;
@@ -159,12 +183,6 @@ footer .IG {
     -webkit-line-clamp: 2; /* Number of lines to show */
     overflow: hidden;
     text-overflow: ellipsis;
-}
-.main {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 /* =========================== About Us Page ========================= */
@@ -332,6 +350,13 @@ footer .IG {
 }
 
 /* ======================== Directory Page ======================= */
+.directoryContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
 .topBar {
     display: flex;
     width: 90%;

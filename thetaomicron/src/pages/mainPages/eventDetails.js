@@ -62,7 +62,7 @@ const Event = () => {
                 </div>
             </div>
             <div className="poster">
-                <img src={'/images/crestC.png'} alt={event.name} />
+                <img src={event.imageUrl} alt={event.name} />
             </div>
             <div className="event-details">
                 <div className="description">

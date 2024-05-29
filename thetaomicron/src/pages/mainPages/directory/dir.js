@@ -16,7 +16,6 @@ const Directory = () => {
     setIsLoading(false);
     if (response && response.success) {
       setBrothers(response.brothers);
-      console.log(response);
     }
     else {
       setError("Could not load directory at this time");
@@ -39,7 +38,6 @@ const Directory = () => {
     const chapter = chunk(filteredData, 4);
 
     const renderBrother = brother => {
-      console.log(brother);
       const name = `${brother.firstName} ${brother.lastName}`;
       const img = `/images/profilePics/${brother.memberId}.jpg`;
       const positionsElements = brother.roles.map((position, index, array) => (
@@ -61,8 +59,8 @@ const Directory = () => {
       <tbody>
         {chapter.map((row, index) => 
           <tr key={index} className="directoryRow">
-            {row.map((item, idx) => <td>{renderBrother(item)}</td>)}
-            {row.length < 4 && new Array(4 - row.length).fill(null).map((_, idx) => <td></td>)}
+            {row.map((item, idx) => <td key={idx}>{renderBrother(item)}</td>)}
+            {row.length < 4 && new Array(4 - row.length).fill(null).map((_, idx) => <td key={idx}></td>)}
           </tr>
         )}
       </tbody>
@@ -70,7 +68,7 @@ const Directory = () => {
   };
 
   return (
-    <>
+    <div className="directoryContainer">
       <div className="topBar">
       <div>
           {/* <Link to="trees" className="famTree">
@@ -99,7 +97,7 @@ const Directory = () => {
       </table>
       }
       {(!isLoading && error !== '') && <h4 style={{color: 'red'}}>{error}</h4>}
-    </>
+    </div>
   );
 }
 

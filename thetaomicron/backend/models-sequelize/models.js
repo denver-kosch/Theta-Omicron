@@ -410,7 +410,7 @@ Event.init({
             key: 'locationId'
         },
     },
-    createdBy: {
+    lastUpdatedBy: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -418,7 +418,7 @@ Event.init({
             key: 'memberId'
         },
         onDelete: 'SET NULL',
-    }
+    },
 }, {
     sequelize,
     modelName: "Event",
@@ -459,7 +459,9 @@ Member.hasOne(Family, { as: 'Big', foreignKey: 'littleId' });
 
 //Event-Committee Relationship
 Event.belongsTo(EventType, {foreignKey: 'type'});
-EventType.belongsTo(Committee, {foreignKey: 'committee'});
+EventType.hasMany(Event, {foreignKey: 'type'});
+EventType.belongsTo(Committee, { foreignKey: 'committee' });
+Committee.hasMany(EventType, { foreignKey: 'committee' });
 
 // Event-Location Relationship
 Event.belongsTo(Location, { foreignKey: 'location'});

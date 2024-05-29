@@ -14,22 +14,23 @@ const CreateEvent = () => {
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');
     const [image, setImage] = useState(null);
-    const [committee, setCommittee] = useState('init');
-    const [commOptions, setCommOptions] = useState([]);
-    const [visibility, setVisibility] = useState('init');
+    const [type, setType] = useState('');
+    const [typeOptions, setTypeOptions] = useState([]);
+    const [visibility, setVisibility] = useState('');
     
 
     useEffect(() => {
-        const fetchCommittees = async () => {
+        const fetchTypes = async () => {
             const token = localStorage.getItem('token');
-            const res = await apiCall("getCommittees", {user: true}, {'Authorization': `Bearer ${token}`});
-            setCommOptions(res.committees);
+            const res = await apiCall("getTypes", {user: true}, {'Authorization': `Bearer ${token}`});
+            console.log(res)
+            setTypeOptions(res.types);
         };
         const getLocations = async () => {
             const locOptions = await apiCall('getLocations');
             setLocOptions(locOptions.locations);
         };
-        fetchCommittees();
+        fetchTypes();
         getLocations();
         setLoaded(true);
     },[]);
@@ -44,22 +45,19 @@ const CreateEvent = () => {
 
         data.append('location', location);
         if (location === 0) {
-            const newLoc = {name: newLocName, address: newLocAddress};
-            data.append('newLoc', newLoc);
+            data.append('newLocName', newLocName);
+            data.append('newLocAddress', newLocAddress);
         }
 
         data.append('start', start);
         data.append('end', end);
-
-        console.log(image);
         data.append('image', image);
-        data.append('committee', committee);
+        data.append('type', type);
         data.append('visibility', visibility);
-        data.append('type', 'eventPosters');
 
         const newEvent = await apiCall('addEvent', data, {'Authorization': `Bearer ${token}`});
         if (newEvent.success) {
-            navigate('/event/'+newEvent.newId);
+            navigate('/portal/event/'+newEvent.newId);
         }
         else console.error(newEvent.error);
     };
@@ -139,11 +137,11 @@ const CreateEvent = () => {
                     <br/>
 
                     <div className="field">
-                        <label htmlFor="committee">Facilitating committee: </label>
-                        <select id="committee" value={committee} onChange={(e) => setCommittee(e.target.value)}>
-                            <option key={"committee"} value='init' disabled>Please select a committee</option>
-                            {commOptions.map(option => (
-                                <option key={`committee-${option.committeeId}`} value={option.committeeId}>{option.name}</option>
+                        <label htmlFor="type">Facilitating committee: </label>
+                        <select id="type" value={type} onChange={(e) => setType(e.target.value)}>
+                            <option key={"type"} value='' disabled>Please select a committee</option>
+                            {typeOptions.map(option => (
+                                <option key={`type-${option.typeId}`} value={option.typeId}>{option.name}</option>
                             ))}
                         </select>
                     </div>
@@ -153,15 +151,15 @@ const CreateEvent = () => {
                     <div className="field">
                         <label htmlFor="visibility">Visibility: </label>
                         <select id="visibility" value={visibility} onChange={(e) => setVisibility(e.target.value)}>
-                            <option value='init' disabled>Please select event visibility</option>
+                            <option value='' disabled>Please select event visibility</option>
                             <option value="Public">Public</option>
                             <option value="Members">Members Only</option>
                             <option value="Initiates">Initiates Only</option>
-                            {commOptions.includes("Pledge Educator") &&
+                            {typeOptions.includes("Pledge Educator") &&
                             <option value="Pledges">Pledges Only</option>
                         }
                             <option value="Committee">Committee Only</option>
-                            {commOptions.includes("Executive Committee") &&
+                            {typeOptions.includes("Executive Committee") &&
                             <option value="Executive Committee">EC Only</option>
                         }
                         </select>

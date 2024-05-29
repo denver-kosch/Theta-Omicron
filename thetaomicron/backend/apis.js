@@ -2,25 +2,30 @@ import express from 'express';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
+import sharp from 'sharp';
 import jwt from 'jsonwebtoken';
-import { Member, Officer, Committee, Role, Event, Location, EventType } from './models-sequelize/models.js';
+import { Member, Officer, Committee, Role, Event, Location, EventType, CommitteeMember } from './models-sequelize/models.js';
 import sequelize from './models-sequelize/sequelize_instance.js';
 import { Op } from 'sequelize';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { appendImgPath } from './functions.js';
 
 const app = express();
 const storage = multer.memoryStorage(); // Storing files in memory
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-dotenv.config();
 const port = process.env.SERVERPORT  || 3001;
 const host = process.env.HOST || 'localhost';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+dotenv.config();
 
 sequelize.sync({alter: true}).then(() => {
   console.log("Database synchronized");
@@ -53,7 +58,7 @@ app.post('/auth', async (req, res) => {
   if (!token) return res.status(200).json({valid: false, success: false});
   try{
     const payload = jwt.verify(token, process.env.SESSION_SECRET);
-    return res.status(200).json({valid: true, success:true});
+    return res.status(200).json({success:true});
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError)
     return res.status(200).json({valid: false, message: 'Token Expired', success: false});
@@ -145,7 +150,7 @@ app.post("/getBros", async (req, res) => {
   
       // Append all committee roles
       Committees.forEach(committee => {
-          roles.push({ 
+          if (committee.name !== "Executive Committee") roles.push({ 
               type: 'Committee', 
               title: committee.CommitteeMember.isChairman ? committee.name.replace(/Committee/g, 'Chairman') : committee.name
           });
@@ -181,11 +186,20 @@ app.post("/getBro", async (req, res) => {
 
 app.post("/getEvents", async (req, res) => {
   try {
-
     const days = req.body.days || false;
     const vis = req.body.vis || 'Public';
     const mandatory = req.body.mandatory || false;
-    const upcoming = (req.body.days) ? await Event.findAll({
+    const status = req.body.status;
+    const where = {};
+    if (days) where.start = {
+      [Op.gte]: new Date(),
+      [Op.lte]: new Date(new Date().setDate(new Date().getDate() + days))
+    };
+    if (vis) where.visibility = vis;
+    if (mandatory) where.mandatory = mandatory;
+    if (status) where.status = status;
+
+    const events = await Event.findAll({
         where: {
           start: {
             [Op.gte]: new Date(),
@@ -203,43 +217,65 @@ app.post("/getEvents", async (req, res) => {
               attributes: ['name', 'address', 'city', 'state', 'zipCode'],
             },
         ]
-    }): 
-    await Event.findAll({
-      where: {
-        visibility: vis,
-        approved: true
-      },
-      attributes: {
-        include: ['eventId']
-      }
     });
-    res.status(200).json({ success: true, events: upcoming })
+
+    for (let i=0; i<events.length; i++) events[i] = appendImgPath(events[i], __dirname,'events');
+    
+    res.status(200).send({ success: true, events: events })
   } catch (error) {
-    res.status(200).json({ success: false, error: error.message });
+    res.status(404).json({ success: false, error: error.message });
   }
 });
 
 app.post("/getCommittees", async (req, res) => {
   try {
-    //if searching for user's committees, get committees of user, otherwise get all comittees
-    let committees = false;
-    if (req.body.user && req.body.user == true) {
+      let committees = false;
       let authHeader = req.headers['authorization'];
       let token = authHeader && authHeader.split(' ')[1];
       const memberId = jwt.verify(token, process.env.SESSION_SECRET).memberId;
-      committees = await Committee.findAll(
-        {include: [{
+      let inclusions = [];
+
+      if (req.body.user) inclusions.push({
           model: Member,
-          where: { memberId },
-          attributes: []
-          
-      }]}
-      );
-    }
-    else committees = await Committee.findAll();
+          attributes: [],
+          where: {memberId}
+        });
+      
+      committees = await Committee.findAll({include: inclusions});
+
     
     if (committees) res.status(200).json({ success: true, committees: committees });
     else throw Error("Committees not found");
+  } catch (error) {
+    res.status(200).json({ success: false, error: error.message });
+  }
+});
+
+app.post("/getTypes", async (req, res) => {
+  try {
+    let types = false;
+    let authHeader = req.headers['authorization'];
+    let token = authHeader && authHeader.split(' ')[1];
+    const memberId = jwt.verify(token, process.env.SESSION_SECRET).memberId;
+    console.log(memberId)
+    const sql = `
+      SELECT e.typeId, e.name 
+      FROM EventTypes e 
+      WHERE e.committee IN (
+        SELECT c.committeeId 
+        FROM Committees c 
+        JOIN CommitteeMembers cm ON c.committeeId = cm.committeeId 
+        WHERE cm.memberId = ?
+      );
+    `;
+
+    types = req.body.user ? await sequelize.query(sql, {
+      replacements: [memberId],
+      type: sequelize.QueryTypes.SELECT
+    }) : await EventType.findAll({attributes: ['typeId', 'name']});
+
+    if (types) res.status(200).json({ success: true, types: types });
+    else throw Error("Types not found");
   } catch (error) {
     res.status(200).json({ success: false, error: error.message });
   }
@@ -257,7 +293,7 @@ app.post('/getLocations', async (req, res) => {
 
 app.post("/getEventDetails", async (req, res) => {
   try {
-    const event = await Event.findOne({
+    let event = await Event.findOne({
       where: {
         eventId: req.body.id
       },
@@ -276,10 +312,13 @@ app.post("/getEventDetails", async (req, res) => {
           }
       ]
   });
-  if (event) res.status(200).json({ success: true, event: event });
+  if (event) {
+    event = appendImgPath(event, __dirname,'events');
+    res.status(200).json({ success: true, event: event });
+  }
   else throw Error("Event not found");
   } catch (error) {
-    res.status(200).json({ success: false, error: error.message });
+    res.status(404).json({ success: false, error: error.message });
   }
 });
 
@@ -323,25 +362,29 @@ app.post('/addEvent', upload.single('image'), async (req, res) => {
     
     const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
     const {memberId} = jwt.verify(token, process.env.SESSION_SECRET);
-    const {name, description, start, end, type, visibility, committee} = req.body;
+    const {name, description, start, end, committee, visibility} = req.body;
     let {location} = req.body;
     
     if (location == 0) {
-      const {newLoc} = req.body.data;
-      const [address, city, sz] = newLoc.address.split(', ');
+      const {newLocName, newLocAddress} = req.body;
+      const [address, city, sz] = newLocAddress.split(', ');
       const [state, zipCode] = sz.split(' ');
-      const loc = await Location.create({ address, city, state, zipCode, name: newLoc.name });
-      location = loc.locationId;
+      location = (await Location.create({ address, city, state, zipCode, name: newLocName })).locationId;
     }
-9
-    const event = await Event.create({name, description, start, end, type, location, facilitatingCommittee: committee, visibility, createdBy: memberId});
+    const type = (await EventType.findOne({where: {committee}})).typeId;
+
+    const event = await Event.create({name, description, start, end, type, location, visibility, createdBy: memberId});
     
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const uploadPath = path.join(__dirname,'images','eventPosters', `${event.eventId}${path.extname(req.file.originalname)}`);
+    const folderPath = path.join(__dirname,'images','events');
+    if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
+    const uploadPath = path.join(folderPath, `${event.eventId}${path.extname(req.file.originalname)}`);
 
     // Save the file from memory to disk
-    fs.writeFileSync(uploadPath, req.file.buffer);
+    await sharp(req.file.buffer)
+      .jpeg({ quality: 90 }) // You can adjust the quality as needed
+      .toFile(uploadPath);
 
     res.status(201).json({ success: true, newId: event.eventId});
   } catch (error) {
@@ -362,4 +405,20 @@ app.post('/expel', async (req, res) => {
   } catch (error) {
     res.status(200).json({ success: false, error: error.message });
   }
+});
+
+app.post('/updateEvent', async (req, res) => {
+  let {eventId, name, description, start, end, type, visibility, location} = req.body;
+  if (location == 0) {
+    const {newLocName, newLocAddress} = req.body;
+    const [address, city, sz] = newLocAddress.split(', ');
+    const [state, zipCode] = sz.split(' ');
+    location = (await Location.create({ address, city, state, zipCode, name: newLocName })).locationId;
+  }
+  let updates = {};
+
+
+  const event = await Event.update(
+  
+  );
 });

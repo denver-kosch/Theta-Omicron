@@ -11,7 +11,7 @@ const Auth = ({children}) => {
         const checkAuth = async () => {
             const token = localStorage.getItem('token');
             const result = await apiCall('auth', {}, {'Authorization': `Bearer ${token}`});
-            setIsAuthenticated(result && result.valid);
+            setIsAuthenticated(result && result.success);
         };
         checkAuth();
     }, [location]);

@@ -128,7 +128,7 @@ export async function apiCall (api, body = {}, headers = {}) {
         };
         const result = await fetch(apiLink, fetchOptions);
         
-        if (result.status === 200) return result.json();
+        if (result.status >= 200 && result.status < 300) return result.json();
         
         const errorData = await result.text();  // Get the error message if not OK
         throw new Error(errorData);
