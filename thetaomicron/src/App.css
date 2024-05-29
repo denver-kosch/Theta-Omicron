@@ -94,10 +94,10 @@ footer .IG {
 .main {
     display: grid;
     grid-template-areas: 
-    "header header header header header header"
+    "left left header header right right"
     "left left center center right right"
     "left left center center right right"
-    "left left bottom bottom right right";
+    "bottom bottom bottom bottom bottom bottom";
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: 1fr 1.5fr 1.5fr 1fr;
     width: 100%;
@@ -118,18 +118,20 @@ footer .IG {
     margin: 0 auto;
     border: 1px solid var(--text-color);
     padding: 0 20px 20px 20px;
-    height: 100%
+    height: 100%;
 }
 .eventCards {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
     overflow-y: auto;
-    max-height: 100%;
+    height: 100%;
+    max-height: 400px;
 }
-.eventPanel a {
+.eventCards a {
     text-decoration: none;
+    min-width: fit-content;
+    width: 100%;
 }
 .eventCard {
     display: flex;
@@ -137,9 +139,13 @@ footer .IG {
     justify-content: center;
     align-items: center;
     width: 94%;
+    height: 100px;
     padding: 2.5%;
     border: 1px solid red;
     border-radius: 10px;
+}
+.eventCards a:not(:last-child) {
+    margin-bottom: 10px;
 }
 .eventCard > img {
     max-width: 18%;

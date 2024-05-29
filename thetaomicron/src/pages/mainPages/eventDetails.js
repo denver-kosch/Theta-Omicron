@@ -8,6 +8,7 @@ const Event = () => {
     const { id } = useParams();
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
+    //default value is lakeside 115
     const [lat, setLat] = useState(39.99832093770602);
     const [lng, setLng] = useState(-81.73459124217224);
 

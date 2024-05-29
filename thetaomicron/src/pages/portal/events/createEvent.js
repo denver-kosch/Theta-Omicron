@@ -70,7 +70,7 @@ const CreateEvent = () => {
                 <form onSubmit={add}>
                     <div className="field">
                         <label htmlFor="name">Name: </label>
-                        <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
+                        <input required type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
                     </div>
 
                     <br/>
@@ -103,12 +103,12 @@ const CreateEvent = () => {
                             <br/>
                             <div className="field">
                                 <label htmlFor="locationName">New Location Name: </label>
-                                <input type="text" id="locationName" value={newLocName} onChange={(e) => setNewLocName(e.target.value)} />
+                                <input required type="text" id="locationName" value={newLocName} onChange={(e) => setNewLocName(e.target.value)} />
                             </div>
                             <br/>
                             <div className="field">
                                 <label htmlFor="locationAddress">New Location Address: </label>
-                                <input type="text" id="locationAddress" value={newLocAddress} onChange={(e) => setNewLocAddress(e.target.value)} />
+                                <input required type="text" id="locationAddress" value={newLocAddress} onChange={(e) => setNewLocAddress(e.target.value)} />
                             </div>
                         </>:<></>
                     }
@@ -117,21 +117,21 @@ const CreateEvent = () => {
 
                     <div className="field">
                         <label htmlFor="start">Start: </label>
-                        <input type="datetime-local" id="start" value={start} onChange={(e) => setStart(e.target.value)} />
+                        <input required type="datetime-local" id="start" value={start} onChange={(e) => setStart(e.target.value)} />
                     </div>
 
                     <br/>
 
                     <div className="field">
                         <label htmlFor="end">End: </label>
-                        <input type="datetime-local" id="end" value={end} onChange={(e) => setEnd(e.target.value)} />
+                        <input required type="datetime-local" id="end" value={end} onChange={(e) => setEnd(e.target.value)} />
                     </div>
 
                     <br/>
 
                     <div className="field">
                         <label htmlFor="image">Image: </label>
-                        <input type="file" id="image" onChange={(e) => setImage(e.target.files[0])} accept="image/png, image/jpeg, image/jpg" />
+                        <input required type="file" id="image" onChange={(e) => setImage(e.target.files[0])} accept="image/png, image/jpeg, image/jpg" />
                     </div>
 
                     <br/>
@@ -167,7 +167,7 @@ const CreateEvent = () => {
 
                     <br/>
 
-                    <input type="submit" value="Create"/>
+                    <input required type="submit" value="Create"/>
                 </form>
                 
             </div> :

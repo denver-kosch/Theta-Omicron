@@ -42,7 +42,7 @@ const Home = () => {
                 if (datePart1 === datePart2)
                     return <p>{datePart1}<br/>{`${timePart1} - ${timePart2}`}</p>;
                 
-                return <p>{`${datePart1} ${timePart1} - ${datePart2} ${timePart2}`}</p>;
+                return <p>{`${datePart1} ${timePart1} -`}<br/>{`${datePart2} ${timePart2}`}</p>;
             };
 
             return (

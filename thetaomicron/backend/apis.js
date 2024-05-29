@@ -362,7 +362,7 @@ app.post('/addEvent', upload.single('image'), async (req, res) => {
     
     const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
     const {memberId} = jwt.verify(token, process.env.SESSION_SECRET);
-    const {name, description, start, end, committee, visibility} = req.body;
+    const {name, description, start, end, type, visibility} = req.body;
     let {location} = req.body;
     
     if (location == 0) {
@@ -371,13 +371,12 @@ app.post('/addEvent', upload.single('image'), async (req, res) => {
       const [state, zipCode] = sz.split(' ');
       location = (await Location.create({ address, city, state, zipCode, name: newLocName })).locationId;
     }
-    const type = (await EventType.findOne({where: {committee}})).typeId;
 
-    const event = await Event.create({name, description, start, end, type, location, visibility, createdBy: memberId});
+    const event = await Event.create({name, description, start, end, type, location, visibility, lastUpdatedBy: memberId});
     
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const folderPath = path.join(__dirname,'images','events');
+    const folderPath = path.join(__dirname, 'public','images','events');
     if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
     const uploadPath = path.join(folderPath, `${event.eventId}${path.extname(req.file.originalname)}`);
 
