@@ -3,9 +3,11 @@ This repository stores a WIP web application designed for usage by the Brothers 
 This project is currently being developed exclusively by (as new contributors arise, they will be included here, along with their contributions):
 * Brother Denver Kosch '22 (Full Stack)
 
+
 Using: 
+* SERN Stack, Transitioning to MERN Stack
 * Front End - React
 * Back End - Node.js
     * APIs are custom built for educational purposes, as well as customized security
-* Database - MySQL
+* Database - MySQL (Transitioning to MongoDB)
 * Mobile App - React Native
