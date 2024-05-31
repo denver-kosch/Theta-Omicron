@@ -566,7 +566,7 @@ nav {
 /* ======================= Event Details Page ====================== */
 .event {
     display: grid;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: min-content min-content 1fr;
     grid-template-columns: 2fr 1fr;
     grid-template-areas: 
     "title graphic"
@@ -579,10 +579,11 @@ nav {
     grid-area: graphic;
     width: auto;
     max-height: 50vh;
+    margin-bottom: 20px;
 }
 .event > .poster img {
     max-width: 100%;
-    max-height: 99%;
+    max-height: 100%;
     object-fit: contain;
 }
 .event > .title {
@@ -612,14 +613,14 @@ nav {
     flex-direction: column;
     align-items: center;
 }
+.event > .location .map {
+    height: 300px;
+    width: 300px;
+    border: 1px solid var(--text-color);
+}
 .event > .similar {
     grid-area: similar;
     text-align: center;
     display:flex;
     flex-direction: column;
-}
-.event > .location .map {
-    height: 300px;
-    width: 300px;
-    border: 1px solid var(--text-color);
 }

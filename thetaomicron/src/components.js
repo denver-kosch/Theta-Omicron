@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {APIProvider, Map, Marker} from '@vis.gl/react-google-maps';
 
 
-export const Card = ({ name, emailLink, memberId, title }) => {
+export const MemberCard = ({ name, emailLink, memberId, title }) => {
     const img = `/images/profilePics/${memberId}.jpg`;
 
     return (
@@ -137,3 +137,12 @@ export async function apiCall (api, body = {}, headers = {}) {
         return error;
     }
 };
+
+export const EventCard = ({event}) => {
+
+    return (
+        <div className="eventCard">
+            <Link className="navLink" to={`/events/${event.id}`}></Link>
+        </div>
+    )
+}

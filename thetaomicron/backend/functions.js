@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 
-dotenv.config();
-const port = process.env.SERVERPORT  || 3001;
+
+const port = process.env.PORT || 3001;
 const host = process.env.HOST || 'localhost';
 
 export const appendImgPath = (obj, dirname, imgFolder) => {

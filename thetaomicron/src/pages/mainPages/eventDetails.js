@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { apiCall, MapView } from "../../components";
+import { apiCall, MapView, EventCard } from "../../components";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
 
 
@@ -8,6 +8,7 @@ const Event = () => {
     const { id } = useParams();
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [similars, setSimilars] = useState([]);
     //default value is lakeside 115
     const [lat, setLat] = useState(39.99832093770602);
     const [lng, setLng] = useState(-81.73459124217224);
@@ -15,7 +16,10 @@ const Event = () => {
     useEffect(() => {
         const fetchEventDetails = async () => {
             const result = await apiCall(`getEventDetails`, {id});
-            if (result && result.success) setEvent(result.event);
+            if (result && result.success) {
+                setEvent(result.event);
+                setSimilars(result.similar);
+            }
             
             setGeocodeKey(process.env.REACT_APP_GEO_API_KEY);
             fromAddress(`${result.event.Location.address}, ${result.event.Location.city}, ${result.event.Location.state} ${result.event.Location.zipcode}`)
@@ -77,7 +81,9 @@ const Event = () => {
             <div className="similar">
                 <h3>Similar Events</h3>
                 <div className="similar-events">
-
+                    {similars.map((event) => (
+                        <EventCard key={event.eventId} event={event} />
+                    ))}
                 </div>
             </div>
         </div>
