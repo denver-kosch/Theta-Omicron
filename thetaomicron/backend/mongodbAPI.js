@@ -9,6 +9,7 @@ import { getLocalIP } from './start.js';
 import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { ObjectId } from 'mongodb';
 import { appendImgPathMongoDB } from './functions.js';
 import connectDB from './mongoDB/db.js';
 import { check } from 'express-validator';
@@ -303,23 +304,6 @@ app.post("/getCommittees", async (req, res) => {
   }
 });
 
-app.post("/getTypes", [
-  check('user').optional().isBoolean()
-], async (req, res) => {
-  try {
-    let memberId = false;
-    if (req.body.user) memberId = req.headers['authorization'] && jwt.verify(req.headers['authorization'].split(' ')[1], process.env.SESSION_SECRET).memberId;
-    
-    const types = Committee.find(memberId ? {}: {});
-    
-
-    if (types) res.status(200).json({ success: true, types: types });
-    else throw Error("Types not found");
-  } catch (error) {
-    res.status(200).json({ success: false, error: error.message });
-  }
-});
-
 app.post('/getLocations', async (req, res) => {
   try {
     let locations = await Location.find({});
@@ -332,84 +316,55 @@ app.post('/getLocations', async (req, res) => {
 
 app.post("/getEventDetails", async (req, res) => {
   try {
-
-    let event1 = await Event.findOne({
-      where: {
-        eventId: req.body.id
+    let event = (await Event.aggregate([
+      { 
+        $match: { _id: new ObjectId(String(req.body.id)) }
       },
-      attributes: {
-        include: ['name', 'description', 'start', 'end', 'location', 'type'],
-        exclude: ['location', 'createdBy','updatedAt', 'createdAt', 'status']
-      },
-      include: [
-          {
-            model: Location,
-            attributes: ['name', 'address', 'city', 'state', 'zipCode'],
-          },
-          {
-            model: EventType,
-            attributes: ['name'],
-            include: [{
-              model: Committee,
-              attributes: ['name', 'committeeId'],
-            }]
-          }
-      ]
-    });
-
-    let event = await Event.aggregate([
-      { $match: { eventId: req.body.id } },
       { 
         $lookup: { 
           from: "committees", 
           localField: "committeeId", 
           foreignField: "_id",
           as: "committee"
-        },
+        }
+      },
+      {
         $lookup: {
           from: "locations",
-          localField: "location",
+          localField: "locationId",
           foreignField: "_id",
           as: "location"
         }
       },
-      {
-        $unwind: "$committee"
-      },
+      { $unwind: "$location" },
+      { $unwind: "$committee" },
       {
         $project: {
-          _id: 0,
           name: 1,
           description: 1,
           time: 1,
-          location: "$location",
-          committee: "$committee"
-        }
-      },
-      {
-        $project: {
+          committeeId: 1,
           location: {
-            _id: 0,
-            name: 1,
-            address: 1,
-            city: 1,
-            state: 1,
-            zip: 1
+            name: "$location.name",
+            address: "$location.address",
+            city: "$location.city",
+            state: "$location.state",
+            zip: "$location.zip"
           },
-          committee: {
-            name: 1,
-            eventType: 1
-          }
+          type: "$committee.eventType"
         }
       }
-    ]);
-    console.log(event);
-    //Get similar events (Same Type, but not the same id)
+    ]))[0];
+
+    //Get poster and similar events (Same Type, but not the same id)
     if (event) {
-      event = appendImgPathMongoDB(event, __dirname,'events');
-    res.status(200).json({ success: true, event: event, similar: similar});
-  }
-  else throw Error("Event not found");
+      const similar = await Event.find({committeeId: event.committeeId, _id: {$ne: new Object(event._id)}});
+      event = appendImgPathMongoDB(event, __dirname, 'events');
+
+      console.log("similar: ", similar);
+      res.status(200).json({ success: true, event: event, similar});
+    }
+    else throw Error("Event not found");
   } catch (error) {
     res.status(404).json({ success: false, error: error.message });
   }

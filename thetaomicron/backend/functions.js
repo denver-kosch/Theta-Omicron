@@ -42,5 +42,6 @@ export const appendImgPathMongoDB = (obj, dirname, imgFolder) => {
   }
 
   obj.imageUrl = `http://${host}:${port}${imageUrl}`;
+  console.log(obj);
   return obj;
 };

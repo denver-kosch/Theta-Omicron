@@ -118,7 +118,7 @@ export const DropDown = ({content}) => {
 
 export async function apiCall (api, body = {}, headers = {}) {
     const apiLink = `${process.env.REACT_APP_API_URL}/${api}`;
-
+    
     const isFormData = body instanceof FormData;
     try {
         const fetchOptions = {

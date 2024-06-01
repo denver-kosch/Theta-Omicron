@@ -18,11 +18,12 @@ const Event = () => {
             const result = await apiCall(`getEventDetails`, {id});
             if (result && result.success) {
                 setEvent(result.event);
-                setSimilars(result.similar);
+                // setSimilars(result.similar);
             }
+            else console.log(result);
             
             setGeocodeKey(process.env.REACT_APP_GEO_API_KEY);
-            fromAddress(`${result.event.Location.address}, ${result.event.Location.city}, ${result.event.Location.state} ${result.event.Location.zipcode}`)
+            fromAddress(`${result.event.location.address}, ${result.event.location.city}, ${result.event.location.state} ${result.event.location.zip}`)
             .then(({ results }) => {
                 const { lat, lng } = results[0].geometry.location;
                 setLat(lat);
@@ -60,10 +61,10 @@ const Event = () => {
             <div className="title">
                 <div className="head">
                     <h1 style={{marginRight: '2%'}}>{event.name}</h1>
-                    <h5>({event.EventType.name})</h5>
+                    <h5>({event.type})</h5>
                 </div>
                 <div className="time">
-                    <FormatDates date1={new Date(event.start)} date2={new Date(event.end)}/>
+                    <FormatDates date1={new Date(event.time.start)} date2={new Date(event.time.end)}/>
                 </div>
             </div>
             <div className="poster">
