@@ -24,9 +24,9 @@ const Home = () => {
 
     const EventPanel = () => {
         const eventCard = event => {
-            const {eventId, name, description, start, end, Location, imageUrl} = event;
-            console.log(imageUrl);
-            const FormatDates = ({date1, date2}) => {
+            const {_id, name, description, time, location, imageUrl} = event;
+
+            const FormatTime = ({date1, date2}) => {
                 const options = {
                   month: "numeric",
                   day: "numeric",
@@ -46,15 +46,15 @@ const Home = () => {
             };
 
             return (
-                <Link to={`/event/${eventId}`} key={eventId}>
+                <Link to={`/event/${_id}`} key={_id}>
                     <div className="eventCard">
-                        <img src={imageUrl || `http://${process.env.REACT_APP_SERVERHOST}:${process.env.REACT_APP_SERVERPORT}/images/events/default.png`} alt={name}/>
+                        <img src={imageUrl || `${process.env.REACT_APP_API_URL}/images/events/default.png`} alt={name}/>
                         <div>
                             <p style={{fontWeight: 'bold'}}>{name}</p>
-                            <FormatDates date1={new Date(start)} date2={new Date(end)}/>
+                            <FormatTime date1={new Date(time.start)} date2={new Date(time.end)}/>
                             <div className="location">
                                 <img src='/images/locPin.png' alt="pin"/>
-                                <p>{Location.name}</p>
+                                <p>{location}</p>
                             </div>
                             <p className="description">{description}</p>
                         </div>

@@ -5,12 +5,14 @@ import cors from 'cors';
 import sharp from 'sharp';
 import multer from 'multer';
 import path from 'path';
+import { getLocalIP } from './start.js';
 import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
-import { appendImgPath } from './functions.js';
-import { connectDB, getDB } from './mongoDB/db.js';
-import { body } from 'express-validator';
+import { appendImgPathMongoDB } from './functions.js';
+import connectDB from './mongoDB/db.js';
+import { check } from 'express-validator';
+import { Event, Member, Location, Committee } from './mongoDB/models.js';
 
 dotenv.config();
 const app = express();
@@ -18,12 +20,11 @@ const storage = multer.memoryStorage(); // Storing files in memory
 const upload = multer({ storage });
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT  || 3001;
-const host = process.env.HOST || 'localhost';
+const host = getLocalIP() || 'localhost';
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
-
 
 //connect to db, then listen to port
 (async () => {
@@ -38,15 +39,16 @@ app.use(cors());
 })();
 
 /* ================== Login / Authorization ================== */
+//Finished
 app.post('/login', [
-  body('email').trim().isEmail(),
+  check('email').trim().isEmail(),
   // ExpressValidator.check('password').isLength({ min: 5 }) // Will implement when we eventually add length requirement
 ], async (req, res) => {
   try {
-    const db = getDB();
     const { email, password } = req.body;
 
-    const member = await db.collection('Members').findOne({ 'contactInfo.email': email }, {projection: {_id: 1, password: 1}});
+    // const member = await db.collection('Members').findOne({ 'contactInfo.email': email }, {projection: {_id: 1, password: 1}});
+    const member = await Member.findOne({'contactInfo.email': email}, '_id password');
 
     if (member && await bcrypt.compare(password, member.password)) {
       const token = jwt.sign({memberId: member._id}, process.env.SESSION_SECRET, {expiresIn: '1h'});
@@ -57,7 +59,7 @@ app.post('/login', [
     return res.status(500).json({success: false, error: `Internal server error: ${error.message}`});
   }
 });
-
+//Finished
 app.post('/auth', async (req, res) => {
   let authHeader = req.headers['authorization'];
   let token = authHeader && authHeader.split(' ')[1];
@@ -78,7 +80,40 @@ app.post('/auth', async (req, res) => {
 /* ================== Getters ================== */
 app.post("/getRush", async (req, res) => {
   try {
-    const rushCommittee = await Committee.findAll({
+
+    const rushCommittee = await Committee.aggregate([
+      {
+        $match: {name: "Rush Committee"}
+      },
+      {
+        $lookup: {
+          from: "members",
+          localField: "members",
+          foreignField: "_id",
+          as: "members"
+        }
+      },
+      {
+        $lookup: {
+          from: "members",
+          localField: "supervisingOfficer",
+          foreignField: "_id",
+          as: "gmc"
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          members: "$members",
+          gmc: '$gmc',
+        }
+      }
+    ]);
+
+    console.log(rushCommittee);
+
+    /* const rushCommittee1 = await Committee.findAll({
       where: { committeeId: 4 },  // Updated to the specific committeeId you mentioned
       include: [
           {
@@ -102,8 +137,8 @@ app.post("/getRush", async (req, res) => {
           }
       ],
       attributes: ['committeeId', 'name']  // Fetch committee ID and name
-    });
-    res.status(200).json({success: true, members: rushCommittee[0], msg: "Got Rush Committee!"});
+    }); */
+    res.status(200).json({success: true, members: rushCommittee, msg: "Got Rush Committee!"});
   } catch (error) {
     res.status(200).json({success: false, error: error.message });
   }
@@ -176,64 +211,67 @@ app.post("/getBros", async (req, res) => {
     res.status(200).json({success: false, error: error.message });
   }
 });
-
+//Finished
 app.post("/getBro", async (req, res) => {
   try {
     const token = req.headers['authorization'].split(' ')[1];
-    const _id = (jwt.verify(token, process.env.SESSION_SECRET)).memberId;
+    const _id = String((jwt.verify(token, process.env.SESSION_SECRET)).memberId);
 
-    const db = getDB();
-    const brother = await db.collection('Members').findOne({ _id }, {projection: {
-      _id: 0,
-      status: 1,
-      lastName: 1
-    }});
-
-    console.log(brother);
+    const brother = await Member.findById(_id, 'status lastName positions');
 
     res.status(200).json({success: true, info: brother});
   } catch (error) {
     res.status(404).json({ success: false, error: error.message });
   }
 });
-
-app.post("/getEvents", async (req, res) => {
+//Finished
+app.post("/getEvents", [
+  check('vis').optional().trim(),
+  check('days').optional().isNumeric(),
+  check('mandatory').optional().isBoolean()
+], async (req, res) => {
   try {
-    const days = req.body.days || false;
-    const vis = req.body.vis || 'Public';
-    const mandatory = req.body.mandatory || false;
-    const status = req.body.status;
-    const where = {};
-    if (days) where.start = {
-      [Op.gte]: new Date(),
-      [Op.lte]: new Date(new Date().setDate(new Date().getDate() + days))
-    };
-    if (vis) where.visibility = vis;
-    if (mandatory) where.mandatory = mandatory;
-    if (status) where.status = status;
-
-    const events = await Event.findAll({
-        where: {
-          start: {
-            [Op.gte]: new Date(),
-            [Op.lte]: new Date(new Date().setDate(new Date().getDate() + days))
-          },
-          visibility: vis,
-          status: "Approved",
-        },
-        attributes: {
-          include: ['eventId', 'name', 'description', 'start', 'end', 'location']
-        },
-        include: [
-            {
-              model: Location,
-              attributes: ['name', 'address', 'city', 'state', 'zipCode'],
-            },
-        ]
-    });
-
-    for (let i=0; i<events.length; i++) events[i] = appendImgPath(events[i], __dirname,'events');
+    const { vis, days, mandatory, status } = req.body;
+    const query = [];
+    if (vis) query.push({visibility: vis});
+    if (days) {
+      query.push({ "time.start": {
+        $gte: new Date(),
+        $lte: new Date(new Date().setDate(new Date().getDate() + days))
+      }});
+    }
+    if (typeof mandatory == 'boolean') query.push({mandatory});
+    if (status) query.push({status});
     
+    // const events = await Event.find((query.length > 0) ? {$and: query}: {});
+    const events = await Event.aggregate([
+      {$match:(query.length > 0) ? {$and: query}: {}},
+      {
+        $lookup: {
+          from: 'locations', // Assuming 'locations' is the name of your collection
+          localField: 'locationId',
+          foreignField: '_id',
+          as: 'locationDetails'
+        }
+      },
+      {
+        $unwind: {
+          path: '$locationDetails'
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          description: 1,
+          time: 1,
+          location: '$locationDetails.name',
+        }
+      }
+    ]);
+
+    for (let i=0; i<events.length; i++) events[i] = appendImgPathMongoDB(events[i], __dirname, 'events');
+
     res.status(200).send({ success: true, events: events })
   } catch (error) {
     res.status(404).json({ success: false, error: error.message });
@@ -265,31 +303,15 @@ app.post("/getCommittees", async (req, res) => {
   }
 });
 
-app.post("/getTypes", async (req, res) => {
+app.post("/getTypes", [
+  check('user').optional().isBoolean()
+], async (req, res) => {
   try {
-    let types = false;
-    const sql = `
-    SELECT e.typeId, e.name 
-    FROM EventTypes e 
-    WHERE e.committee IN (
-      SELECT c.committeeId 
-      FROM Committees c 
-      JOIN CommitteeMembers cm ON c.committeeId = cm.committeeId 
-      WHERE cm.memberId = ?
-    );
-    `;
-    let memberId;
-
-    if (req.body.user) {
-      let authHeader = req.headers['authorization'];
-      let token = authHeader && authHeader.split(' ')[1];
-      memberId = jwt.verify(token, process.env.SESSION_SECRET).memberId;
-    }
-
-    types = req.body.user ? await sequelize.query(sql, {
-      replacements: [memberId],
-      type: sequelize.QueryTypes.SELECT
-    }) : await EventType.findAll({attributes: ['typeId', 'name']});
+    let memberId = false;
+    if (req.body.user) memberId = req.headers['authorization'] && jwt.verify(req.headers['authorization'].split(' ')[1], process.env.SESSION_SECRET).memberId;
+    
+    const types = Committee.find(memberId ? {}: {});
+    
 
     if (types) res.status(200).json({ success: true, types: types });
     else throw Error("Types not found");
@@ -300,7 +322,7 @@ app.post("/getTypes", async (req, res) => {
 
 app.post('/getLocations', async (req, res) => {
   try {
-    let locations = await Location.findAll();
+    let locations = await Location.find({});
     if (locations) res.status(200).json({ success: true, locations: locations });
     else throw Error("Locations not found");
   } catch (error) {
@@ -310,7 +332,8 @@ app.post('/getLocations', async (req, res) => {
 
 app.post("/getEventDetails", async (req, res) => {
   try {
-    let event = await Event.findOne({
+
+    let event1 = await Event.findOne({
       where: {
         eventId: req.body.id
       },
@@ -333,24 +356,57 @@ app.post("/getEventDetails", async (req, res) => {
           }
       ]
     });
-    //Get similar events (Same eventtype, but not the same id)
-    if (event) {
-      event = appendImgPath(event, __dirname,'events');
-      let similar = await Event.findAll({
-        where: {
-          eventId: {
-            [Op.not]: req.body.id,
-          },
-          [Op.or]: [
-            {type: event.type}, 
-            {location: event.location}
-          ]
+
+    let event = await Event.aggregate([
+      { $match: { eventId: req.body.id } },
+      { 
+        $lookup: { 
+          from: "committees", 
+          localField: "committeeId", 
+          foreignField: "_id",
+          as: "committee"
         },
-        attributes: {
-          include: ['name', 'start', 'end'],
-          exclude: ['type', 'createdBy','updatedAt', 'createdAt', 'status', 'description']
+        $lookup: {
+          from: "locations",
+          localField: "location",
+          foreignField: "_id",
+          as: "location"
         }
-      });
+      },
+      {
+        $unwind: "$committee"
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          description: 1,
+          time: 1,
+          location: "$location",
+          committee: "$committee"
+        }
+      },
+      {
+        $project: {
+          location: {
+            _id: 0,
+            name: 1,
+            address: 1,
+            city: 1,
+            state: 1,
+            zip: 1
+          },
+          committee: {
+            name: 1,
+            eventType: 1
+          }
+        }
+      }
+    ]);
+    console.log(event);
+    //Get similar events (Same Type, but not the same id)
+    if (event) {
+      event = appendImgPathMongoDB(event, __dirname,'events');
     res.status(200).json({ success: true, event: event, similar: similar});
   }
   else throw Error("Event not found");
