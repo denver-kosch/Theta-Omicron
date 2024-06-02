@@ -285,7 +285,8 @@ app.post("/getEventDetails", async (req, res) => {
             address: "$location.address",
             city: "$location.city",
             state: "$location.state",
-            zip: "$location.zip"
+            zip: "$location.zip",
+            country: "$location.country"
           },
           type: "$committee.eventType"
         }

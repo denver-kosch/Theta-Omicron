@@ -632,6 +632,7 @@ nav {
     justify-content: center;
     align-items: center;
     max-width: 100%;
+    height: fit-content;
     padding: .5vh;
     border: 1px solid black;
     border-radius: 10px;
@@ -651,6 +652,7 @@ nav {
     padding: 2.5%;
     border: 1px solid red;
     border-radius: 10px;
+    min-height: fit-content;
 }
 .event > .similar .eventCard > div {
     grid-area: info;

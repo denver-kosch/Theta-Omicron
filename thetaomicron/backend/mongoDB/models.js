@@ -27,44 +27,36 @@ const contactInfoSchema = new Schema({
         }
     }
 });
-const addressSchema = new Schema(
-    {
-        _id: false,
-        street: {
-            type: String,
-            required: true
-        },
-        city: {
-            type: String,
-            required: true
-        },
-        state: {
-            type: String,
-            required: true,
-            validate: {
-                validator: v => v.length === 2, // Assuming US state codes
-                message: props => `${props.value} is not a valid state code!`
-            }
-        },
-        zip: {
-            type: String,
-            required: true,
-            validate: {
-                validator: v => /\d{5}/.test(v), // Assuming US ZIP code format
-                message: props => `${props.value} is not a valid ZIP code!`
-            }
-        },
-        country: {
-            type: String,
-            required: true
+const addressSchema = new Schema({
+    _id: false,
+    street: {
+        type: String,
+        required: true
+    },
+    city: {
+        type: String,
+        required: true
+    },
+    state: {
+        type: String,
+        required: true,
+        validate: {
+            validator: v => v.length === 2, // Assuming US state codes
+            message: props => `${props.value} is not a valid state code!`
         }
     },
-    {
-        virtuals: {
-            fullAddress: {
-                get() {return `${this.street}, ${this.city}, ${this.state} ${this.zip} ${this.country}`;}
-            }
+    zip: {
+        type: String,
+        required: true,
+        validate: {
+            validator: v => /\d{5}/.test(v), // Assuming US ZIP code format
+            message: props => `${props.value} is not a valid ZIP code!`
         }
+    },
+    country: {
+        type: String,
+        required: true
+    }
 });
 const positionSchema = new Schema({
     _id: false,
