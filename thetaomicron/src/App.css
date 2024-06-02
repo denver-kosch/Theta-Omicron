@@ -119,6 +119,7 @@ footer .IG {
     border: 1px solid var(--text-color);
     padding: 0 20px 20px 20px;
     height: 100%;
+    border-radius: 10px;
 }
 .eventCards {
     display: flex;

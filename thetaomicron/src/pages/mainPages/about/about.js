@@ -15,7 +15,7 @@ const AboutUs = () => {
 
     const getEC = async () => {
         let ec =  await apiCall("getEC");
-        if (ec.success) setEC(ec.members);
+        if (ec.success) setEC(ec.officers);
         else {
             setErrorMessage("Could not gather Executive Committee at this time!");
             console.log(ec.error);
@@ -24,13 +24,11 @@ const AboutUs = () => {
 
     const renderEC = officer => {
         const name = `${officer.firstName} ${officer.lastName}`;
-        const img = `/images/profilePics/${officer.memberId}.jpg`;
-        
         return (
-            <div key={officer.memberId} className="card">
-                <img src={img} alt={name} className="profilePic"/>
+            <div key={officer._id} className="card">
+                <img src={officer.imageUrl} alt={name} className="profilePic"/>
                 <p>{name}</p>
-                <p style={{fontWeight: 'bold'}}>{officer.Officer.title}</p>
+                <p style={{fontWeight: 'bold'}}>{officer.position.role}</p>
             </div>
         );
     };

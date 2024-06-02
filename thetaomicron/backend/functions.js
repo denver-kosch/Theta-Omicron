@@ -1,10 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
+import { getLocalIP } from './start.js';
+import { isObjectIdOrHexString } from 'mongoose';
+import { ObjectId } from 'mongodb';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 const port = process.env.PORT || 3001;
-const host = process.env.HOST || 'localhost';
+const host = getLocalIP() || 'localhost';
 
 export const appendImgPath = (obj, dirname, imgFolder) => {
     obj = obj.toJSON();
@@ -42,6 +46,11 @@ export const appendImgPathMongoDB = (obj, dirname, imgFolder) => {
   }
 
   obj.imageUrl = `http://${host}:${port}${imageUrl}`;
-  console.log(obj);
   return obj;
 };
+
+export const extractToken = req => {
+  const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+  const _id = String((jwt.verify(token, process.env.SESSION_SECRET)).memberId);
+  return isObjectIdOrHexString(_id) && new ObjectId(_id);
+}

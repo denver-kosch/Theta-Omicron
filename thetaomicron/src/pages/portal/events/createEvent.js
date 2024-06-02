@@ -8,30 +8,26 @@ const CreateEvent = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [locOptions, setLocOptions] = useState([]);
-    const [location, setLocation] = useState(-1);
+    const [commOptions, setCommOptions] = useState([]);
+    const [officerComms, setOfficerComms] = useState([]);
+    const [location, setLocation] = useState('-1');
     const [newLocName, setNewLocName] = useState('');
     const [newLocAddress, setNewLocAddress] = useState('');
     const [start, setStart] = useState('');
     const [end, setEnd] = useState('');
     const [image, setImage] = useState(null);
-    const [type, setType] = useState('');
-    const [typeOptions, setTypeOptions] = useState([]);
+    const [commId, setCommId] = useState('');
     const [visibility, setVisibility] = useState('');
     
 
     useEffect(() => {
-        const fetchTypes = async () => {
-            const token = localStorage.getItem('token');
-            const res = await apiCall("getTypes", {user: true}, {'Authorization': `Bearer ${token}`});
-            console.log(res)
-            setTypeOptions(res.types);
+        const getInfo = async () => {
+            const options = await apiCall('getEventCreation', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+            setLocOptions(options.locations);
+            setCommOptions(options.committees.member);
+            setOfficerComms(options.committees.officer);
         };
-        const getLocations = async () => {
-            const locOptions = await apiCall('getLocations');
-            setLocOptions(locOptions.locations);
-        };
-        fetchTypes();
-        getLocations();
+        getInfo();
         setLoaded(true);
     },[]);
 
@@ -52,7 +48,7 @@ const CreateEvent = () => {
         data.append('start', start);
         data.append('end', end);
         data.append('image', image);
-        data.append('type', type);
+        data.append('committeeId', commId);
         data.append('visibility', visibility);
 
         const newEvent = await apiCall('addEvent', data, {'Authorization': `Bearer ${token}`});
@@ -61,6 +57,7 @@ const CreateEvent = () => {
         }
         else console.error(newEvent.error);
     };
+    
     
     return(
         <>
@@ -89,16 +86,16 @@ const CreateEvent = () => {
 
                     <div className="field">
                         <label htmlFor="location">Location: </label>
-                        <select id="location" value={location} onChange={(e) => setLocation(parseInt(e.target.value))}>
-                            <option key='location-disabled' value={-1} disabled>Please select a location</option>
+                        <select id="location" value={location} onChange={(e) => setLocation(e.target.value)}>
+                            <option key='location-disabled' value={'-1'} disabled>Please select a location</option>
                             {locOptions.map(location => {
-                                return <option key={location.locationId} value={location.locationId}>{location.name}</option>
+                                return <option key={location._id} value={location._id}>{location.name}</option>
                             })}
-                            <option key='location-0' value={0}>Other</option>
+                            <option key='location-0' value={'0'}>Other</option>
                         </select>
                     </div>
 
-                    {location === 0 ?
+                    {location === '0' ?
                         <>
                             <br/>
                             <div className="field">
@@ -137,11 +134,15 @@ const CreateEvent = () => {
                     <br/>
 
                     <div className="field">
-                        <label htmlFor="type">Facilitating committee: </label>
-                        <select id="type" value={type} onChange={(e) => setType(e.target.value)}>
-                            <option key={"type"} value='' disabled>Please select a committee</option>
-                            {typeOptions.map(option => (
-                                <option key={`type-${option.typeId}`} value={option.typeId}>{option.name}</option>
+                        <label htmlFor="committee">Facilitating committee: </label>
+                        <select id="committee" value={commId} onChange={(e) => setCommId(e.target.value)}>
+                            <option key={"committee"} value='' disabled>Please select a committee</option>
+                            {commOptions.map(option => (
+                                <option key={`committee-${option._id}`} value={option._id}>{option.name}</option>
+                            ))}
+                            {officerComms.length > 0 && <option key={"committee"} value='' disabled>Officer Committees</option>}
+                            {officerComms.map(option => (
+                                <option key={`committee-${option._id}`} value={option._id}>{option.name}</option>
                             ))}
                         </select>
                     </div>
@@ -155,11 +156,11 @@ const CreateEvent = () => {
                             <option value="Public">Public</option>
                             <option value="Members">Members Only</option>
                             <option value="Initiates">Initiates Only</option>
-                            {typeOptions.includes("Pledge Educator") &&
+                            {commOptions.includes("Pledge Educator") &&
                             <option value="Pledges">Pledges Only</option>
                         }
                             <option value="Committee">Committee Only</option>
-                            {typeOptions.includes("Executive Committee") &&
+                            {commOptions.includes("Executive Committee") &&
                             <option value="Executive Committee">EC Only</option>
                         }
                         </select>

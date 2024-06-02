@@ -18,7 +18,7 @@ const Event = () => {
             const result = await apiCall(`getEventDetails`, {id});
             if (result && result.success) {
                 setEvent(result.event);
-                // setSimilars(result.similar);
+                setSimilars(result.similar);
             }
             else console.log(result);
             

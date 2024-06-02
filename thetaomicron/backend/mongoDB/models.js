@@ -127,11 +127,12 @@ const memberSchema = new Schema({
         default: 'User'
     },
     positions: [positionSchema]
-});
+}, {versionKey: false});
 export const Member = model('Member', memberSchema);
 
 
 const timeSchema = new Schema({
+    _id: false,
     start: {
         type: Date,
         required: true,
@@ -172,16 +173,14 @@ const eventSchema = new Schema({
     },
     status: {
         type: String,
-        required: true,
         enum: ['Pending', 'Approved', 'Rejected'],
         default: 'Pending'
     },
     mandatory: {
         type: Boolean,
-        required: true,
         default: false
     }
-});
+}, {versionKey: false});
 export const Event = model('Event', eventSchema);
 
 
@@ -214,7 +213,7 @@ const locationScheme = new Schema({
             message: props => `${props.value} is not a valid ZIP code!`
         }
     }
-});
+}, {versionKey: false});
 export const Location = model('Location', locationScheme);
 
 
@@ -236,7 +235,7 @@ const commSchema = new Schema({
         type: [Schema.Types.ObjectId],
         ref: 'Member',
     }
-});
+}, {versionKey: false});
 export const Committee = model('Committee', commSchema);
 
 

@@ -29,14 +29,13 @@ const Rush = () => {
 
     const renderRush = (member, title) => {
         const name = `${member.firstName} ${member.lastName}`;
-        const img = `/images/profilePics/${member.memberId}.jpg`;
-        const emailLink  = `mailto:${member.schoolEmail}@muskingum.edu?subject=Interested In Kappa Sigma`;
+        const emailLink  = `mailto:${member.email}@muskingum.edu?subject=Interested In Kappa Sigma`;
         
         return (
             <div key={member.memberId} className="card">
                 <a href={emailLink}>
                     <div>
-                        <img src={img} alt={name} className="profilePic"/>
+                        <img src={member.imageUrl} alt={name} className="profilePic"/>
                         <img src="/images/mail.png" className="emailIcon" alt="Email" />
                     </div>
                 </a>
@@ -48,14 +47,17 @@ const Rush = () => {
 
     const newRush = () => {
         console.log('rendering...');
-        const gmc = rushCom.supervisingOfficer;
-        const chairman = rushCom.Members.find(r => r.CommitteeMember.isChairman);
-        const committee = rushCom.Members.filter(r => !r.CommitteeMember.isChairman);
+        const gmc = rushCom.find(r => r.position.role === "Grand Master of Ceremonies");
+        console.log(gmc)
+        const chairman = rushCom.find(r => r.position.role === "Chairman");
+        console.log(chairman);
+        const committee = rushCom.filter(r => r.position.role === "Member");
+        console.log(committee);
 
         return (
             <>
             <div className="committee">
-                {renderRush(gmc.Member, gmc.title)}
+                {renderRush(gmc, "Grand Master of Ceremonies")}
                 {renderRush(chairman, "Rush Chairman")}
             </div>
             <div className="committee">

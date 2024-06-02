@@ -25,12 +25,13 @@ const getLocalIP = () => {
   const __dirname = path.dirname(__filename);
   const envPath = path.join(__dirname, '.env');
   const newApiUrl = `REACT_APP_API_URL=http://${ip}:${process.env.REACT_APP_SERVERPORT}`;
+  console.log(newApiUrl);
 
   // Read the current content of the .env file
   let envContent = fs.readFileSync(envPath, 'utf8');
 
   // Check if the REACT_APP_API_URL variable already exists
-  const regex = /^REACT_APP_API_URL=.*$/m;
+  const regex = /^REACT_APP_API_URL=.*$/gm;
   if (regex.test(envContent)) {
       // Replace the existing line
       envContent = envContent.replace(regex, newApiUrl);

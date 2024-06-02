@@ -33,22 +33,21 @@ const Directory = () => {
 
     const filteredData = brothers.filter(item => item.firstName.toLowerCase().includes(criteria.toLowerCase()) 
     || item.lastName.toLowerCase().includes(criteria.toLowerCase())
-    || item.roles.some(pos => pos.title.toLowerCase().includes(criteria.toLowerCase())));
+    || item.positions.some(pos => pos.toLowerCase().includes(criteria.toLowerCase())));
 
     const chapter = chunk(filteredData, 4);
 
     const renderBrother = brother => {
       const name = `${brother.firstName} ${brother.lastName}`;
-      const img = `/images/profilePics/${brother.memberId}.jpg`;
-      const positionsElements = brother.roles.map((position, index, array) => (
+      const positionsElements = brother.positions.map((position, index, array) => (
         <Fragment key={index}>
-            {position.title}{index < array.length - 1 && <br />}
+            {position}{index < array.length - 1 && <br />}
         </Fragment>
       ));
         
       return (
         <div key={brother.memberId} className="card">
-          <img src={img} alt={name} className="profilePic"/>
+          <img src={brother.imageUrl} alt={name} className="profilePic"/>
           <p>{name}</p>
           <p style={{fontWeight: 'bold', fontSize: 'smaller'}}>{positionsElements}</p>
         </div>
