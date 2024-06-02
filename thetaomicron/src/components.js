@@ -140,10 +140,40 @@ export async function apiCall (api, body = {}, headers = {}) {
 };
 
 export const EventCard = ({event}) => {
+    const {_id, name, description, time, location, imageUrl} = event;
+
+    const FormatTime = ({date1, date2}) => {
+        const options = {
+          month: "numeric",
+          day: "numeric",
+          year: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true,
+        };
+        const formatted1  = date1.toLocaleString("en-US", options);
+        const formatted2  = date2.toLocaleString("en-US", options);
+        const [datePart1, timePart1] = formatted1.split(", ");
+        const [datePart2, timePart2] = formatted2.split(", ");
+        if (datePart1 === datePart2)
+            return <p className="time">{datePart1} {`${timePart1} - ${timePart2}`}</p>;
+        
+        return <p className="time">{`${datePart1} ${timePart1} - `}<br/>{`${datePart2} ${timePart2}`}</p>;
+    };
 
     return (
-        <div className="eventCard">
-            <Link className="navLink" to={`/events/${event.id}`}></Link>
-        </div>
-    )
-}
+        <Link to={`/event/${_id}`} key={_id}>
+            <div className="eventCard">
+                <img src={imageUrl || `${process.env.REACT_APP_API_URL}/images/events/default.png`} alt={name}/>
+                <div>
+                    <p style={{fontWeight: 'bold'}} className="name">{name}</p>
+                    <FormatTime date1={new Date(time.start)} date2={new Date(time.end)}/>
+                    {location && <div className="location">
+                        <img src='/images/locPin.png' alt="pin"/>
+                        <p>{location}</p>
+                    </div>}
+                    {description && <p className="description">{description}</p>}
+                </div>
+            </div>
+        </Link>
+)};

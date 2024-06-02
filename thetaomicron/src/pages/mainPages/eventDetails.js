@@ -82,9 +82,7 @@ const Event = () => {
             <div className="similar">
                 <h3>Similar Events</h3>
                 <div className="similar-events">
-                    {similars.map((event) => (
-                        <EventCard key={event.eventId} event={event} />
-                    ))}
+                    {similars.map(event => <EventCard key={event.eventId} event={event} />)}
                 </div>
             </div>
         </div>

@@ -295,28 +295,10 @@ app.post("/getEventDetails", async (req, res) => {
     //Get poster and similar events (Same Type, but not the same id)
     let similar = [];
     if (event) {
-      similar = (await Event.aggregate([
-        {
-          $match: {committeeId: event.committeeId, _id: {$ne: new Object(event._id)}, status:'Approved'}
-        },
-        {
-          $lookup: {
-            from: "locations",
-            localField: "locationId",
-            foreignField: "_id",
-            as: "location"
-          }
-        },
-        { $unwind: "$location" },
-        {
-          $project: {
-            name: 1,
-            time: 1,
-            committeeId: 1,
-            location: "$location.name"
-          }
-        }
-      ])).map(d => appendImgPathMongoDB(d, __dirname, 'events'));
+      similar = (await Event.find(
+        {committeeId: event.committeeId, _id: {$ne: new Object(event._id)}, status:'Approved'},
+        {name: 1, time: 1, committeeId: 1 }
+      )).map(d => appendImgPathMongoDB(d.toJSON(), __dirname, 'events'));
       event = appendImgPathMongoDB(event, __dirname, 'events');
     }
     else throw Error("Event not found");

@@ -625,3 +625,50 @@ nav {
     display:flex;
     flex-direction: column;
 }
+.event > .similar > .similar-events {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    padding: .5vh;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+.event > .similar > .similar-events > a {
+    text-decoration: none;
+}
+.event > .similar .eventCard {
+    display: grid;
+    grid-template-areas: 
+    "poster"
+    "info";
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    width: 12vw;
+    height: 12vw;
+    padding: 2.5%;
+    border: 1px solid red;
+    border-radius: 10px;
+}
+.event > .similar .eventCard > div {
+    grid-area: info;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.event > .similar .eventCard > div * {
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+}
+.event > .similar .eventCard > img {
+    grid-area: poster;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 0 auto;
+    max-width: 50%;
+}

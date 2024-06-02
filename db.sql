@@ -6,7 +6,7 @@ USE ThetaOmicron;
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: May 26, 2024 at 04:57 AM
+-- Generation Time: May 30, 2024 at 01:08 AM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.0
 
@@ -106,22 +106,44 @@ CREATE TABLE `Events` (
   `location` int(11) NOT NULL,
   `start` datetime NOT NULL,
   `end` datetime NOT NULL,
-  `type` varchar(100) NOT NULL,
-  `facilitatingCommittee` int(11) NOT NULL,
+  `type` int(11) NOT NULL,
   `visibility` enum('Public','Members','Initiates','EC','Committee') NOT NULL DEFAULT 'Public',
   `status` enum('Pending','Approved','Denied') NOT NULL DEFAULT 'Pending',
   `mandatory` tinyint(1) NOT NULL DEFAULT '0',
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
-  `createdBy` int(11) DEFAULT NULL
+  `lastUpdatedBy` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Events`
 --
 
-INSERT INTO `Events` (`eventId`, `name`, `description`, `location`, `start`, `end`, `type`, `facilitatingCommittee`, `visibility`, `status`, `mandatory`, `createdAt`, `updatedAt`, `createdBy`) VALUES
-(1, 'Refreshments w/ DGT', 'Come hang out and get some cool refreshments from Kappa Sigma and DGT, and learn more about the orgs!', 1, '2024-09-03 15:00:00', '2024-09-03 16:30:00', 'Rush', 4, 'Public', 'Approved', 0, '2024-05-24 00:31:44', '2024-05-24 00:31:44', NULL);
+INSERT INTO `Events` (`eventId`, `name`, `description`, `location`, `start`, `end`, `type`, `visibility`, `status`, `mandatory`, `createdAt`, `updatedAt`, `lastUpdatedBy`) VALUES
+(1, 'Refreshments w/ DGT', 'Come hang out and get some cool refreshments from Kappa Sigma and the ladies of Delta Gamma Theta, and learn more about the orgs!', 1, '2024-09-03 15:00:00', '2024-09-03 16:30:00', 1, 'Public', 'Approved', 1, '2024-05-24 00:31:44', '2024-05-26 19:42:24', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `EventTypes`
+--
+
+CREATE TABLE `EventTypes` (
+  `typeId` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `committee` int(11) NOT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `EventTypes`
+--
+
+INSERT INTO `EventTypes` (`typeId`, `name`, `committee`, `createdAt`, `updatedAt`) VALUES
+(1, 'Champion Quest', 4, '2024-05-26 22:59:57', '2024-05-26 19:00:23'),
+(2, 'EC', 21, '2024-05-27 07:24:58', '2024-05-27 07:24:58'),
+(3, 'Intramurals', 10, '2024-05-28 23:22:45', '2024-05-28 23:22:45');
 
 -- --------------------------------------------------------
 
@@ -166,7 +188,9 @@ CREATE TABLE `Locations` (
 --
 
 INSERT INTO `Locations` (`locationId`, `name`, `address`, `city`, `state`, `zipCode`, `createdAt`, `updatedAt`) VALUES
-(1, 'Quad', '163 College Dr', 'New Concord', 'OH', '43762', '2024-05-25 22:41:10', '2024-05-25 22:41:10');
+(1, 'Quad', '163 College Dr', 'New Concord', 'OH', '43762', '2024-05-25 22:41:10', '2024-05-25 22:41:10'),
+(2, 'Circle 240', '240 Thomas Ct', 'New Concord', 'OH', '43762', '2024-05-27 05:35:19', '2024-05-27 05:35:19'),
+(3, 'Lakeside 115/117', '115 Lakeside Dr', 'New Concord', 'OH', '43762', '2024-05-27 06:41:01', '2024-05-27 06:41:01');
 
 -- --------------------------------------------------------
 
@@ -246,11 +270,11 @@ CREATE TABLE `Officers` (
 --
 
 INSERT INTO `Officers` (`officeId`, `title`, `memberId`, `bio`, `createdAt`, `updatedAt`) VALUES
-(1, 'Grand Master', 5, 'Example bio', NULL, NULL),
-(2, 'Grand Procurator', 6, 'Example bio', NULL, NULL),
-(3, 'Grand Master of Ceremonies', 1, 'Example bio', NULL, NULL),
-(4, 'Grand Scribe', 8, 'Example bio', NULL, NULL),
-(5, 'Grand Treasurer', 7, 'Example bio', NULL, NULL);
+(1, 'Grand Master', 5, 'Example bio', '2024-05-29 01:09:11', '2024-05-29 01:09:11'),
+(2, 'Grand Procurator', 6, 'Example bio', '2024-05-29 01:09:11', '2024-05-29 01:09:11'),
+(3, 'Grand Master of Ceremonies', 1, 'Example bio', '2024-05-29 01:09:11', '2024-05-29 01:09:11'),
+(4, 'Grand Scribe', 8, 'Example bio', '2024-05-29 01:09:11', '2024-05-29 01:09:11'),
+(5, 'Grand Treasurer', 7, 'Example bio', '2024-05-29 01:09:11', '2024-05-29 01:09:11');
 
 -- --------------------------------------------------------
 
@@ -299,8 +323,15 @@ ALTER TABLE `Committees`
 ALTER TABLE `Events`
   ADD PRIMARY KEY (`eventId`),
   ADD KEY `location` (`location`),
-  ADD KEY `facilitatingCommittee` (`facilitatingCommittee`),
-  ADD KEY `createdBy` (`createdBy`);
+  ADD KEY `createdBy` (`lastUpdatedBy`),
+  ADD KEY `type` (`type`);
+
+--
+-- Indexes for table `EventTypes`
+--
+ALTER TABLE `EventTypes`
+  ADD PRIMARY KEY (`typeId`),
+  ADD KEY `committee` (`committee`);
 
 --
 -- Indexes for table `Families`
@@ -421,13 +452,19 @@ ALTER TABLE `Committees`
 -- AUTO_INCREMENT for table `Events`
 --
 ALTER TABLE `Events`
-  MODIFY `eventId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `eventId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `EventTypes`
+--
+ALTER TABLE `EventTypes`
+  MODIFY `typeId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `Locations`
 --
 ALTER TABLE `Locations`
-  MODIFY `locationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `locationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `Members`
@@ -468,9 +505,15 @@ ALTER TABLE `Committees`
 -- Constraints for table `Events`
 --
 ALTER TABLE `Events`
-  ADD CONSTRAINT `events_ibfk_299` FOREIGN KEY (`location`) REFERENCES `Locations` (`locationId`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `events_ibfk_300` FOREIGN KEY (`facilitatingCommittee`) REFERENCES `Committees` (`committeeId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `events_ibfk_301` FOREIGN KEY (`createdBy`) REFERENCES `Members` (`memberId`) ON DELETE SET NULL;
+  ADD CONSTRAINT `events_ibfk_2654` FOREIGN KEY (`location`) REFERENCES `Locations` (`locationId`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `events_ibfk_2655` FOREIGN KEY (`type`) REFERENCES `EventTypes` (`typeId`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `events_ibfk_2656` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `Members` (`memberId`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `EventTypes`
+--
+ALTER TABLE `EventTypes`
+  ADD CONSTRAINT `eventtypes_ibfk_1` FOREIGN KEY (`committee`) REFERENCES `Committees` (`committeeId`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Families`
@@ -482,8 +525,8 @@ ALTER TABLE `Families`
 -- Constraints for table `MemberRoles`
 --
 ALTER TABLE `MemberRoles`
-  ADD CONSTRAINT `memberroles_ibfk_241` FOREIGN KEY (`MemberMemberId`) REFERENCES `Members` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `memberroles_ibfk_242` FOREIGN KEY (`RoleRoleId`) REFERENCES `Roles` (`roleId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `memberroles_ibfk_1823` FOREIGN KEY (`MemberMemberId`) REFERENCES `Members` (`memberId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `memberroles_ibfk_1824` FOREIGN KEY (`RoleRoleId`) REFERENCES `Roles` (`roleId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `Officers`
