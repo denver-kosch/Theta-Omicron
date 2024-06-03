@@ -331,7 +331,7 @@ app.post('/checkEventPerms', async (req, res) => {
     res.status(404).json({ success: false, error: error.message });
   }
 });
-
+console.log('test');
 
 /* ================== Setters ================== */
 app.post('/addMember', async (req, res) => {
