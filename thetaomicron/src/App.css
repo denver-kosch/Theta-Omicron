@@ -639,6 +639,9 @@ nav {
 }
 .event > .similar > .similar-events > a {
     text-decoration: none;
+    width: fit-content;
+    height: fit-content;
+    margin: 1%;
 }
 .event > .similar .eventCard {
     display: grid;

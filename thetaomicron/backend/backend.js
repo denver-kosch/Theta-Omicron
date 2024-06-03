@@ -10,12 +10,10 @@ import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { ObjectId } from 'mongodb';
-import { appendImgPathMongoDB } from './functions.js';
-import connectDB from './mongoDB/db.js';
+import { appendImgPathMongoDB, extractToken, connectDB, abbrSt } from './functions.js';
 import { check } from 'express-validator';
 import { Event, Member, Location, Committee } from './mongoDB/models.js';
 import { startSession } from 'mongoose';
-import { extractToken } from './functions.js';
 
 dotenv.config();
 const app = express();
@@ -65,8 +63,11 @@ app.post('/auth', async (req, res) => {
     if (!token) throw Error("No token provided");
 
     const payload = jwt.verify(token, process.env.SESSION_SECRET);
+    if (payload) {
+      const timeLeft = parseFloat(payload.exp - Math.floor(Date.now() / 1000))/60;
+      if (timeLeft < 10) console.log(timeLeft);
+    }
     return res.status(200).json({success:true});
-
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) return res.status(401).json({valid: false, message: 'Token Expired', success: false});
 
@@ -212,7 +213,7 @@ app.post("/getEvents",
     res.status(404).json({ success: false, error: error.message });
   }
 });
-
+//Finished
 app.post("/getCommittees", async (req, res) => {
   try {
       let _id = false;
@@ -252,6 +253,7 @@ app.post("/getEventCreation", async (req, res) => {
 //Finished
 app.post("/getEventDetails", async (req, res) => {
   try {
+    const loggedIn = req.body.loggedIn ?? false;
     let event = (await Event.aggregate([
       { 
         $match: { _id: new ObjectId(String(req.body.id)) }
@@ -296,8 +298,10 @@ app.post("/getEventDetails", async (req, res) => {
     //Get poster and similar events (Same Type, but not the same id)
     let similar = [];
     if (event) {
+      const params = {committeeId: event.committeeId, _id: {$ne: new Object(event._id)}};
+      if (!loggedIn) params.status = "Approved";
       similar = (await Event.find(
-        {committeeId: event.committeeId, _id: {$ne: new Object(event._id)}, status:'Approved'},
+        params,
         {name: 1, time: 1, committeeId: 1 }
       )).map(d => appendImgPathMongoDB(d.toJSON(), __dirname, 'events'));
       event = appendImgPathMongoDB(event, __dirname, 'events');
@@ -319,11 +323,7 @@ app.post('/checkEventPerms', async (req, res) => {
     const {committeeId} = req.body;
 
     //Check that the user is in the facilitating committee
-    const facilitating = await Committee.findOne({
-      where: {
-        committeeId,
-      }
-    });
+    const facilitating = await Committee.exists({members: {$elemMatch: {memberId}}, _id: committeeId});
 
 
   }
@@ -331,31 +331,28 @@ app.post('/checkEventPerms', async (req, res) => {
     res.status(404).json({ success: false, error: error.message });
   }
 });
-console.log('test');
+
 
 /* ================== Setters ================== */
-app.post('/addMember', async (req, res) => {
+app.post('/addMember', [
+  check(['password', 'email', 'fname', 'lname', 'phone', 'street', 'city', 'address'])
+], async (req, res) => {
   try {
-    const {email, fName, lName, status, phone, street, city, state, zip, country, initiation, graduation, school} = req.body;
+    const {email, fName, lName, status:s, phone, street, city, state, zip, country, initiation, graduation, school, ritualCerts:r} = req.body;
     //Hash the password before entering into db
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const ritualCerts = req.body.ritualCerts ?? 0;
+    const address = {street, city, state, zip, country: country ?? "USA"};
+    const contactInfo = {email, phone, schoolEmail: school};
     const member = await Member.create({
-      firstName: fName,
-      lastName: lName,
-      email: email,
-      schoolEmail: school,
-      phoneNum: phone,
-      status: status,
-      password: hashedPassword,
-      streetAddress: street,
-      city: city,
-      state: state,
-      zipCode: zip,
-      country: country,
-      initiationYear: initiation,
-      graduationYear: graduation,
-      ritualCerts: ritualCerts
+      firstName: fName, 
+      lastName: lName, 
+      contactInfo, 
+      password: hashedPassword, 
+      address, 
+      initiationYear: initiation, 
+      graduationYear: graduation, 
+      ritualCerts: r ?? 0, 
+      status: s ?? "Pledge"
     });
     res.status(201).json({ success: true});
   } catch (error) {
@@ -365,12 +362,14 @@ app.post('/addMember', async (req, res) => {
 //Finished
 app.post('/addEvent', upload.single('image'), 
 [
-  check(['name', 'description', 'start', 'end', 'committeeId', 'visibility'], 'All form fields are required').not().isEmpty().isString(),
+  check(['name', 'description', 'committeeId', 'visibility'], 'All form fields are required').not().isEmpty().isString(),
+  check(['start', 'end'], 'All form fields are required').not().isEmpty().isDate(),
 ],async (req, res) => {
   const session = await startSession();
+  let success = true;
   try {
     session.startTransaction();
-    if (!req.file) return res.status(400).json({ success: false, error: "No poster uploaded" });
+    if (!req.file) throw Error("No poster uploaded");
     const _id = req.headers.authorization &&  extractToken(req);
 
     const {name, description, start, end, committeeId, visibility} = req.body;
@@ -379,9 +378,10 @@ app.post('/addEvent', upload.single('image'),
     
     if (location === '0') {
       const {newLocName, newLocAddress} = req.body;
-      if (!/^\d+ [A-Za-z\s]+\, ?[A-Za-z\s]+\,?[A-Z]{2} \d{5}$/.test(newLocAddress)) throw Error("Address not in address format")
+      if (!/^\d+[A-Za-z\s]+\,[A-Za-z\s]+\, [A-Z]{2} \d{5}$/.test(newLocAddress)) throw Error("Address not in address format")
       const [address, city, sz] = newLocAddress.split(', ');
-      const [state, zip] = sz.split(' ');
+      const [s, zip] = sz.split(' ');
+      const state = abbrSt(s);
       location = (await Location.create({ address, city, state, zip, name: newLocName }))._id.toString();
     }
 
@@ -389,14 +389,14 @@ app.post('/addEvent', upload.single('image'),
       {
         name, 
         description, 
-        time, 
+        time,
         committeeId: new ObjectId(String(committeeId)), 
         locationId: new ObjectId(String(location)), 
         visibility
       }], {session}))[0];
       
     const folderPath = path.join(__dirname, 'public','images','events');
-    if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath, { recursive: true });
+    if (!fs.existsSync(folderPath)) await fs.promises.mkdir(folderPath, { recursive: true });
     const uploadPath = path.join(folderPath, `${event._id.toString()}${path.extname(req.file.originalname)}`);
     console.log(uploadPath)
     console.log('before img upload')
@@ -405,14 +405,13 @@ app.post('/addEvent', upload.single('image'),
       .jpeg({ quality: 90 }) // You can adjust the quality as needed
       .toFile(uploadPath);
 
-    session.commitTransaction();
-    session.endSession();
+      await session.commitTransaction();
     res.status(201).json({ success: true, newId: event._id});
   } catch (error) {
-    session.abortTransaction();
-    session.endSession();
-    res.status(500).json({ success: false, error: error.message });
+    await session.abortTransaction();
+    res.status(400).json({ success: false, error: error.message });
   }
+  finally {session.endSession()}
 });
 
 
@@ -434,7 +433,7 @@ app.post('/updateEvent', upload.single('image'), async (req, res) => {
     const {newLocName, newLocAddress} = req.body;
     const [address, city, sz] = newLocAddress.split(', ');
     const [state, zipCode] = sz.split(' ');
-    location = (await Location.create({ address, city, state, zipCode, name: newLocName })).locationId;
+    location = (await Location.create({ address, city, state, zipCode, name: newLocName }))._id;
   }
   const updates = {};
   if (name) updates.name = name;

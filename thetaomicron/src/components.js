@@ -139,7 +139,7 @@ export async function apiCall (api, body = {}, headers = {}) {
     }
 };
 
-export const EventCard = ({event}) => {
+export const EventCard = ({event, loggedIn}) => {
     const {_id, name, description, time, location, imageUrl} = event;
 
     const FormatTime = ({date1, date2}) => {
@@ -162,7 +162,7 @@ export const EventCard = ({event}) => {
     };
 
     return (
-        <Link to={`/event/${_id}`} key={_id}>
+        <Link to={loggedIn ? `/portal/event/${_id}` :`/event/${_id}`} key={_id}>
             <div className="eventCard">
                 <img src={imageUrl || `${process.env.REACT_APP_API_URL}/images/events/default.png`} alt={name}/>
                 <div>

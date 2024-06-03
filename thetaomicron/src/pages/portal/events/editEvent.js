@@ -1,24 +1,34 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { apiCall, MapView, EventCard } from "../../components";
+import { apiCall, MapView, EventCard } from "../../../components";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
 
-
-const Event = () => {
+const EditEvent = () => {
     const { id } = useParams();
     const [event, setEvent] = useState(null);
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(true);
-    const [similars, setSimilars] = useState([]);
+    const [locOptions, setLocOptions] = useState([]);
+    const [commOptions, setCommOptions] = useState([]);
+    const [officerComms, setOfficerComms] = useState([]);
+    const [location, setLocation] = useState('-1');
+    const [newLocName, setNewLocName] = useState('');
+    const [newLocAddress, setNewLocAddress] = useState('');
+    const [start, setStart] = useState('');
+    const [end, setEnd] = useState('');
+    const [image, setImage] = useState(null);
+    const [commId, setCommId] = useState('');
+    const [visibility, setVisibility] = useState('');
     //default value is lakeside 115
     const [lat, setLat] = useState(39.99832093770602);
     const [lng, setLng] = useState(-81.73459124217224);
 
     useEffect(() => {
         const fetchEventDetails = async () => {
-            const result = await apiCall(`getEventDetails`, {id});
+            const result = await apiCall(`getEventDetails`, {id, loggedIn: true});
             if (result && result.success) {
                 setEvent(result.event);
-                setSimilars(result.similar);
             }
             else console.log(result);
             
@@ -34,15 +44,15 @@ const Event = () => {
         };
         fetchEventDetails();
     }, [id]);
-    
+
     const FormatDates = ({date1, date2}) => {
         const options = {
-          month: "numeric",
-          day: "numeric",
-          year: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
+        month: "numeric",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
         };
         const formatted1  = date1.toLocaleString("en-US", options);
         const formatted2  = date2.toLocaleString("en-US", options);
@@ -60,7 +70,7 @@ const Event = () => {
         <div className="event">
             <div className="title">
                 <div className="head">
-                    <h1 style={{marginRight: '2%'}}>{event.name}</h1>
+                    <h1 style={{marginRight: '2%'}}>{name}</h1>
                     <h5>({event.type})</h5>
                 </div>
                 <div className="time">
@@ -68,11 +78,11 @@ const Event = () => {
                 </div>
             </div>
             <div className="poster">
-                <img src={event.imageUrl} alt={event.name} />
+                <img src={event.imageUrl} alt={name} />
             </div>
             <div className="event-details">
                 <div className="description">
-                    <p>{event.description}</p>
+                    <p>{description}</p>
                 </div>
             </div>
             <div className="location">
@@ -82,11 +92,11 @@ const Event = () => {
             <div className="similar">
                 <h3>Similar Events</h3>
                 <div className="similar-events">
-                    {similars.map(event => <EventCard key={event._id} event={event} />)}
+                    
                 </div>
             </div>
         </div>
         }</>
 )};
 
-export default Event;
+export default EditEvent;

@@ -40,7 +40,7 @@ const CreateEvent = () => {
         data.append('description', description);
 
         data.append('location', location);
-        if (location === 0) {
+        if (location === '0') {
             data.append('newLocName', newLocName);
             data.append('newLocAddress', newLocAddress);
         }

@@ -14,6 +14,7 @@ import Alumni from "./pages/mainPages/directory/alumni";
 import Event from './pages/mainPages/eventDetails';
 import CreateEvent from './pages/portal/events/createEvent';
 import PortalEvent from './pages/portal/events/portalEvent';
+import EditEvent from './pages/portal/events/editEvent';
 
 
 
@@ -41,7 +42,10 @@ function App() {
             </Route>
             <Route path='event'>
               <Route path="create" element={<Auth><PortalNav> <CreateEvent/> </PortalNav></Auth>}/>
-              <Route path=":id" element={<Auth><PortalNav> <PortalEvent/> </PortalNav></Auth>}/>
+              <Route path=":id">
+                <Route index element={<Auth><PortalNav> <PortalEvent/> </PortalNav></Auth>}/>
+                <Route path='edit' element={<Auth><PortalNav> <EditEvent/> </PortalNav></Auth>}/>
+              </Route>
             </Route>
           </Route>
           <Route path='event'>

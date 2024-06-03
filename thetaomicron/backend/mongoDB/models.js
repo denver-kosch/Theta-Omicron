@@ -55,7 +55,7 @@ const addressSchema = new Schema({
     },
     country: {
         type: String,
-        required: true
+        default: 'USA'
     }
 });
 const positionSchema = new Schema({
@@ -189,7 +189,7 @@ const locationScheme = new Schema({
         type: String,
         required: true,
     },
-    street: {
+    address: {
         type: String,
         required: true
     },

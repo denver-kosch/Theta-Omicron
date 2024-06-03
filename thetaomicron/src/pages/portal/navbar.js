@@ -31,7 +31,7 @@ export const NavBar = ({children}) => {
                     <h3>Portal Home</h3>
                 </Link>
                 <div className="navLinks">
-                    <Link className="navLink" to={"/portal"}>
+                    {/* <Link className="navLink" to={"/portal"}>
                         <h3>Rush</h3>
                     </Link>
                     <Link className="navLink" to={"/portal"}>
@@ -39,7 +39,7 @@ export const NavBar = ({children}) => {
                     </Link>
                     <Link className="navLink" to={"/portal"}>
                         <h3>Brothers<br/>Portal</h3>
-                    </Link>
+                    </Link> */}
                     <Link className="navLink" to="/" onClick={logout}>
                         <h3>Log<br/>Out</h3>
                     </Link>
