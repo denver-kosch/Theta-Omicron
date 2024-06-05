@@ -62,7 +62,7 @@ const positionSchema = new Schema({
     _id: false,
     committeeId: {
         type: Schema.Types.ObjectId,
-        ref: 'Committee',
+        ref: 'committee',
         required: true
     },
     committeeName: {
@@ -157,18 +157,18 @@ const eventSchema = new Schema({
     },
     locationId: {
         type: Schema.Types.ObjectId,
-        ref: 'Location',
+        ref: 'location',
         required: true,
     },
     committeeId: {
         type: Schema.Types.ObjectId,
-        ref: 'Committee',
+        ref: 'committee',
         required: true,
     },
     visibility: {
         type: String,
         required: true,
-        enum: ['Public', 'Members', 'Initiates', 'Committee'],
+        enum: ['Public', 'Members', 'Initiates', 'committee'],
         default: 'Public'
     },
     status: {
@@ -184,7 +184,7 @@ const eventSchema = new Schema({
 export const Event = model('Event', eventSchema);
 
 
-const locationScheme = new Schema({
+const locationSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -214,7 +214,7 @@ const locationScheme = new Schema({
         }
     }
 }, {versionKey: false});
-export const Location = model('Location', locationScheme);
+export const Location = model('location', locationSchema);
 
 
 const commSchema = new Schema({
@@ -236,7 +236,7 @@ const commSchema = new Schema({
         ref: 'Member',
     }
 }, {versionKey: false});
-export const Committee = model('Committee', commSchema);
+export const Committee = model('committee', commSchema);
 
 
 

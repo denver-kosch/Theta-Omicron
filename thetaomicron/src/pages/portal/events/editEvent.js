@@ -1,24 +1,40 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+// eslint-disable-next-line
 import { apiCall, MapView, EventCard } from "../../../components";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
 
 const EditEvent = () => {
     const { id } = useParams();
     const [event, setEvent] = useState(null);
+    // eslint-disable-next-line
     const [name, setName] = useState('');
+    // eslint-disable-next-line
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(true);
+    // eslint-disable-next-line
     const [locOptions, setLocOptions] = useState([]);
+    // eslint-disable-next-line
     const [commOptions, setCommOptions] = useState([]);
+    // eslint-disable-next-line
     const [officerComms, setOfficerComms] = useState([]);
-    const [location, setLocation] = useState('-1');
+    // eslint-disable-next-line
+    const [location, setLocation] = useState({});
+    // eslint-disable-next-line
     const [newLocName, setNewLocName] = useState('');
+    // eslint-disable-next-line
     const [newLocAddress, setNewLocAddress] = useState('');
+    // eslint-disable-next-line
     const [start, setStart] = useState('');
+    // eslint-disable-next-line
     const [end, setEnd] = useState('');
+    // eslint-disable-next-line
     const [image, setImage] = useState(null);
+    // eslint-disable-next-line
     const [commId, setCommId] = useState('');
+    // eslint-disable-next-line
+    const [type, setType] = useState('');
+    // eslint-disable-next-line
     const [visibility, setVisibility] = useState('');
     //default value is lakeside 115
     const [lat, setLat] = useState(39.99832093770602);
@@ -44,6 +60,18 @@ const EditEvent = () => {
         };
         fetchEventDetails();
     }, [id]);
+
+    useEffect(() => {
+        const changeLatLng = address => {
+            fromAddress(`${address.address}, ${address.city}, ${address.state} ${address.zip}`)
+                .then(({ results }) => {
+                    const { lat, lng } = results[0].geometry.location;
+                    setLat(lat);
+                    setLng(lng);
+                }).catch(console.error);
+        };
+        changeLatLng(newLocAddress);
+    }, [newLocAddress]);
 
     const FormatDates = ({date1, date2}) => {
         const options = {
@@ -71,10 +99,10 @@ const EditEvent = () => {
             <div className="title">
                 <div className="head">
                     <h1 style={{marginRight: '2%'}}>{name}</h1>
-                    <h5>({event.type})</h5>
+                    <h5>({type})</h5>
                 </div>
                 <div className="time">
-                    <FormatDates date1={new Date(event.time.start)} date2={new Date(event.time.end)}/>
+                    <FormatDates date1={new Date(start)} date2={new Date(end)}/>
                 </div>
             </div>
             <div className="poster">

@@ -15,6 +15,7 @@ import Event from './pages/mainPages/eventDetails';
 import CreateEvent from './pages/portal/events/createEvent';
 import PortalEvent from './pages/portal/events/portalEvent';
 import EditEvent from './pages/portal/events/editEvent';
+import { AllEvents } from './pages/portal/events/allEvents';
 
 
 
@@ -41,12 +42,14 @@ function App() {
               <Route path='redirect' element={<PortalNav> </PortalNav>}/>
             </Route>
             <Route path='event'>
+              <Route index element={<Auth><PortalNav> <AllEvents/> </PortalNav></Auth>}/>
               <Route path="create" element={<Auth><PortalNav> <CreateEvent/> </PortalNav></Auth>}/>
               <Route path=":id">
                 <Route index element={<Auth><PortalNav> <PortalEvent/> </PortalNav></Auth>}/>
                 <Route path='edit' element={<Auth><PortalNav> <EditEvent/> </PortalNav></Auth>}/>
               </Route>
             </Route>
+            <Route path="*" element={<Navigate to="/portal/"/>} />
           </Route>
           <Route path='event'>
             <Route path=':id' element={<Navbar> <Event/> </Navbar>}/>

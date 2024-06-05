@@ -31,10 +31,10 @@ export const NavBar = ({children}) => {
                     <h3>Portal Home</h3>
                 </Link>
                 <div className="navLinks">
-                    {/* <Link className="navLink" to={"/portal"}>
-                        <h3>Rush</h3>
+                    <Link className="navLink" to={"/portal/event"}>
+                        <h3>Events</h3>
                     </Link>
-                    <Link className="navLink" to={"/portal"}>
+                    {/* <Link className="navLink" to={"/portal"}>
                         <h3>Brothers<br/>Directory</h3>
                     </Link>
                     <Link className="navLink" to={"/portal"}>

@@ -63,20 +63,98 @@ app.post('/auth', async (req, res) => {
     if (!token) throw Error("No token provided");
 
     const payload = jwt.verify(token, process.env.SESSION_SECRET);
-    if (payload) {
-      const timeLeft = parseFloat(payload.exp - Math.floor(Date.now() / 1000))/60;
-      if (timeLeft < 10) console.log(timeLeft);
-    }
-    return res.status(200).json({success:true});
+    const timeLeft = payload.exp - Math.floor(Date.now() / 1000);
+    if (timeLeft < 10 * 60) token = jwt.sign({memberId: payload.memberId}, process.env.SESSION_SECRET, {expiresIn: '1h'});
+    return res.status(200).json({success:true, token});
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) return res.status(401).json({valid: false, message: 'Token Expired', success: false});
-
     return res.status(401).json({valid: false, message: err.message, success: false});
   }
 });
 
+/* ================== Create ================== */
+app.post('/addMember', [
+  check(['password', 'email', 'fname', 'lname', 'phone', 'street', 'city', 'address'])
+], async (req, res) => {
+  try {
+    const {email, fName, lName, status:s, phone, street, city, state, zip, country, initiation, graduation, school, ritualCerts:r} = req.body;
+    //Hash the password before entering into db
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const address = {street, city, state, zip, country: country ?? "USA"};
+    const contactInfo = {email, phone, schoolEmail: school};
+    const member = await Member.create({
+      firstName: fName, 
+      lastName: lName, 
+      contactInfo, 
+      password: hashedPassword, 
+      address, 
+      initiationYear: initiation, 
+      graduationYear: graduation, 
+      ritualCerts: r ?? 0, 
+      status: s ?? "Pledge"
+    });
+    res.status(201).json({ success: true});
+  } catch (error) {
+    res.status(200).json({ success: false, error: error.message });
+  }
+});
+//Finished
+app.post('/addEvent', upload.single('image'), 
+[
+  check(['name', 'description', 'committeeId', 'visibility'], 'All form fields are required').not().isEmpty().isString(),
+  check(['start', 'end'], 'All form fields are required').not().isEmpty().isDate(),
+],async (req, res) => {
+  const session = await startSession();
+  let success = true;
+  try {
+    session.startTransaction();
+    if (!req.file) throw Error("No poster uploaded");
+    const _id = req.headers.authorization &&  extractToken(req);
 
-/* ================== Getters ================== */
+    const {name, description, start, end, committeeId, visibility} = req.body;
+    const time = {start, end};
+    let {location} = req.body;
+    
+    if (location === '0') {
+      const {newLocName, newLocAddress} = req.body;
+      if (!/^\d+[A-Za-z\s]+\,[A-Za-z\s]+\, [A-Z]{2} \d{5}$/.test(newLocAddress)) throw Error("Address not in address format")
+      const [address, city, sz] = newLocAddress.split(', ');
+      const [s, zip] = sz.split(' ');
+      const state = abbrSt(s);
+      location = (await Location.create({ address, city, state, zip, name: newLocName }))._id.toString();
+    }
+
+    const event = (await Event.create([
+      {
+        name, 
+        description, 
+        time,
+        committeeId: new ObjectId(String(committeeId)), 
+        locationId: new ObjectId(String(location)), 
+        visibility
+      }], {session}))[0];
+      
+    const folderPath = path.join(__dirname, 'public','images','events');
+    if (!fs.existsSync(folderPath)) await fs.promises.mkdir(folderPath, { recursive: true });
+    const uploadPath = path.join(folderPath, `${event._id.toString()}${path.extname(req.file.originalname)}`);
+    console.log(uploadPath)
+    console.log('before img upload')
+    // Save the file from memory to disk
+    await sharp(req.file.buffer)
+      .jpeg({ quality: 90 }) // You can adjust the quality as needed
+      .toFile(uploadPath);
+
+      await session.commitTransaction();
+    res.status(201).json({ success: true, newId: event._id});
+  } catch (error) {
+    await session.abortTransaction();
+    res.status(400).json({ success: false, error: error.message });
+  }
+  finally {session.endSession()}
+});
+
+
+/* ================== Read ================== */
 //Finished
 app.post("/getRush", async (req, res) => {
   try {
@@ -170,43 +248,13 @@ app.post("/getEvents",
     const { vis, days, mandatory, status } = req.body;
     const query = [];
     if (vis) query.push({visibility: vis});
-    if (days) {
-      query.push({ "time.start": {
-        $gte: new Date(),
-        $lte: new Date(new Date().setDate(new Date().getDate() + days))
-      }});
-    }
+    if (days) query.push({ "time.start": { $gte: new Date(), $lte: new Date(new Date().setDate(new Date().getDate() + days)) }});
     if (typeof mandatory == 'boolean') query.push({mandatory});
     if (status) query.push({status});
-    
-    // const events = await Event.find((query.length > 0) ? {$and: query}: {});
-    const events = await Event.aggregate([
-      {$match:(query.length > 0) ? {$and: query}: {}},
-      {
-        $lookup: {
-          from: 'locations', // Assuming 'locations' is the name of your collection
-          localField: 'locationId',
-          foreignField: '_id',
-          as: 'locationDetails'
-        }
-      },
-      {
-        $unwind: {
-          path: '$locationDetails'
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          description: 1,
-          time: 1,
-          location: '$locationDetails.name',
-        }
-      }
-    ]);
 
-    for (let i=0; i<events.length; i++) events[i] = appendImgPathMongoDB(events[i], __dirname, 'events');
+    const events = await Event.find((query.length > 0) ? {$and: query} : {}, { name: 1, description: 1, time: 1, location: "$location.name" });
+
+    for (let i=0; i<events.length; i++) events[i] = appendImgPathMongoDB(events[i].toJSON(), __dirname, 'events');
 
     res.status(200).send({ success: true, events: events })
   } catch (error) {
@@ -253,7 +301,6 @@ app.post("/getEventCreation", async (req, res) => {
 //Finished
 app.post("/getEventDetails", async (req, res) => {
   try {
-    const loggedIn = req.body.loggedIn ?? false;
     let event = (await Event.aggregate([
       { 
         $match: { _id: new ObjectId(String(req.body.id)) }
@@ -261,45 +308,45 @@ app.post("/getEventDetails", async (req, res) => {
       { 
         $lookup: { 
           from: "committees", 
-          localField: "committeeId", 
+          localField: "committee.id", 
           foreignField: "_id",
-          as: "committee"
+          as: "committeeInfo"
         }
       },
       {
         $lookup: {
           from: "locations",
-          localField: "locationId",
+          localField: "location.id",
           foreignField: "_id",
-          as: "location"
+          as: "locationInfo"
         }
       },
-      { $unwind: "$location" },
-      { $unwind: "$committee" },
+      { $unwind: "$locationInfo" },
+      { $unwind: "$committeeInfo" },
       {
         $project: {
           name: 1,
           description: 1,
           time: 1,
-          committeeId: 1,
           location: {
-            name: "$location.name",
-            address: "$location.address",
-            city: "$location.city",
-            state: "$location.state",
-            zip: "$location.zip",
-            country: "$location.country"
+            name: "$locationInfo.name",
+            address: "$locationInfo.address",
+            city: "$locationInfo.city",
+            state: "$locationInfo.state",
+            zip: "$locationInfo.zip",
+            country: "$locationInfo.country"
           },
-          type: "$committee.eventType"
+          committee: {
+            type: "$committeeInfo.eventType",
+            id: "$committeeInfo._id",
+          }
         }
       }
     ]))[0];
-
     //Get poster and similar events (Same Type, but not the same id)
     let similar = [];
     if (event) {
-      const params = {committeeId: event.committeeId, _id: {$ne: new Object(event._id)}};
-      if (!loggedIn) params.status = "Approved";
+      const params = {'committee.id': event.committee.id, _id: {$ne: new Object(event._id)}, status: "Approved"};
       similar = (await Event.find(
         params,
         {name: 1, time: 1, committeeId: 1 }
@@ -332,101 +379,45 @@ app.post('/checkEventPerms', async (req, res) => {
   }
 });
 
-
-/* ================== Setters ================== */
-app.post('/addMember', [
-  check(['password', 'email', 'fname', 'lname', 'phone', 'street', 'city', 'address'])
-], async (req, res) => {
+app.post('/getPortalEvents', async (req, res) => {
   try {
-    const {email, fName, lName, status:s, phone, street, city, state, zip, country, initiation, graduation, school, ritualCerts:r} = req.body;
-    //Hash the password before entering into db
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const address = {street, city, state, zip, country: country ?? "USA"};
-    const contactInfo = {email, phone, schoolEmail: school};
-    const member = await Member.create({
-      firstName: fName, 
-      lastName: lName, 
-      contactInfo, 
-      password: hashedPassword, 
-      address, 
-      initiationYear: initiation, 
-      graduationYear: graduation, 
-      ritualCerts: r ?? 0, 
-      status: s ?? "Pledge"
-    });
-    res.status(201).json({ success: true});
-  } catch (error) {
-    res.status(200).json({ success: false, error: error.message });
-  }
-});
-//Finished
-app.post('/addEvent', upload.single('image'), 
-[
-  check(['name', 'description', 'committeeId', 'visibility'], 'All form fields are required').not().isEmpty().isString(),
-  check(['start', 'end'], 'All form fields are required').not().isEmpty().isDate(),
-],async (req, res) => {
-  const session = await startSession();
-  let success = true;
-  try {
-    session.startTransaction();
-    if (!req.file) throw Error("No poster uploaded");
-    const _id = req.headers.authorization &&  extractToken(req);
+    const _id = extractToken(req);
+    //Get member's info (committee Ids)
+    const committees = await Committee.find({$or: [{members: {$elemMatch: {_id}}}, {supervisingOfficer: _id}]}, {_id: 1});
+    // Get all approved current/upcoming events, all past approved events, 
+    // all events from committees member is in or officer of
+    const events = {};
 
-    const {name, description, start, end, committeeId, visibility} = req.body;
-    const time = {start, end};
-    let {location} = req.body;
+    const inclusions = {
+      name: 1,
+      description: 1,
+      visibility: 1,
+      mandatory: 1,
+      time: 1,
+      committee: '$committee.name',
+      location: '$location.name'
+    };
+
+    events.approved = await Event.find({
+      status: "Approved", 
+      "time.start": {$gte: new Date()},
+      $nor: [{$and: [{visibility: "Committee"}, {"committee.id" : {$in: committees}}]}]
+    }, inclusions);
+    events.past = await Event.find({
+      status: "Approved", 
+      "time.start": {$lt: new Date()},
+      $nor: [{$and: [{visibility: "Committee"}, {"committee.id" : {$in: committees}}]}]
+    }, inclusions);
+    events.comEvents = await Event.find({'committee.id' : {$in: committees}});
     
-    if (location === '0') {
-      const {newLocName, newLocAddress} = req.body;
-      if (!/^\d+[A-Za-z\s]+\,[A-Za-z\s]+\, [A-Z]{2} \d{5}$/.test(newLocAddress)) throw Error("Address not in address format")
-      const [address, city, sz] = newLocAddress.split(', ');
-      const [s, zip] = sz.split(' ');
-      const state = abbrSt(s);
-      location = (await Location.create({ address, city, state, zip, name: newLocName }))._id.toString();
-    }
-
-    const event = (await Event.create([
-      {
-        name, 
-        description, 
-        time,
-        committeeId: new ObjectId(String(committeeId)), 
-        locationId: new ObjectId(String(location)), 
-        visibility
-      }], {session}))[0];
-      
-    const folderPath = path.join(__dirname, 'public','images','events');
-    if (!fs.existsSync(folderPath)) await fs.promises.mkdir(folderPath, { recursive: true });
-    const uploadPath = path.join(folderPath, `${event._id.toString()}${path.extname(req.file.originalname)}`);
-    console.log(uploadPath)
-    console.log('before img upload')
-    // Save the file from memory to disk
-    await sharp(req.file.buffer)
-      .jpeg({ quality: 90 }) // You can adjust the quality as needed
-      .toFile(uploadPath);
-
-      await session.commitTransaction();
-    res.status(201).json({ success: true, newId: event._id});
+    res.status(200).json({success: true, events});
   } catch (error) {
-    await session.abortTransaction();
-    res.status(400).json({ success: false, error: error.message });
-  }
-  finally {session.endSession()}
-});
-
-
-/* ================== Editors ================== */
-app.post('/expel', async (req, res) => {
-  let id = req.body.id;
-  //Using member model, change status to Expelled
-  try{
-    let user = await Member.findByIdAndUpdate(id, {status:"Expelled"});
-    res.status(200).json({success: true});
-  } catch (error) {
-    res.status(200).json({ success: false, error: error.message });
+    res.status(404).json({ success: false, error: error.message });
   }
 });
 
+
+/* ================== Update ================== */
 app.post('/updateEvent', upload.single('image'), async (req, res) => {
   let {eventId, name, description, start, end, type, visibility, location} = req.body;
   if (location == 0) {
@@ -464,5 +455,25 @@ app.post('/updateEvent', upload.single('image'), async (req, res) => {
     res.status(200).json({success: true});
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+
+/* ================== Delete ================== */
+app.post('/rmEvent', 
+[
+  check('id').not().isEmpty()
+], async (req, res) => {
+  try {
+    const { id } = req.body;
+    const uId = extractToken(req);
+    if (!uId) throw Error("User not allowed to delete event");
+
+    //Locate event
+    const event = await Event.findById(id, {committee: 1});
+
+
+  } catch (error) {
+    res.status(400).json({success: false, error: error.message});
   }
 });

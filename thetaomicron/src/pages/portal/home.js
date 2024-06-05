@@ -7,20 +7,18 @@ const PortalHome = () => {
 
     useEffect(() => {
         (async () => {
-        const brotherInfo = await apiCall('getBro', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
-        const bI = brotherInfo.info;
-        console.log(bI);
-        const title = (bI.status === 'Pledge') ? "Mr. " + bI.lastName : `Brother ` + bI.lastName;
-        console.log(title);
-        setBro(title);
+            const brotherInfo = await apiCall('getBro', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+            const bI = brotherInfo.info;
+            const title = (bI.status === 'Pledge') ? "Mr. " + bI.lastName : `Brother ` + bI.lastName;
+            setBro(title);
         })();
     }, []); 
 
     return (
-        <div className="container">
+        <>
             {brother === '' && <h2>Loading...</h2>}
             {brother !== '' && <h2>Welcome, {brother}</h2>}
-        </div>
+        </>
     )};
 
 export default PortalHome;

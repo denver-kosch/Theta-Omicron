@@ -12,6 +12,7 @@ const Auth = ({children}) => {
             const token = localStorage.getItem('token');
             const result = await apiCall('auth', {}, {'Authorization': `Bearer ${token}`});
             setIsAuthenticated(result && result.success);
+            if (result.success) localStorage.setItem("token", result.token);
         };
         checkAuth();
     }, [location]);
@@ -62,11 +63,12 @@ const PortalLogin = () => {
     
     return (
         <div className='loginContainer'>
+            {errorMessage !== "" && <h3 style={{color: 'red'}}>{errorMessage}</h3>}
             <div className='loginForm'>
-                <h3 style={{color: 'red'}}>{errorMessage}</h3>
                 <div>
-                    <p>Username:</p>
+                    <label htmlFor='username'>Username:</label>
                     <input
+                    id='username'
                     type='text'
                     placeholder='Username...'
                     value={email}
@@ -75,15 +77,16 @@ const PortalLogin = () => {
                 </div>
                 <br/>
                 <div>
-                    <p>Password:</p>
-                    <input 
+                    <label htmlFor='password'>Password: </label>
+                    <input
+                    id="password"
                     type='password'
                     placeholder='Password...'
                     value={password}
                     onChange={e=>setPassword(e.target.value)}
                     />
                 </div>
-                <button onClick={()=>handleSubmit()}>Login</button>
+                <button type="submit" onClick={handleSubmit}>Login</button>
             </div>
         </div>
     );
