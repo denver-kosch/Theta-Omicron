@@ -383,9 +383,11 @@ app.post('/getPortalEvents', async (req, res) => {
   try {
     const _id = extractToken(req);
     //Get member's info (committee Ids)
-    const committees = await Committee.find({$or: [{members: {$elemMatch: {_id}}}, {supervisingOfficer: _id}]}, {_id: 1});
-    // Get all approved current/upcoming events, all past approved events, 
-    // all events from committees member is in or officer of
+    const committees = (await Committee.find({$or: [{members: {$elemMatch: {_id}}}, {supervisingOfficer: _id}]}, {_id: 1})).map(e=>e._id);
+    /* 
+      Get all approved current/upcoming events, all past approved events, 
+      all events from committees member is in or officer of
+    */
     const events = {};
 
     const inclusions = {
@@ -408,7 +410,9 @@ app.post('/getPortalEvents', async (req, res) => {
       "time.start": {$lt: new Date()},
       $nor: [{$and: [{visibility: "Committee"}, {"committee.id" : {$in: committees}}]}]
     }, inclusions);
-    events.comEvents = await Event.find({'committee.id' : {$in: committees}});
+    inclusions.status= 1;
+    events.comEvents = await Event.find({'committee.id' : {$in: committees}}, inclusions);
+    events.rejEvents = await Event.find({'committee.id' : {$in: committees}, status: 'Rejected'}, inclusions);
     
     res.status(200).json({success: true, events});
   } catch (error) {

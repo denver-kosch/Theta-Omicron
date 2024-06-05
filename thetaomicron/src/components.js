@@ -168,7 +168,7 @@ export const EventCard = ({event, loggedIn}) => {
                     <p style={{fontWeight: 'bold'}} className="name">{name}</p>
                     <FormatTime date1={new Date(time.start)} date2={new Date(time.end)}/>
                     {location && <div className="location">
-                        <img src='/images/locPin.png' alt="pin"/>
+                        <img src='/images/locPin.png' alt="pin" className="locPin"/>
                         <p>{location}</p>
                     </div>}
                     {description && <p className="description">{description}</p>}

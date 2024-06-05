@@ -61,7 +61,7 @@ const Event = () => {
             <div className="title">
                 <div className="head">
                     <h1 style={{marginRight: '2%'}}>{event.name}</h1>
-                    <h5>({event.type})</h5>
+                    <h5>({event.committee.type})</h5>
                 </div>
                 <div className="time">
                     <FormatDates date1={new Date(event.time.start)} date2={new Date(event.time.end)}/>
