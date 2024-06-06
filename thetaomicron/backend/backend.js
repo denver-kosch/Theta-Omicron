@@ -395,7 +395,8 @@ app.post('/getPortalEvents', async (req, res) => {
       description: 1,
       visibility: 1,
       mandatory: 1,
-      time: 1,
+      start: '$time.start',
+      end: '$time.end',
       committee: '$committee.name',
       location: '$location.name'
     };
