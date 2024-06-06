@@ -5,9 +5,9 @@ This project is currently being developed exclusively by (as new contributors ar
 
 
 Using: 
-* SERN Stack, Transitioning to MERN Stack
+* MERN Stack
 * Front End - React
 * Back End - Node.js
     * APIs are custom built for educational purposes, as well as customized security
-* Database - MySQL (Transitioning to MongoDB)
+* Database - MongoDB
 * Mobile App - React Native
