@@ -87,7 +87,7 @@ export const Navbar = ({children}) => {
                 <div className="IG">
                     <h2>{'Check us out ->'}</h2>
                     <a href="https://www.instagram.com/kappasigma_mu/" target="_blank" rel="noopener noreferrer">
-                        <img  className="smLogo" alt="Instagram"/>
+                        <img className="smLogo" alt="Instagram"/>
                     </a>
                 </div>
             </footer>

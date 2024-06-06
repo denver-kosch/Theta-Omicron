@@ -1,8 +1,7 @@
 $color_1: var(--text-color);
 $color_2: var(--link-color);
 $color_3: var(--background-color);
-$color_4: var(--rushBtn);
-$color_5: white;
+$color_4: white;
 $font-family_1: 'Courier New', Courier, monospace;
 $background-color_1: var(--background-color);
 $background-color_2: var(--footer-color);
@@ -19,7 +18,6 @@ $background-color_9: inherit;
 	--text-color: #000;
 	--link-color: #ae1717;
 	--invert: 0;
-	--rushbtn: #f5f5f5;
 	--hover-color: #bbb;
 	--footer-color: #004B23;
 }
@@ -63,6 +61,22 @@ main {
 		img.emailIcon {
 			opacity: 0.8;
 		}
+	}
+	.profilePic {
+		border-radius: 10px;
+		height: 200px;
+		width: auto;
+	}
+	.emailIcon {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100px;
+		height: auto;
+		opacity: 0;
+		transition: opacity 0.3s ease-in-out;
+		content: url("/images/mail.png");
 	}
 }
 .easyLink {
@@ -112,85 +126,85 @@ footer {
 		grid-area: right;
 		width: 100%;
 		height: 100%;
-	}
-}
-.eventPanel {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	width: 80%;
-	margin: 0 auto;
-	border: 1px solid var(--text-color);
-	padding: 0 20px 20px 20px;
-	height: 100%;
-	border-radius: 10px;
-}
-.eventCards {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	overflow-y: auto;
-	height: 100%;
-	max-height: 400px;
-	a {
-		text-decoration: none;
-		min-width: fit-content;
-		width: 100%;
-	}
-}
-.eventCard {
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	width: 94%;
-	height: 100px;
-	padding: 2.5%;
-	border: 1px solid red;
-	border-radius: 10px;
-	margin-bottom: 10px;
-	>img {
-		max-width: 18%;
-		max-height: 100%;
-		height: auto;
-		width: auto;
-		margin-right: 4%;
-	}
-	>div {
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start;
-		align-items: flex-start;
-		flex: 1;
-		color: $color_1;
-		text-decoration: none;
-	}
-	p {
-		margin: 0;
-		text-align: start;
-	}
-	div.location {
-		font-size: 1em;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		.locPin {
-			height: 1em;
-			max-width: fit-content;
-			filter: invert(var(--invert));
-			object-fit: contain;
-            content: url('/images/locPin.png');
+		.eventPanel {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			width: 80%;
+			margin: 0 auto;
+			border: 1px solid var(--text-color);
+			padding: 0 20px 20px 20px;
+			height: 100%;
+			border-radius: 10px;
+			.eventCards {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				overflow-y: auto;
+				height: 100%;
+				max-height: 400px;
+				a {
+					text-decoration: none;
+					min-width: fit-content;
+					width: 100%;
+				}
+				.eventCard {
+					display: flex;
+					flex-direction: row;
+					justify-content: center;
+					align-items: center;
+					width: 94%;
+					height: 100px;
+					padding: 2.5%;
+					border: 1px solid red;
+					border-radius: 10px;
+					margin-bottom: 10px;
+					>img {
+						max-width: 18%;
+						max-height: 100%;
+						height: auto;
+						width: auto;
+						margin-right: 4%;
+					}
+					>div {
+						display: flex;
+						flex-direction: column;
+						justify-content: flex-start;
+						align-items: flex-start;
+						flex: 1;
+						color: $color_1;
+						text-decoration: none;
+					}
+					p {
+						margin: 0;
+						text-align: start;
+					}
+					div.location {
+						font-size: 1em;
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+						.locPin {
+							height: 1em;
+							max-width: fit-content;
+							filter: invert(var(--invert));
+							object-fit: contain;
+							content: url('/images/locPin.png');
+						}
+					}
+					&:hover {
+						background-color: $background-color_3;
+					}
+					.description {
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 2;
+						overflow: hidden;
+						text-overflow: ellipsis;
+					}
+				}
+			}
 		}
-	}
-	&:hover {
-		background-color: $background-color_3;
-	}
-	.description {
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-		overflow: hidden;
-		text-overflow: ellipsis;
 	}
 }
 .aboutBasic {
@@ -201,6 +215,7 @@ footer {
 	max-height: 425px;
 	max-width: 90%;
 	border-radius: 3%;
+    content: url('/images/formalSP23.jpg');
 }
 .ExecContainer {
 	display: flex;
@@ -215,32 +230,32 @@ footer {
 .story {
 	width: 1fr;
 	padding: 30px 1%;
-}
-.storyContainer {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-.flexContainer {
-	position: relative;
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
-	height: 1fr;
-}
-.column {
-	width: 50%;
-	padding: 20px;
-	height: 300px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	>* {
-		max-width: 90%;
-		margin: auto;
+	.storyContainer {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		.flexContainer {
+			position: relative;
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			height: 1fr;
+			.column {
+				width: 50%;
+				padding: 20px;
+				height: 300px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				>* {
+					max-width: 90%;
+					margin: auto;
+				}
+			}
+		}
 	}
 }
 .convergeCon {
@@ -251,30 +266,29 @@ footer {
 	justify-content: center;
 	align-items: flex-end;
 	margin-bottom: 75px;
-}
-.diagonal {
-	position: absolute;
-	width: 1px;
-	height: 350px;
-	background-color: $background-color_4;
-	transform-origin: bottom;
-}
-.diagonal.left {
-	transform: rotate(80deg);
-	bottom: 0;
-	left: 50%;
-}
-.diagonal.right {
-	transform: rotate(-80deg);
-	bottom: 0;
-	right: 50%;
-}
-.convertical {
-	position: absolute;
-	height: 75px;
-	width: 1px;
-	background-color: $background-color_4;
-	top: 100%;
+	.diagonal {
+		position: absolute;
+		width: 1px;
+		height: 350px;
+		background-color: $background-color_4;
+		transform-origin: bottom;
+		bottom: 0;
+		&.left {
+			transform: rotate(80deg);
+			left: 50%;
+		}
+		&.right {
+			transform: rotate(-80deg);
+			right: 50%;
+		}
+	}
+	.convertical {
+		position: absolute;
+		height: 75px;
+		width: 1px;
+		background-color: $background-color_4;
+		top: 100%;
+	}
 }
 .vertical {
 	height: 75px;
@@ -282,29 +296,20 @@ footer {
 	background-color: $background-color_4;
 	margin: auto;
 }
-.rushPic {
-	max-height: 425px;
-	max-width: 90%;
-	height: auto;
-	border-radius: 3%;
-}
 .committeeContainer {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-}
-.committee {
-	display: flex;
-	flex-direction: row;
+	.committee {
+		display: flex;
+		flex-direction: row;
+	}
 }
 .aboutRush {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	>p {
-		font-size: larger;
-	}
 	>* {
 		max-width: 45%;
 		text-wrap: wrap;
@@ -315,33 +320,28 @@ footer {
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		>p {
+			font-size: larger;
+		}
+		.rushFormBtn {
+			max-width: 50%;
+			text-decoration: none;
+			>p {
+				background-color: $background-color_5;
+				color: $color_4;
+				font-weight: bold;
+				width: 100%;
+				border-radius: 3%;
+				padding: 3%;
+			}
+		}
 	}
-}
-.profilePic {
-	border-radius: 10px;
-	height: 200px;
-	width: auto;
-}
-.emailIcon {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 100px;
-	height: auto;
-	opacity: 0;
-	transition: opacity 0.3s ease-in-out;
-}
-.rushFormBtn {
-	text-decoration: none;
-	max-width: 50%;
-	>p {
-		background-color: $background-color_5;
-		color: $color_4;
-		font-weight: bold;
-		width: 100%;
+	.rushPic {
+		max-height: 425px;
+		max-width: 90%;
+		height: auto;
 		border-radius: 3%;
-		padding: 3%;
+		content: url("/images/rush.jpg");
 	}
 }
 .directoryContainer {
@@ -409,32 +409,32 @@ nav {
 	background-color: $background-color_1;
 	grid-area: 1;
 	padding-top: 10px;
-}
-.navContainer {
-	display: flex;
-	justify-content: space-between;
-	width: 100%;
-}
-.homeButton {
-	display: flex;
-	align-items: center;
-	text-decoration: none;
-	margin: 0 10px;
-	color: $color_1;
-	text-align: center;
-    .logo {
-        height: 75px;
-        margin-right: 20px;
-        filter: invert(var(--invert));
-        content: url('/images/crestBW.png');
-    }
-	&:hover {
-		h3 {
-			color: $color_2;
-		}
-		.logo {
-			filter: invert(0);
-			content: url('/images/crestC.png');
+	.navContainer {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		.homeButton {
+			display: flex;
+			align-items: center;
+			text-decoration: none;
+			margin: 0 10px;
+			color: $color_1;
+			text-align: center;
+			.logo {
+				height: 75px;
+				margin-right: 20px;
+				filter: invert(var(--invert));
+				content: url('/images/crestBW.png');
+			}
+			&:hover {
+				h3 {
+					color: $color_2;
+				}
+				.logo {
+					filter: invert(0);
+					content: url('/images/crestC.png');
+				}
+			}
 		}
 	}
 }
@@ -442,42 +442,42 @@ nav {
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
-}
-.navLink {
-	text-decoration: none;
-	margin: 0 10px;
-	color: $color_1;
-	text-align: center;
-	padding: 0 25px;
-	height: fit-content;
-	width: fit-content;
-	&:hover {
-		color: $color_2;
-	}
-}
-.dropButton {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	width: fit-content;
-}
-.dropdown {
-	position: absolute;
-	z-index: 1001;
-	left: 50%;
-	top: 100%;
-	transform: translate(-50%,0%);
-	display: flex;
-	flex-direction: column;
-	border: 1px solid var(--text-color);
-	background-color: $background-color_1;
-	min-width: 75%;
-	width: fit-content;
-	max-width: 120%;
 	.navLink {
+		text-decoration: none;
+		margin: 0 10px;
+		color: $color_1;
+		text-align: center;
+		padding: 0 25px;
 		height: fit-content;
-		padding: 0 10px;
-		margin: 0;
+		width: fit-content;
+		&:hover {
+			color: $color_2;
+		}
+	}
+	.dropButton {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: fit-content;
+		.dropdown {
+			position: absolute;
+			z-index: 1001;
+			left: 50%;
+			top: 100%;
+			transform: translate(-50%,0%);
+			display: flex;
+			flex-direction: column;
+			border: 1px solid var(--text-color);
+			background-color: $background-color_1;
+			min-width: 75%;
+			width: fit-content;
+			max-width: 120%;
+			.navLink {
+				height: fit-content;
+				padding: 0 10px;
+				margin: 0;
+			}
+		}
 	}
 }
 .smLogo {
@@ -492,21 +492,22 @@ nav {
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-}
-.loginLogo {
-	max-height: 10% !important;
-}
-.loginForm {
-	border: 1px solid var(--text-color);
-	padding: 25px;
-	>div {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-		>input {
-			max-height: fit-content;
+	.loginForm {
+		border: 1px solid var(--text-color);
+		padding: 25px;
+		>div {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			>input {
+				max-height: fit-content;
+			}
 		}
+		button {
+			margin-top: 1vh;
+		}
+	
 	}
 }
 .create {
@@ -662,21 +663,11 @@ table.pTable {
 		tr {
 			&:nth-child(even) {
 				background-color: $background-color_6;
-				color: $color_5;
-				&:hover {
-					&:not(.no-hover) {
-						background-color: $background-color_7;
-						cursor: pointer;
-					}
-				}
+				color: $color_4;
 			}
-			&:nth-child(odd) {
-				&:hover {
-					&:not(.no-hover) {
-						background-color: $background-color_8;
-						cursor: pointer;
-					}
-				}
+			&:hover:not(.no-hover) {
+				background-color: $background-color_7;
+				cursor: pointer;
 			}
 		}
 		td {
@@ -701,15 +692,15 @@ table.pTable {
 	.tableSegment {
 		border: 1px solid var(--text-color);
 	}
-}
-.no-hover {
-	td {
-		font-weight: bold;
-		padding: .5%;
-	}
-	&:hover {
-		background-color: $background-color_9;
-		cursor: default;
+	.no-hover {
+		td {
+			font-weight: bold;
+			padding: .5%;
+		}
+		&:hover {
+			background-color: $background-color_9;
+			cursor: default;
+		}
 	}
 }
 @media (prefers-color-scheme: dark) {
@@ -718,7 +709,6 @@ table.pTable {
 		--text-color: #fff;
 		--link-color: #f03434;
 		--invert: 1;
-		--rushbtn: white;
 		--hover-color: #444;
 		--footer-color: #af912c;
 	}

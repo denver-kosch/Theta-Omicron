@@ -36,7 +36,7 @@ const Rush = () => {
                 <a href={emailLink}>
                     <div>
                         <img src={member.imageUrl} alt={name} className="profilePic"/>
-                        <img src="/images/mail.png" className="emailIcon" alt="Email" />
+                        <img className="emailIcon" alt="Email" />
                     </div>
                 </a>
                 <p>{name}</p>
@@ -78,7 +78,7 @@ const Rush = () => {
                     <p>Interested in Kappa Sigma?<br/>Click Here</p>
                 </a>
             </div>
-            <img src="/images/rush.jpg" alt="Rush KΣ" className="rushPic" />
+            <img alt="Rush KΣ" className="rushPic" />
         </div>
         <br/>
         <h4>If you are interested in joining the greatest in the world, reach out to any of the Brothers of the Rush Committee:</h4>

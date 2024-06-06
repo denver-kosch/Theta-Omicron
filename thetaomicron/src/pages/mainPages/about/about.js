@@ -48,8 +48,7 @@ const AboutUs = () => {
     return (
         <>
             <h2>WHO ARE WE:</h2>
-            <img 
-                src={`/images/formalSP23.jpg`}
+            <img
                 alt="Brothers of the Theta-Omcrion Chapter of Kappa Sigma"
                 className="aboutPageImg"
             />
