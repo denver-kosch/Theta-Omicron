@@ -73,7 +73,8 @@ app.post('/auth', async (req, res) => {
 });
 
 /* ================== Create ================== */
-app.post('/addMember', [
+app.post('/addMember', 
+[
   check(['password', 'email', 'fname', 'lname', 'phone', 'street', 'city', 'address'])
 ], async (req, res) => {
   try {
@@ -112,6 +113,9 @@ app.post('/addEvent', upload.single('image'),
     const _id = req.headers.authorization &&  extractToken(req);
 
     const {name, description, start, end, committeeId, visibility} = req.body;
+    
+    if (start > end) throw Error('Start time cannot be after end time');
+
     const time = {start, end};
     let {location} = req.body;
     
@@ -133,7 +137,7 @@ app.post('/addEvent', upload.single('image'),
         locationId: new ObjectId(String(location)), 
         visibility
       }], {session}))[0];
-      
+    
     const folderPath = path.join(__dirname, 'public','images','events');
     if (!fs.existsSync(folderPath)) await fs.promises.mkdir(folderPath, { recursive: true });
     const uploadPath = path.join(folderPath, `${event._id.toString()}${path.extname(req.file.originalname)}`);

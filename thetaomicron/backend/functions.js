@@ -14,7 +14,7 @@ const host = getLocalIP() || 'localhost';
 export const connectDB = async () => {
     try {
         console.log(`Attempting MongoDB connect on ${host}`);
-        await connect(process.env.MONGODBURI);
+        await connect(process.env.MONGODBUR || 'mongodb+srv://reader:BSTb7oKp5dGdAMib@theta-omicron.xuxlcgy.mongodb.net/sampleDB');
         console.log(`MongoDB connected`);
     } catch (error) {
         console.log(`Error: ${error.message}`);

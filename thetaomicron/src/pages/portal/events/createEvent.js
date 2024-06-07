@@ -4,6 +4,11 @@ import { apiCall } from "../../../components";
 
 const CreateEvent = () => {
     const navigate = useNavigate();
+    const formatDateForInput = (date) => {
+        const local = new Date(date);
+        local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+        return local.toJSON().slice(0,16);
+    };
     const [loaded, setLoaded] = useState(false);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -13,8 +18,8 @@ const CreateEvent = () => {
     const [location, setLocation] = useState('-1');
     const [newLocName, setNewLocName] = useState('');
     const [newLocAddress, setNewLocAddress] = useState('');
-    const [start, setStart] = useState('');
-    const [end, setEnd] = useState('');
+    const [start, setStart] = useState(formatDateForInput(new Date()));
+    const [end, setEnd] = useState(formatDateForInput(new Date()));
     const [image, setImage] = useState(null);
     const [commId, setCommId] = useState('');
     const [visibility, setVisibility] = useState('');
@@ -57,7 +62,6 @@ const CreateEvent = () => {
         }
         else console.error(newEvent.error);
     };
-    
     
     return(
         <>
@@ -170,6 +174,7 @@ const CreateEvent = () => {
 
                     <input required type="submit" value="Create"/>
                 </form>
+                <button onClick={() => console.log(start)}>Check</button>
                 
             </div> :
             <div className="loader">Loading...</div>
