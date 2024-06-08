@@ -31,7 +31,7 @@ This project is currently being developed by (as new contributors arise, they wi
    ```bash
    REACT_APP_GOOGLE_API_KEY=yourApiKeyHere
    REACT_APP_GEO_API_KEY=yourApiKeyHere
-   REACT_APP_SERVERPORT=YourBackend'sPort
+   REACT_APP_SERVERPORT=YourBackendPort
    ```
    Users can set up keys for Google APIs at the [Google Cloud Console](https://console.cloud.google.com/welcome)
    
