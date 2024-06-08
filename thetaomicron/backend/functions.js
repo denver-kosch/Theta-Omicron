@@ -14,7 +14,7 @@ const host = getLocalIP() || 'localhost';
 export const connectDB = async () => {
     try {
         console.log(`Attempting MongoDB connect on ${host}`);
-        await connect(process.env.MONGODBUR || 'mongodb+srv://reader:BSTb7oKp5dGdAMib@theta-omicron.xuxlcgy.mongodb.net/sampleDB');
+        await connect(process.env.MONGODBURI);
         console.log(`MongoDB connected`);
     } catch (error) {
         console.log(`Error: ${error.message}`);
@@ -39,9 +39,13 @@ export const appendImgPathMongoDB = (obj, dirname, imgFolder) => {
 };
 
 export const extractToken = req => {
-  const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
-  const _id = String((jwt.verify(token, process.env.SESSION_SECRET)).memberId);
-  return isObjectIdOrHexString(_id) && new ObjectId(_id);
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const _id = String((jwt.verify(token, process.env.SESSION_SECRET)).memberId);
+    return isObjectIdOrHexString(_id) && new ObjectId(_id);
+  } catch {
+    return false;
+  }
 }
 
 export const abbrSt = state => {
