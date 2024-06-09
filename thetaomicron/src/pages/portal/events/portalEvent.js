@@ -14,7 +14,7 @@ const PortalEvent = () => {
 
     useEffect(() => {
         const fetchEventDetails = async () => {
-            const result = await apiCall(`getEventDetails`, {id, loggedIn: true});
+            const result = await apiCall(`getEventDetails`, {id, loggedIn: true}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
             if (result && result.success) {
                 setEvent(result.event);
                 setSimilars(result.similar);
@@ -33,7 +33,9 @@ const PortalEvent = () => {
         };
         fetchEventDetails();
     }, [id]);
-    
+
+
+
     const FormatDates = ({date1, date2}) => {
         const options = {
           month: "numeric",
@@ -52,7 +54,6 @@ const PortalEvent = () => {
         
         return <h3>{`${datePart1} ${timePart1} - ${datePart2} ${timePart2}`}</h3>;
     };
-
 
     return (
         <>{loading && <div className="loader">Loading...</div>}

@@ -58,6 +58,7 @@ const Event = () => {
     return (
         <>{loading ? <div className="loader">Loading...</div> :
         <div className="event">
+            
             <div className="title">
                 <div className="head">
                     <h1 style={{marginRight: '2%'}}>{event.name}</h1>

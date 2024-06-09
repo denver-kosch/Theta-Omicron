@@ -305,6 +305,10 @@ app.post("/getEventCreation", async (req, res) => {
 //Finished
 app.post("/getEventDetails", async (req, res) => {
   try {
+    let token;
+    const {loggedIn} = req.body;
+    if (loggedIn) token = extractToken(req).toString();
+
     let event = (await Event.aggregate([
       { 
         $match: { _id: new ObjectId(String(req.body.id)) }
@@ -343,22 +347,29 @@ app.post("/getEventDetails", async (req, res) => {
           committee: {
             type: "$committeeInfo.eventType",
             id: "$committeeInfo._id",
-          }
+            members: "$committeeInfo.members",
+            officer: "$committeeInfo.supervisingOfficer",
+          },
+          rejDetails: 1
         }
       }
     ]))[0];
     //Get poster and similar events (Same Type, but not the same id)
     let similar = [];
-    if (event) {
-      const params = {'committee.id': event.committee.id, _id: {$ne: new Object(event._id)}, status: "Approved"};
-      similar = (await Event.find(
-        params,
-        {name: 1, time: 1, committeeId: 1 }
-      )).map(d => appendImgPathMongoDB(d.toJSON(), __dirname, 'events'));
-      event = appendImgPathMongoDB(event, __dirname, 'events');
-    }
-    else throw Error("Event not found");
-    res.status(200).json({ success: true, event: event, similar});
+    if (!event) throw Error("Event not found");
+
+    const params = {'committee.id': event.committee.id, _id: {$ne: new Object(event._id)}, status: "Approved"};
+    similar = (await Event.find(
+      params,
+      {name: 1, time: 1, committeeId: 1 }
+    )).map(d => appendImgPathMongoDB(d.toJSON(), __dirname, 'events'));
+    event = appendImgPathMongoDB(event, __dirname, 'events');
+
+    let isOfficer = false;
+    if (!(loggedIn || event.committee.members.some(e => e.toString() === token) || event.committee.officer.toString() === token)) delete event.rejDetails;
+    else if (event.committee.officer.toString() === token) isOfficer = true;
+    delete event.committee.members, event.committee.officer;
+    res.status(200).json({ success: true, event: event, similar, isOfficer});
   } catch (error) {
     res.status(404).json({ success: false, error: error.message });
   }
