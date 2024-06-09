@@ -24,7 +24,7 @@ const getLocalIP = () => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   const envPath = path.join(__dirname, '.env');
-  const newApiUrl = `REACT_APP_API_URL=http://${ip}:${process.env.REACT_APP_SERVERPORT}`;
+  const newApiUrl = `REACT_APP_API_URL=http://${ip}`;
   console.log(newApiUrl);
 
   // Read the current content of the .env file

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {APIProvider, Map, Marker} from '@vis.gl/react-google-maps';
 
-
 export const MemberCard = ({ name, emailLink, memberId, title }) => {
     const img = `/images/profilePics/${memberId}.jpg`;
 
@@ -117,8 +116,9 @@ export const DropDown = ({content}) => {
 )};
 
 export async function apiCall (api, body = {}, headers = {}) {
-    console.log(process.env.REACT_APP_API_URL);
-    const apiLink = `${process.env.REACT_APP_API_URL}/${api}`;
+    const port = process.env.REACT_APP_SERVERPORT || 3001;
+    const host = window.location.hostname || 'localhost';
+    const apiLink = `http://${host}:${port}/${api}`;
     
     const isFormData = body instanceof FormData;
     try {
@@ -162,7 +162,7 @@ export const EventCard = ({event, loggedIn}) => {
 
     return (
         <Link to={loggedIn ? `/portal/event/${_id}` :`/event/${_id}`} key={_id}>
-            <div className="eventCard">
+            <div className="eventCard easyLink">
                 <img src={imageUrl || `${process.env.REACT_APP_API_URL}/images/events/default.png`} alt={name}/>
                 <div>
                     <p style={{fontWeight: 'bold'}} className="name">{name}</p>

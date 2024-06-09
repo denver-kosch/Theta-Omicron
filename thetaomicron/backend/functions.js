@@ -7,13 +7,14 @@ import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 
 dotenv.config();
+
 const port = process.env.PORT || 3001;
-const host = getLocalIP() || 'localhost';
+const host = getLocalIP();
 
 
 export const connectDB = async () => {
     try {
-        console.log(`Attempting MongoDB connect on ${host}`);
+        console.log(`Attempting MongoDB connect`);
         await connect(process.env.MONGODBURI);
         console.log(`MongoDB connected`);
     } catch (error) {

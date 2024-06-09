@@ -28,7 +28,7 @@ const Home = () => {
                 <div className="eventCards">
                     {loading && <div>Loading...</div>}
                     {(events.length === 0 && !loading) && <div style={{color: 'red'}}>No upcoming events!</div>}
-                    {events.length !== 0 && events.map(event => <EventCard event={event}/>)}
+                    {events.length !== 0 && events.map(event => <EventCard key={event._id} event={event}/>)}
                 </div>
             </div>
     )};
