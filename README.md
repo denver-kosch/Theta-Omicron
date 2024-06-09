@@ -57,3 +57,10 @@ This project is currently being developed by (as new contributors arise, they wi
      ```
 > [!TIP]
 > I run using nodemon when developing to update after changes, but no changes should be actively happening in general usage by viewers
+
+## Contact Information
+
+Feel free to reach out with any questions, comments, or even suggestions for improvement!
+* Email: dkosch2@gmail.com
+* LinkedIn: www.linkedin.com/in/denver-kosch
+* Github: https://github.com/denver-kosch
