@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {APIProvider, Map, Marker} from '@vis.gl/react-google-maps';
+import {APIProvider, Map, AdvancedMarker as Marker} from '@vis.gl/react-google-maps';
 
 export const MemberCard = ({ name, emailLink, memberId, title }) => {
     const img = `/images/profilePics/${memberId}.jpg`;
@@ -21,8 +21,9 @@ export const MemberCard = ({ name, emailLink, memberId, title }) => {
 export const Divider = () => <div className="divider"></div>;
 
 export const MapView = ({c}) => {
+    const googleApiKey = process.env.REACT_APP_GOOGLE_API_KEY;
     return (
-        <APIProvider apiKey={process.env.REACT_APP_GOOGLE_API_KEY}>
+        <APIProvider apiKey={googleApiKey}>
             <Map
             className='map'
             center={c}
@@ -31,9 +32,10 @@ export const MapView = ({c}) => {
             disableDefaultUI={true}
             clickableIcons={false}
             keyboardShortcuts={false}
-            mapTypeId={'hybrid'}
+            mapTypeId='hybrid'
+            mapId='5e59c9f6171b1254'
             >
-                <Marker position={c} clickable={false}/>
+                <Marker position={c}/>
             </Map>
         </APIProvider>
     )

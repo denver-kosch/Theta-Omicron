@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { apiCall, MapView, EventCard } from "../../../components";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
 
+
 const PortalEvent = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const { id } = useParams();
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isOfficer, setIsOfficer] = useState(false);
+    const [isCommittee, setIsCommittee] = useState(false);
     const [similars, setSimilars] = useState([]);
     //default value is lakeside 115
     const [lat, setLat] = useState(39.99832093770602);
@@ -18,6 +23,8 @@ const PortalEvent = () => {
             if (result && result.success) {
                 setEvent(result.event);
                 setSimilars(result.similar);
+                setIsCommittee(result.isCommittee);
+                setIsOfficer(result.isOfficer);
             }
             else console.log(result);
             
@@ -34,30 +41,50 @@ const PortalEvent = () => {
         fetchEventDetails();
     }, [id]);
 
-
+    const fDate = date => {
+        const options = {
+            month: "numeric",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+        };
+        return new Date(date).toLocaleString('en-US', options);
+    };
 
     const FormatDates = ({date1, date2}) => {
-        const options = {
-          month: "numeric",
-          day: "numeric",
-          year: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
-        };
-        const formatted1  = date1.toLocaleString("en-US", options);
-        const formatted2  = date2.toLocaleString("en-US", options);
+        const formatted1  = fDate(date1);
+        const formatted2  = fDate(date2);
         const [datePart1, timePart1] = formatted1.split(", ");
         const [datePart2, timePart2] = formatted2.split(", ");
-        if (datePart1 === datePart2)
-            return <h3>{datePart1} {`${timePart1} - ${timePart2}`}</h3>;
-        
-        return <h3>{`${datePart1} ${timePart1} - ${datePart2} ${timePart2}`}</h3>;
+        return (datePart1 === datePart2) ? 
+            <h3>{datePart1} {`${timePart1} - ${timePart2}`}</h3> :
+            <h3>{`${datePart1} ${timePart1} - ${datePart2} ${timePart2}`}</h3>;
+    };
+
+    const handleRej = async op => {
+        if (op === 'del') {
+            const res = await apiCall('rmEvent', {id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+            if (!res.success) console.error(res.error);
+            navigate('portal/event');
+        }
+        if (op === 'upd') navigate(`${location.pathname}/edit`);
     };
 
     return (
         <>{loading && <div className="loader">Loading...</div>}
         {!loading && <div className="event">
+            {((isOfficer || isCommittee) && event.status === "Rejected") && <div className="rejectBanner">
+                <p>Rejected on {fDate(event.rejDetails.date)}: {event.rejDetails.reason}</p>
+                {isCommittee && <div className="rejOptions">
+                    <button onClick={() => handleRej("upd")}>Update</button>
+                    <button onClick={() => handleRej("del")}>Delete</button>
+                </div>}
+            </div>}
+            {((isOfficer || isCommittee) && event.status === "Pending") && <div className="pendingBanner">
+                Hello
+            </div>}
             <div className="title">
                 <div className="head">
                     <h1 style={{marginRight: '2%'}}>{event.name}</h1>
@@ -90,3 +117,4 @@ const PortalEvent = () => {
 )};
 
 export default PortalEvent;
+

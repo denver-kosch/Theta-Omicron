@@ -305,7 +305,7 @@ app.post("/getEventCreation", async (req, res) => {
 //Finished
 app.post("/getEventDetails", async (req, res) => {
   try {
-    let token;
+    let token = '';
     const {loggedIn} = req.body;
     if (loggedIn) token = extractToken(req).toString();
 
@@ -336,6 +336,7 @@ app.post("/getEventDetails", async (req, res) => {
           name: 1,
           description: 1,
           time: 1,
+          status: 1,
           location: {
             name: "$locationInfo.name",
             address: "$locationInfo.address",
@@ -366,10 +367,14 @@ app.post("/getEventDetails", async (req, res) => {
     event = appendImgPathMongoDB(event, __dirname, 'events');
 
     let isOfficer = false;
-    if (!(loggedIn || event.committee.members.some(e => e.toString() === token) || event.committee.officer.toString() === token)) delete event.rejDetails;
-    else if (event.committee.officer.toString() === token) isOfficer = true;
+    let isCommittee = false;
+    let isChairman = false;
+    if (event.committee.officer.toString() === token) isOfficer = true;
+    else if (event.committee.members.some(e => e.toString() === token)) isCommittee = true;
+    if (!(isOfficer || isCommittee)) delete event.rejDetails;
+    if (!loggedIn) delete event.status;
     delete event.committee.members, event.committee.officer;
-    res.status(200).json({ success: true, event: event, similar, isOfficer});
+    res.status(200).json({ success: true, event, similar, isOfficer, isCommittee, isChairman});
   } catch (error) {
     res.status(404).json({ success: false, error: error.message });
   }
@@ -398,7 +403,8 @@ app.post('/getPortalEvents', async (req, res) => {
   try {
     const _id = extractToken(req);
     //Get member's info (committee Ids)
-    const committees = (await Committee.find({$or: [{members: {$elemMatch: {_id}}}, {supervisingOfficer: _id}]}, {_id: 1})).map(e=>e._id);
+    const committees = (await Committee.find({$or: [{members: _id}, {supervisingOfficer: _id}]}, {_id: 1})).map(e=>e._id);
+
     /* 
       Get all approved current/upcoming events, all past approved events, 
       all events from committees member is in or officer of
@@ -489,10 +495,9 @@ app.post('/rmEvent',
     const uId = extractToken(req);
     if (!uId) throw Error("User not allowed to delete event");
 
-    //Locate event
     const event = await Event.findById(id, {committee: 1});
 
-
+    res.status(200).json({success: true});
   } catch (error) {
     res.status(400).json({success: false, error: error.message});
   }

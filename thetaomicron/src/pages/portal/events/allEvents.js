@@ -183,11 +183,11 @@ export const AllEvents = () => {
     
     return (
     isLoading ? <div className="loader">Loading...</div> :
-    <>
+    <div>
         <button onClick={() => navigate('/portal/event/create')} style={{marginRight: 'auto'}}>Create Event</button>
         {tableSegment('Upcoming Events', 'approved', false)}
         {tableSegment('Past Events', 'past', false)}
         {tableSegment('Committee Events', 'comEvents', true)}
         {tableSegment('Rejected Committee Events', 'rejEvents', true)}
-    </>
+    </div>
 )};

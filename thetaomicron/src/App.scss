@@ -45,9 +45,12 @@ main {
 	align-items: center;
 	flex-direction: column;
 	grid-area: 2;
-	padding: 20px;
 	box-sizing: border-box;
 	min-height: 1fr;
+	>div {
+		height: 100%;
+		width: calc(100% - 30px);
+	}
 }
 .card {
 	width: 200px;
@@ -548,9 +551,9 @@ nav {
 }
 .event {
 	display: grid;
-	grid-template-rows: min-content min-content 1fr;
+	grid-template-rows: min-content min-content min-content 1fr;
 	grid-template-columns: 2fr 1fr;
-	grid-template-areas: "title graphic" "content graphic" "similar location";
+	grid-template-areas: "status status" "title graphic" "content graphic" "similar location";
 	width: 100%;
 	height: 120vh;
 	>.poster {
@@ -650,6 +653,36 @@ nav {
 				margin: 0 auto;
 				max-width: 50%;
 			}
+		}
+	}
+	>.pendingBanner {
+		grid-area: status;
+		height: auto;
+		width: 100%;
+		padding: 1vh 0;
+		background-color: #ffff00;
+		color: black;
+	}
+	>.rejectBanner {
+		grid-area: status;
+		height: auto;
+		width: 100%;
+		padding: 1vh 0;
+		background-color: #ff0000;
+		color: black;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		>* {
+			margin: auto;
+			font-weight: bolder;
+		}
+		.rejOptions {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			width: 10%;
+			justify-content: space-between;
 		}
 	}
 }
