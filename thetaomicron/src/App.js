@@ -1,13 +1,11 @@
 import './App.scss';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AboutUs from './pages/mainPages/about/about';
-import { Navbar } from './components';
 import Rush from "./pages/mainPages/about/rush";
 import Directory from "./pages/mainPages/directory/dir";
 import FamilyTree from "./pages/mainPages/directory/familyTrees";
-import { Auth, PortalLogin } from "./pages/portal/authLogin";
+import { PortalLogin } from "./pages/portal/authLogin";
 import PortalHome from "./pages/portal/home";
-import {NavBar as PortalNav} from "./pages/portal/navbar";
 import Home from "./pages/mainPages/home";
 import Leadership from "./pages/mainPages/about/leadership";
 import Alumni from "./pages/mainPages/directory/alumni";
@@ -16,48 +14,45 @@ import CreateEvent from './pages/portal/events/createEvent';
 import PortalEvent from './pages/portal/events/portalEvent';
 import EditEvent from './pages/portal/events/editEvent';
 import { AllEvents } from './pages/portal/events/allEvents';
-
+import { MainLayout, PortalLayout } from './layouts';
 
 
 function App() {
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route index element={<Navbar> <Home/> </Navbar>}/>
-          <Route path='directory'>
-            <Route index element={<Navbar> <Directory/> </Navbar>}/>
-            <Route path='trees' element={<Navbar> <FamilyTree/> </Navbar>}/>
-            <Route path='alumni' element={<Navbar> <Alumni/> </Navbar>}/>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
+          <Route path="directory">
+            <Route index element={<Directory />} />
+            <Route path="trees" element={<FamilyTree />} />
+            <Route path="alumni" element={<Alumni />} />
           </Route>
-          <Route path='about'>
-            <Route index element={<Navbar> <AboutUs/> </Navbar>}/>
-            <Route path='leadership' element={<Navbar> <Leadership/> </Navbar>}/>
-            <Route path='rush' element={<Navbar> <Rush/> </Navbar>}/>
+          <Route path="about">
+            <Route index element={<AboutUs />} />
+            <Route path="leadership" element={<Leadership />} />
+            <Route path="rush" element={<Rush />} />
           </Route>
-          <Route path='portal'>
-            <Route index element={<Auth> <PortalNav> <PortalHome/> </PortalNav> </Auth>}/>
-            <Route path='login' element={<Navbar> <PortalLogin/> </Navbar>}/>
-            <Route path='position'>
-              <Route path='redirect' element={<PortalNav> </PortalNav>}/>
+          <Route path="event/:id" element={<Event />} />
+          <Route path="portal/login" element={<PortalLogin />} />
+        </Route>
+        
+        <Route path="portal" element={<PortalLayout />}>
+          <Route index element={<PortalHome />} />
+          <Route path="event">
+            <Route index element={<AllEvents />} />
+            <Route path="create" element={<CreateEvent />} />
+            <Route path=":id">
+              <Route index element={<PortalEvent />} />
+              <Route path="edit" element={<EditEvent />} />
             </Route>
-            <Route path='event'>
-              <Route index element={<Auth><PortalNav> <AllEvents/> </PortalNav></Auth>}/>
-              <Route path="create" element={<Auth><PortalNav> <CreateEvent/> </PortalNav></Auth>}/>
-              <Route path=":id">
-                <Route index element={<Auth><PortalNav> <PortalEvent/> </PortalNav></Auth>}/>
-                <Route path='edit' element={<Auth><PortalNav> <EditEvent/> </PortalNav></Auth>}/>
-              </Route>
-            </Route>
-            <Route path="*" element={<Navigate to="/portal/"/>} />
           </Route>
-          <Route path='event'>
-            <Route path=':id' element={<Navbar> <Event/> </Navbar>}/>
-          </Route>
-          <Route path="*" element={<Navigate to="/"/>} />
-        </Routes>
-      </Router>
-    </>
+          <Route path="*" element={<Navigate to="/portal/" />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
   );
 }
 
