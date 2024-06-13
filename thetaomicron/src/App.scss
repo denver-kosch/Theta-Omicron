@@ -58,6 +58,17 @@ main {
 	text-wrap: wrap;
 	a {
 		position: relative;
+		.emailIcon {
+			position: absolute;
+			top: 50%;
+			right: 50%;
+			transform: translate(0%, -50%);
+			width: 100px;
+			height: auto;
+			opacity: 0;
+			transition: opacity 0.3s ease-in-out;
+			content: url("/images/mail.png");
+		}
 	}
 	&:hover {
 		img.emailIcon {
@@ -69,17 +80,6 @@ main {
 		height: 200px;
 		width: auto;
 	}
-	.emailIcon {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100px;
-		height: auto;
-		opacity: 0;
-		transition: opacity 0.3s ease-in-out;
-		content: url("/images/mail.png");
-	}
 }
 .easyLink {
 	text-decoration: none;
@@ -88,6 +88,21 @@ main {
 	&:hover {
 		color: $color_2;
 	}
+}
+.modal {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.5);
+	z-index: 1000;
 }
 footer {
 	display: flex;
@@ -483,7 +498,7 @@ nav {
 	}
 }
 .smLogo {
-	height: 50px;
+	max-width: 50px;
 	margin: 20px;
 	content: url('/images/ig.png');
 }
@@ -655,34 +670,46 @@ nav {
 			}
 		}
 	}
-	>.pendingBanner {
+	>.banner {
 		grid-area: status;
 		height: auto;
 		width: 100%;
 		padding: 1vh 0;
-		background-color: #ffff00;
 		color: black;
-	}
-	>.rejectBanner {
-		grid-area: status;
-		height: auto;
-		width: 100%;
-		padding: 1vh 0;
-		background-color: #ff0000;
-		color: black;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		>* {
-			margin: auto;
-			font-weight: bolder;
+		&.pending {
+			background-color: #ffff00;
 		}
-		.rejOptions {
+		&.reject {
+			background-color: #ff0000;
 			display: flex;
 			flex-direction: row;
-			align-items: center;
-			width: 10%;
-			justify-content: space-between;
+			justify-content: center;
+			>* {
+				margin: auto;
+				font-weight: bolder;
+			}
+			.rejOptions {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				width: 10%;
+				justify-content: space-between;
+			}
+		}
+	}
+	.confirmRej {
+		.rejOptions {
+			color: black;
+			border: 1px solid black;
+			border-radius: 5px;
+			padding: 5px;
+			margin: 5px;
+			.cancel {
+				background-color: rgb(255, 255, 0);
+			}
+			.confirm {
+				background-color: #f00;
+			}
 		}
 	}
 }

@@ -17,7 +17,7 @@ import { AllEvents } from './pages/portal/events/allEvents';
 import { MainLayout, PortalLayout } from './layouts';
 
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>

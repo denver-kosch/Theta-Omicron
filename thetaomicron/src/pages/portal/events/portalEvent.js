@@ -12,6 +12,8 @@ const PortalEvent = () => {
     const [loading, setLoading] = useState(true);
     const [isOfficer, setIsOfficer] = useState(false);
     const [isCommittee, setIsCommittee] = useState(false);
+    const [rejConfirm, setRejConfirm] = useState(false);
+    const [rejReason, setRejReason] = useState('');
     const [similars, setSimilars] = useState([]);
     //default value is lakeside 115
     const [lat, setLat] = useState(39.99832093770602);
@@ -52,6 +54,7 @@ const PortalEvent = () => {
         };
         return new Date(date).toLocaleString('en-US', options);
     };
+    
 
     const FormatDates = ({date1, date2}) => {
         const formatted1  = fDate(date1);
@@ -72,18 +75,29 @@ const PortalEvent = () => {
         if (op === 'upd') navigate(`${location.pathname}/edit`);
     };
 
+    const handlePend = async op => {
+        const res = (op === 'approve') ? 
+            await apiCall('approveEvent', {id, committeeId: event.committee.id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`}) :
+            await apiCall('rejectEvent', {id, reason: rejReason, committeeId: event.committee.id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+        if (!res.success) console.error(res.error);
+        navigate(0);
+    };
+
     return (
         <>{loading && <div className="loader">Loading...</div>}
         {!loading && <div className="event">
-            {((isOfficer || isCommittee) && event.status === "Rejected") && <div className="rejectBanner">
+            {((isOfficer || isCommittee) && event.status === "Rejected") && <div className="reject banner">
                 <p>Rejected on {fDate(event.rejDetails.date)}: {event.rejDetails.reason}</p>
                 {isCommittee && <div className="rejOptions">
                     <button onClick={() => handleRej("upd")}>Update</button>
                     <button onClick={() => handleRej("del")}>Delete</button>
                 </div>}
             </div>}
-            {((isOfficer || isCommittee) && event.status === "Pending") && <div className="pendingBanner">
-                Hello
+            {((isOfficer || isCommittee) && event.status === "Pending") && <div className="pending banner">
+                {isOfficer ? <div className="rejOptions">
+                    <button onClick={() => setRejConfirm(true)}>Reject</button>
+                    <button onClick={() => handlePend("approve")}>Approve</button>
+                </div> : <p>Pending Officer Approval</p>}
             </div>}
             <div className="title">
                 <div className="head">
@@ -112,6 +126,15 @@ const PortalEvent = () => {
                     {similars.map(event => <EventCard key={event._id} event={event} loggedIn={true} />)}
                 </div>
             </div>
+
+            {rejConfirm && <div className="modal confirmRej">
+                <p>Reason:</p>
+                <input type="text" value={rejReason} onChange={(e) => setRejReason(e.target.value)} />
+                <div className="rejOptions">
+                    <button className='cancel' onClick={() => setRejConfirm(false)}>Cancel</button>
+                    <button className='confirm' onClick={() => handlePend("reject")}>Reject</button>
+                </div>
+            </div>}
         </div>
         }</>
 )};

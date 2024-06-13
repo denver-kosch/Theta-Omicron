@@ -16,12 +16,12 @@ const CreateEvent = () => {
     const [commOptions, setCommOptions] = useState([]);
     const [officerComms, setOfficerComms] = useState([]);
     const [location, setLocation] = useState('-1');
+    const [committee, setCommittee] = useState('');
     const [newLocName, setNewLocName] = useState('');
     const [newLocAddress, setNewLocAddress] = useState('');
     const [start, setStart] = useState(formatDateForInput(new Date()));
     const [end, setEnd] = useState(formatDateForInput(new Date()));
     const [image, setImage] = useState(null);
-    const [commId, setCommId] = useState('');
     const [visibility, setVisibility] = useState('');
     
 
@@ -39,12 +39,11 @@ const CreateEvent = () => {
     const add = async e => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-
         const data = new FormData();
         data.append('name', name);
         data.append('description', description);
 
-        data.append('location', location);
+        data.append('location', JSON.stringify(locOptions.find(l => l._id === location) ?? location));
         if (location === '0') {
             data.append('newLocName', newLocName);
             data.append('newLocAddress', newLocAddress);
@@ -53,7 +52,10 @@ const CreateEvent = () => {
         data.append('start', start);
         data.append('end', end);
         data.append('image', image);
-        data.append('committeeId', commId);
+
+        const com = [...commOptions, ...officerComms].find(e=> e._id === committee);
+        console.log(com);
+        data.append('committee', JSON.stringify(com));
         data.append('visibility', visibility);
 
         const newEvent = await apiCall('addEvent', data, {'Authorization': `Bearer ${token}`});
@@ -139,14 +141,14 @@ const CreateEvent = () => {
 
                     <div className="field">
                         <label htmlFor="committee">Facilitating committee: </label>
-                        <select id="committee" value={commId} onChange={(e) => setCommId(e.target.value)}>
+                        <select id="committee" value={committee} onChange={(e) => setCommittee(e.target.value)}>
                             <option key={"committee"} value='' disabled>Please select a committee</option>
                             {commOptions.map(option => (
                                 <option key={`committee-${option._id}`} value={option._id}>{option.name}</option>
                             ))}
-                            {officerComms.length > 0 && <option key={"committee"} value='' disabled>Officer Committees</option>}
+                            {officerComms.length > 0 && <option key={"ocommittee"} value='' disabled>Officer Committees</option>}
                             {officerComms.map(option => (
-                                <option key={`committee-${option._id}`} value={option._id}>{option.name}</option>
+                                <option key={`ocommittee-${option._id}`} value={option._id}>{option.name}</option>
                             ))}
                         </select>
                     </div>

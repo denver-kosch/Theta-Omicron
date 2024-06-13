@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {APIProvider, Map, AdvancedMarker as Marker} from '@vis.gl/react-google-maps';
 
 export const MemberCard = ({ name, emailLink, memberId, title }) => {
@@ -10,7 +10,7 @@ export const MemberCard = ({ name, emailLink, memberId, title }) => {
         <a href={emailLink}>
             <div>
                 <img src={img} alt={name} className="profilePic"/>
-                <img src="/images/mail.png" className="emailIcon" alt="Email" />
+                <img className="emailIcon" alt="Email" />
             </div>
         </a>
         <p>{name}</p>
@@ -22,6 +22,33 @@ export const Divider = () => <div className="divider"></div>;
 
 export const MapView = ({c}) => {
     const googleApiKey = process.env.REACT_APP_GOOGLE_API_KEY;
+    const [isWebGLSupported, setIsWebGLSupported] = useState(true);
+
+    useEffect(() => {
+        const checkWebGL = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl && gl instanceof WebGLRenderingContext) {
+                    console.log('WebGL is supported');
+                    setIsWebGLSupported(true);
+                } else {
+                    console.error('WebGL is not supported');
+                    setIsWebGLSupported(false);
+                }
+            } catch (e) {
+                console.error('Error checking WebGL support:', e);
+                setIsWebGLSupported(false);
+            }
+        };
+
+        checkWebGL();
+    }, []);
+
+    if (!isWebGLSupported) {
+        return <div>WebGL is not supported on your browser or hardware.</div>;
+    }
+    
     return (
         <APIProvider apiKey={googleApiKey}>
             <Map
@@ -34,6 +61,7 @@ export const MapView = ({c}) => {
             keyboardShortcuts={false}
             mapTypeId='hybrid'
             mapId='5e59c9f6171b1254'
+            onError={(error) => console.error('Map error:', error)}
             >
                 <Marker position={c}/>
             </Map>
@@ -117,7 +145,7 @@ export const DropDown = ({content}) => {
     </div>
 )};
 
-export async function apiCall (api, body = {}, headers = {}) {
+export async function apiCall (api, body = {}, headers = {'Content-Type': 'application/json'}) {
     const port = process.env.REACT_APP_SERVERPORT || 3001;
     const host = window.location.hostname || 'localhost';
     const apiLink = `http://${host}:${port}/${api}`;
@@ -180,33 +208,16 @@ export const EventCard = ({event, loggedIn}) => {
 )};
 
 export const PortalNav = ({children}) => {
-    const [logoPath, setLP] = useState('/images/crestBW.png');
-    const [logo, setL] = useState("Monochrome Kappa Sigma Crest");
-    const navigate = useNavigate();
-
-    
-    const logoHover = () => {
-        setLP('/images/crestC.png');
-        setL("Colored Kappa Sigma Crest");
-    };
-    const leaveLogo = () => {
-        setLP('/images/crestBW.png');
-        setL("Monochrome Kappa Sigma Crest");
-    };
-
-    const logout = () => {
-        localStorage.removeItem("token");
-        navigate("/portal");
-    };
+    const logout = () => localStorage.removeItem("token");
 
     return (
     <>
         <nav>
             <div className="navContainer">
-                <Link to={"/portal"} className="homeButton" onMouseOver={logoHover} onMouseOut={leaveLogo}>
-                    <img src={logoPath} alt={logo} className="logo"/>
-                    <h3>Portal Home</h3>
-                </Link>
+            <Link to={"/portal"} className="homeButton navLink">
+                        <img alt='Kappa Sigma Crest' className="logo"/>
+                        <h3>Portal Home</h3>
+                    </Link>
                 <div className="navLinks">
                     <Link className="navLink" to={"/portal/event"}>
                         <h3>Events</h3>

@@ -106,43 +106,45 @@ app.post('/addEvent', upload.single('image'),
   check(['start', 'end'], 'All form fields are required').not().isEmpty().isDate(),
 ],async (req, res) => {
   const session = await startSession();
-  let success = true;
   try {
     session.startTransaction();
     if (!req.file) throw Error("No poster uploaded");
-    const _id = req.headers.authorization &&  extractToken(req);
-
-    const {name, description, start, end, committeeId, visibility} = req.body;
-    
+    const _id = extractToken(req);
+    const {name, description, start, end, visibility, mandatory} = req.body;
+    const committee = JSON.parse(req.body.committee);
     if (start > end) throw Error('Start time cannot be after end time');
-
+    
     const time = {start, end};
-    let {location} = req.body;
+    let location = JSON.parse(req.body.location);
     
     if (location === '0') {
       const {newLocName, newLocAddress} = req.body;
       if (!/^\d+[A-Za-z\s]+\,[A-Za-z\s]+\, [A-Z]{2} \d{5}$/.test(newLocAddress)) throw Error("Address not in address format")
-      const [address, city, sz] = newLocAddress.split(', ');
+        const [address, city, sz] = newLocAddress.split(', ');
       const [s, zip] = sz.split(' ');
       const state = abbrSt(s);
-      location = (await Location.create({ address, city, state, zip, name: newLocName }))._id.toString();
+      location = (await Location.create({ address, city, state, zip, name: newLocName }));
+      location = {_id: location._id, name: location.name};
     }
+    
+    console.log(location, "\n", committee);
 
     const event = (await Event.create([
       {
         name, 
         description, 
         time,
-        committeeId: new ObjectId(String(committeeId)), 
-        locationId: new ObjectId(String(location)), 
-        visibility
+        committee: {id: new ObjectId(String(committee._id)), name: committee.name}, 
+        location: {id: new ObjectId(String(location._id)), name: location.name}, 
+        visibility,
+        mandatory: mandatory ?? false
       }], {session}))[0];
-    
+
     const folderPath = path.join(__dirname, 'public','images','events');
     if (!fs.existsSync(folderPath)) await fs.promises.mkdir(folderPath, { recursive: true });
     const uploadPath = path.join(folderPath, `${event._id.toString()}${path.extname(req.file.originalname)}`);
+    
     console.log(uploadPath)
-    console.log('before img upload')
     // Save the file from memory to disk
     await sharp(req.file.buffer)
       .jpeg({ quality: 90 }) // You can adjust the quality as needed
@@ -152,6 +154,7 @@ app.post('/addEvent', upload.single('image'),
     res.status(201).json({ success: true, newId: event._id});
   } catch (error) {
     await session.abortTransaction();
+    console.log(error.message)
     res.status(400).json({ success: false, error: error.message });
   }
   finally {session.endSession()}
@@ -296,7 +299,7 @@ app.post("/getEventCreation", async (req, res) => {
     const _id = req.headers.authorization &&  extractToken(req);
     const committees = await Committee.find({members: {$in: [_id]}}, {name: 1});
     const officer = await Committee.find({supervisingOfficer: _id}, {name: 1});
-    const locations = await Location.find({});
+    const locations = await Location.find({}, {name: 1});
     if (committees && locations) res.status(200).json({ success: true, committees: {member: committees, officer}, locations });
   } catch (error) {
     res.status(401).json({ success: false, error: error.message });
@@ -445,38 +448,9 @@ app.post('/getPortalEvents', async (req, res) => {
 
 /* ================== Update ================== */
 app.post('/updateEvent', upload.single('image'), async (req, res) => {
-  let {eventId, name, description, start, end, type, visibility, location} = req.body;
-  if (location == 0) {
-    const {newLocName, newLocAddress} = req.body;
-    const [address, city, sz] = newLocAddress.split(', ');
-    const [state, zipCode] = sz.split(' ');
-    location = (await Location.create({ address, city, state, zipCode, name: newLocName }))._id;
-  }
-  const updates = {};
-  if (name) updates.name = name;
-  if (description) updates.description = description;
-  if (start) updates.start = start;
-  if (end) updates.end = end;
-  if (type) updates.type = type;
-  if (visibility) updates.visibility = visibility;
-  if (location) updates.location = location;
-  updates.updatedAt = NOW();
+
   try{
-    const folderPath = path.join(__dirname, 'public', 'images', 'events');
 
-    // Delete existing image if it exists
-    const existingFiles = fs.readdirSync(folderPath).filter(f => f.startsWith(`${eventId}.`));
-    existingFiles.forEach(file => fs.unlinkSync(path.join(folderPath, file)));
-
-    // Save the new image if provided
-    if (req.file) {
-      const newImagePath = path.join(folderPath, `${eventId}${path.extname(req.file.originalname)}`);
-      await sharp(req.file.buffer)
-        .jpeg({ quality: 90 })
-        .toFile(newImagePath);
-    }
-
-    const event = await Event.findByIdAndUpdate(eventId, updates);
 
     res.status(200).json({success: true});
   } catch (error) {
@@ -484,6 +458,20 @@ app.post('/updateEvent', upload.single('image'), async (req, res) => {
   }
 });
 
+app.post('/approveEvent', async (req, res) => {
+  try {
+    const { id, committeeId } = req.body;
+    const uId = extractToken(req);
+    if (!uId) throw Error("User not allowed to approve event");
+    const committee = await Committee.findById(committeeId)
+
+    const event = await Event.findByIdAndUpdate(id, {});
+
+    res.status(200).json({success: true});
+  } catch (error) {
+    res.status(400).json({success: false, error: error.message});
+  }
+});
 
 /* ================== Delete ================== */
 app.post('/rmEvent', 

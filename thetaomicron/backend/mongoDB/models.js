@@ -142,6 +142,30 @@ const timeSchema = new Schema({
         required: true,
     }
 });
+const eventComSchema = new Schema({
+    _id: false,
+    id: {
+        type: Schema.Types.ObjectId,
+        ref: 'committee',
+        required: true,
+    },
+    name: {
+        type: String,
+        required: true
+    }
+});
+const eventLocSchema = new Schema({
+    _id: false,
+    id: {
+        type: Schema.Types.ObjectId,
+        ref: 'location',
+        required: true,
+    },
+    name: {
+        type: String,
+        required: true
+    }
+});
 const eventSchema = new Schema({
     name: {
         type: String,
@@ -155,14 +179,12 @@ const eventSchema = new Schema({
         type: timeSchema,
         required: true,
     },
-    locationId: {
-        type: Schema.Types.ObjectId,
-        ref: 'location',
+    location: {
+        type: eventLocSchema,
         required: true,
     },
-    committeeId: {
-        type: Schema.Types.ObjectId,
-        ref: 'committee',
+    committee: {
+        type: eventComSchema,
         required: true,
     },
     visibility: {
