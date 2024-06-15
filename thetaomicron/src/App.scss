@@ -119,6 +119,7 @@ footer {
 		display: flex;
 		justify-content: center;
 		align-items: center;
+
 	}
 }
 .divider {
@@ -498,9 +499,11 @@ nav {
 	}
 }
 .smLogo {
-	max-width: 50px;
+	max-height: 50px;
 	margin: 20px;
+	width: auto;
 	content: url('/images/ig.png');
+	object-fit: contain;
 }
 .loginContainer {
 	text-align: center;

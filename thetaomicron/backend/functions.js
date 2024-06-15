@@ -23,7 +23,7 @@ export const connectDB = async () => {
     }
 };
 
-export const appendImgPathMongoDB = (obj, dirname, imgFolder) => {
+export const appendImgPath = (obj, dirname, imgFolder) => {
   const id = obj._id.toString();
   const imagePath = `images/${imgFolder}/${id}`;
   let imageUrl = `/images/${imgFolder}/default.png`;

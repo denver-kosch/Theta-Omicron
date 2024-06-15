@@ -13,9 +13,10 @@ const Directory = () => {
 
   const getBrothers = async () => {
     let response = await apiCall("getBros");
+    console.log(response);
     setIsLoading(false);
     if (response && response.success) {
-      setBrothers(response.brothers);
+      setBrothers(response.bros);
     }
     else {
       setError("Could not load directory at this time");

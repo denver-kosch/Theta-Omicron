@@ -15,7 +15,7 @@ const Rush = () => {
 
     const getRush = async () => {
         try {
-            let committee = await apiCall('getRush');
+            let committee = await apiCall('getCommittee', {name: "Rush Committee", emails: true, pics: true});
             if (committee) {
                 setRush(committee.members);
                 console.log(committee.members);

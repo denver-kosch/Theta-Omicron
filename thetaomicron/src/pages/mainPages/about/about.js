@@ -14,8 +14,11 @@ const AboutUs = () => {
     }, []);
 
     const getEC = async () => {
-        let ec =  await apiCall("getEC");
-        if (ec.success) setEC(ec.officers);
+        const ec =  await apiCall("getCommittee", {name: "Executive Committee", pics: true});
+        if (ec.success) {
+            ec.members.sort((a,b) => a.position.ecOrder - b.position.ecOrder);
+            setEC(ec.members);
+        }
         else {
             setErrorMessage("Could not gather Executive Committee at this time!");
             console.log(ec.error);
