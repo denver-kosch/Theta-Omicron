@@ -1,15 +1,17 @@
-import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import path from 'path';
-import { getLocalIP } from './start.js';
 import { fileURLToPath } from 'url';
-import { connectDB } from './functions.js';
+import { connectDB, asyncHandler } from './functions.js';
 import { check } from 'express-validator';
-import { removeEvent, asyncHandler, login, addEvent, auth, getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getPortalEvents, addMember, approveEvent, updateEvent } from './apiFuncs.js';
+import { addEvent, addMember } from './apiFuncs/create.js';
+import { getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getPortalEvents } from './apiFuncs/read.js';
+import { updateEvent, approveEvent } from './apiFuncs/update.js';
+import { removeEvent } from './apiFuncs/delete.js';
+import { login, auth } from './apiFuncs/authentication.js';
 
-dotenv.config();
+
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() }); // Storing files in memory
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,9 +20,7 @@ app.use(express.json(), express.urlencoded({ extended: true }), express.static(p
 //connect to db, then listen to port
 (async () => {
   try {
-    await connectDB();
-    const port = process.env.PORT  || 3001;
-    const host = getLocalIP() || 'localhost';
+    const {port, host} = await connectDB();
     app.listen(port, host, () => {
       console.log(`Server running on http://${host}:${port}`);
     });

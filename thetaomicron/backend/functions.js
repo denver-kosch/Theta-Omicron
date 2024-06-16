@@ -8,8 +8,8 @@ import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
-const port = process.env.PORT || 3001;
-const host = getLocalIP();
+const port = process.env.PORT  || 3001;
+const host = getLocalIP() || 'localhost';
 
 
 export const connectDB = async () => {
@@ -17,6 +17,7 @@ export const connectDB = async () => {
         console.log(`Attempting MongoDB connect`);
         await connect(process.env.MONGODBURI);
         console.log(`MongoDB connected`);
+        return {port, host};
     } catch (error) {
         console.log(`Error: ${error.message}`);
         process.exit(1);
@@ -104,3 +105,29 @@ export const abbrSt = state => {
   };
   return abbrs[state] ?? state;
 };
+
+export class ApiError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+    this.name = 'ApiError';
+  }
+};
+
+// Utility function to send JSON responses
+const sendJsonResponse = (res, status, content = {}) => {
+    content.success = (status >= 200 && status < 300) ? true : false;
+    res.status(status).json(content);
+};
+
+const handleError = (error, res) => {
+  console.error(error); // Log the error for server-side debugging
+  if (error instanceof ApiError) sendJsonResponse(res, error.status, { error: error.message });
+  else sendJsonResponse(res, 500, { error: 'Internal Server Error' });
+};
+// Async middleware handler to avoid repeating try-catch
+export const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next, res))
+  .then(({status, content = {}}) => sendJsonResponse(res, status, content))
+  .catch(error => handleError(error, res));
+
+

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { apiCall, MapView, EventCard } from "../../../components";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
@@ -18,10 +18,11 @@ const PortalEvent = () => {
     //default value is lakeside 115
     const [lat, setLat] = useState(39.99832093770602);
     const [lng, setLng] = useState(-81.73459124217224);
+    const token = useMemo(() => ({'Authorization': `Bearer ${localStorage.getItem('token')}`}), []);
 
     useEffect(() => {
         const fetchEventDetails = async () => {
-            const result = await apiCall(`getEventDetails`, {id, loggedIn: true}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+            const result = await apiCall(`getEventDetails`, {id, loggedIn: true}, token);
             if (result && result.success) {
                 setEvent(result.event);
                 setSimilars(result.similar);
@@ -41,7 +42,7 @@ const PortalEvent = () => {
             setLoading(false);
         };
         fetchEventDetails();
-    }, [id]);
+    }, [id, token]);
 
     const fDate = date => {
         const options = {
@@ -76,9 +77,10 @@ const PortalEvent = () => {
     };
 
     const handlePend = async op => {
+        const token = {'Authorization': `Bearer ${localStorage.getItem('token')}`};
         const res = (op === 'approve') ? 
-            await apiCall('approveEvent', {id, committeeId: event.committee.id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`}) :
-            await apiCall('rejectEvent', {id, reason: rejReason, committeeId: event.committee.id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+            await apiCall('approveEvent', {id, committeeId: event.committee.id}, token) :
+            await apiCall('rejectEvent', {id, reason: rejReason, committeeId: event.committee.id}, token);
         if (!res.success) console.error(res.error);
         navigate(0);
     };
