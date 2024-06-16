@@ -644,7 +644,7 @@ nav {
 			display: grid;
 			grid-template-areas: "poster" "info";
 			grid-template-columns: 1fr;
-			grid-template-rows: 1fr 1fr;
+			grid-template-rows: 50% 50%;
 			width: 12vw;
 			height: 12vw;
 			padding: 2.5%;
@@ -661,14 +661,16 @@ nav {
 					width: 100%;
 					text-align: center;
 					text-decoration: none;
+					margin: 0;
 				}
 			}
 			>img {
 				grid-area: poster;
-				width: 100%;
+				width: auto;
 				height: auto;
 				border-radius: 10px;
 				margin: 0 auto;
+				max-height: 100%;
 				max-width: 50%;
 			}
 		}

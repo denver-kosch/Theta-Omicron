@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import { apiCall } from "../../../components";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaLocationDot, FaPeopleGroup, FaSortUp, FaSortDown } from "react-icons/fa6";
 
 export const AllEvents = () => {
     const navigate = useNavigate();
-    const [events, setEvents] = useState([]);
-    const [isLoading, setLoading] = useState(true);
+    const [events, setEvents] = useState(null);
     const [sortApprovedConfig, setApprovedSortConfig] = useState({ key: null, direction: 'ascending' });
     const [sortPastConfig, setPastSortConfig] = useState({ key: null, direction: 'ascending' });
     const [sortComConfig, setComSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -14,45 +13,14 @@ export const AllEvents = () => {
 
 
     useEffect(() => {
-        (async () => {
-            const res = await apiCall('getPortalEvents', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
-            setEvents(res.events);
-            setLoading(false);
-        })();
+        getEvents();
     }, []); 
-
-    const sortedEvents = (eventsArray, table) => {
-        let sortConfig;
-
-        switch (table) {
-            case 'approved':
-                sortConfig = sortApprovedConfig;
-                break;
-            case 'past':
-                sortConfig = sortPastConfig;
-                break;
-            case 'comEvents':
-                sortConfig = sortComConfig;
-                break;
-            case 'rejEvents':
-                sortConfig = sortRejectedConfig;
-                break;
-            default:
-                return;
-        }
-        if (sortConfig.key) {
-            return [...eventsArray].sort((a, b) => {
-                if (a[sortConfig.key] < b[sortConfig.key]) {
-                    return sortConfig.direction === 'ascending' ? -1 : 1;
-                }
-                if (a[sortConfig.key] > b[sortConfig.key]) {
-                    return sortConfig.direction === 'ascending' ? 1 : -1;
-                }
-                return 0;
-            });
-        }
-        return eventsArray;
+    
+    const getEvents = async () => {
+        const res = await apiCall('getPortalEvents', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+        setEvents(res.events);
     };
+    
 
     const requestSort = (key, table) => {
         let direction = 'ascending';
@@ -95,35 +63,6 @@ export const AllEvents = () => {
             </tr>
     )};
 
-    const row = event => {
-        const {_id, name, description, start, end, location, visibility, committee, mandatory, status} = event;
-        
-        const options = {
-            month: "numeric",
-            day: "numeric",
-            year: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            hour12: true,
-        };
-        const statusStyle = (status) => {
-            return (status === "Pending") ? { backgroundColor: 'yellow', color: 'black' } : (status === "Rejected") ? { backgroundColor: 'red', color: 'black' } : {backgroundColor: '#1AFF00', color: 'black'};
-        };
-        
-        return(
-        <tr onClick={() => navigate(`/portal/event/${_id}`)} key={_id}>
-            <td className="name">{name}</td>
-            <td className="desc">{description}</td>
-            <td className="start">{new Date(start).toLocaleString('en-US', options)}</td>
-            <td className="end">{new Date(end).toLocaleString('en-US', options)}</td>
-            <td className="location">{location}</td>
-            <td className="vis">{visibility}</td>
-            <td className="com">{committee}</td>
-            <td className="mandatory">{mandatory}</td>
-            {status && <td className="status" style={statusStyle(status)}>{status}</td>}
-        </tr>
-    )};
-
     const getSortIcon = (key, table) => {
         const EmptyIcon = () => <div style={{ width: '1em', height: '1em', display: 'inline-block' }} />;
 
@@ -150,7 +89,9 @@ export const AllEvents = () => {
         return <EmptyIcon/>;
     };
 
-    const tableSegment = (title, collection, status) => {
+    const TableSegment = ({title, collection, status, sort}) => {
+        const Events = lazy(() => import('./tableElems.js'));
+
         return (
             <>
             <div className='tableSegment'>
@@ -172,8 +113,9 @@ export const AllEvents = () => {
                     </tr>
                 </thead>
                 <tbody>
-                {events[collection].length === 0 && emptyRow(status ? 9 : 8)}
-                {sortedEvents(events[collection], collection).map(e => row(e))}
+                    <Suspense fallback={emptyRow(status ? 9 : 8)}>
+                        <Events events={events} collection={collection} sort={sort} navigate={navigate} emptyRow={emptyRow} status={status}/>
+                    </Suspense>
                 </tbody>
                 </table>
             </div>
@@ -182,12 +124,11 @@ export const AllEvents = () => {
     )};
     
     return (
-    isLoading ? <div className="loader">Loading...</div> :
     <div>
         <button onClick={() => navigate('/portal/event/create')} style={{marginRight: 'auto'}}>Create Event</button>
-        {tableSegment('Upcoming Events', 'approved', false)}
-        {tableSegment('Past Events', 'past', false)}
-        {tableSegment('Committee Events', 'comEvents', true)}
-        {tableSegment('Rejected Committee Events', 'rejEvents', true)}
+        <TableSegment title='Upcoming Events' collection='approved' status={false} sort={sortApprovedConfig}/>
+        <TableSegment title='Past Events' collection='past' status={false} sort={sortPastConfig}/>
+        <TableSegment title='Committee Events' collection='comEvents' status={true} sort={sortComConfig}/>
+        <TableSegment title='Rejected Committee Events' collection='rejEvents' status={true} sort={sortRejectedConfig}/>
     </div>
 )};

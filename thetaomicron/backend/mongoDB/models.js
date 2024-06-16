@@ -90,12 +90,18 @@ const memberSchema = new Schema({
         enum: ['Pledge', 'Initiate', 'Alumnus'],
         default: 'Pledge'
     },
-    contactInfo: contactInfoSchema,
+    contactInfo: {
+        type: contactInfoSchema,
+        required: true,
+    },
     password: {
         type: String,
         required: true,
     },
-    address: addressSchema,
+    address: {
+        type: addressSchema,
+        required: true,
+    },
     initiationYear: {
         type: Number,
         required: true,

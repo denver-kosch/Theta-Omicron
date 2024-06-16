@@ -1,6 +1,8 @@
 import { Committee, Member, Location, Event } from "../mongoDB/models.js";
 import { appendImgPath } from "../functions.js";
 import { ObjectId } from 'mongodb';
+import { extractToken } from "../functions.js";
+import { dirname } from "../config.js";
 
 
 export const getCommittee = async (req) => {
@@ -18,7 +20,7 @@ export const getCommittee = async (req) => {
     { $project: projections }
     ]);
 
-    if (pics) members = members.map(doc => appendImgPath(doc, __dirname, 'profilePics'));
+    if (pics) members = members.map(doc => appendImgPath(doc, dirname, 'profilePics'));
 
     if (members.length > 0) return {status:200, content: {members}, members};
     else throw new ApiError(404, "Committee not found");
@@ -26,7 +28,7 @@ export const getCommittee = async (req) => {
   
 export const getBros = async () => {
     const bros = (await Member.find({status: "Initiate"}, {firstName: 1,lastName: 1,positions: 1 }).sort({lastName: 1, firstName: 1}))
-      .map(doc => appendImgPath(doc.toJSON(), __dirname, 'profilePics')).map(d => {
+      .map(doc => appendImgPath(doc.toJSON(), dirname, 'profilePics')).map(d => {
         const arr = [];
         d.positions.forEach(p => {
           if (p.committeeName === "Executive Committee") arr.push(p.role)
@@ -62,7 +64,7 @@ export const getEvents = async (req) => {
   
     const events = await Event.find((query.length > 0) ? {$and: query} : {}, { name: 1, description: 1, time: 1, location: "$location.name" });
   
-    for (let i=0; i<events.length; i++) events[i] = appendImgPath(events[i].toJSON(), __dirname, 'events');
+    for (let i=0; i<events.length; i++) events[i] = appendImgPath(events[i].toJSON(), dirname, 'events');
   
     if (events) return {status:200, content: { events }, events};
     else throw new ApiError(404, "Events not found");
@@ -145,8 +147,8 @@ export const getEventDetails = async (req) => {
     if (!event) throw ApiError(404, "Event not found");
   
     const params = {'committee.id': event.committee.id, _id: {$ne: new Object(event._id)}, status: "Approved"};
-    similar = (await Event.find(params, {name: 1, time: 1, committeeId: 1 })).map(d => appendImgPath(d.toJSON(), __dirname, 'events'));
-    event = appendImgPath(event, __dirname, 'events');
+    similar = (await Event.find(params, {name: 1, time: 1, committeeId: 1 })).map(d => appendImgPath(d.toJSON(), dirname, 'events'));
+    event = appendImgPath(event, dirname, 'events');
   
     let isOfficer = false;
     let isCommittee = false;
@@ -185,7 +187,7 @@ export const getPortalEvents = async (req) => {
       "time.start": {$lt: new Date()},
       $nor: [{$and: [{visibility: "Committee"}, {"committee.id" : {$in: committees}}]}]
     }, inclusions);
-    inclusions.status= 1;
+    inclusions.status = 1;
     events.comEvents = await Event.find({'committee.id' : {$in: committees}}, inclusions);
     events.rejEvents = await Event.find({'committee.id' : {$in: committees}, status: 'Rejected'}, inclusions);
     
