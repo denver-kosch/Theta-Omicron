@@ -47,5 +47,5 @@ export const updateEvent = async (req, res) => {
 };
   
 export const approveEvent = async (req) => {
-
+    
 };

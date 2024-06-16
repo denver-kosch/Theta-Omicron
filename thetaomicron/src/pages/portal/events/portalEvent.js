@@ -22,7 +22,7 @@ const PortalEvent = () => {
 
     useEffect(() => {
         const fetchEventDetails = async () => {
-            const result = await apiCall(`getEventDetails`, {id, loggedIn: true}, token);
+            const result = await apiCall(`getEventDetails`, {id}, token);
             if (result && result.success) {
                 setEvent(result.event);
                 setSimilars(result.similar);
