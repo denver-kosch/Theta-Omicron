@@ -49,10 +49,12 @@ export const getBros = async () => {
       else throw new ApiError(404, "Brothers not found");
 };
   
- export const getBro = async (req) => {
-    const _id = extractToken(req);
-    const brother = await Member.findById(_id, 'status lastName positions');
-    return {status: 200, content: {info: brother}};
+export const getBro = async (req) => {
+  const _id = extractToken(req);
+  console.log(_id);
+  const info = _id && (await Member.findById(_id, {status:1, lastName:1, positions:1}));
+  if (info) return {status: 200, content: {info}};
+  else throw new ApiError(404, "Brother not found");
 };
   
 export const getEvents = async (req) => {
@@ -174,8 +176,8 @@ export const getPortalEvents = async (req) => {
       mandatory: 1,
       start: '$time.start',
       end: '$time.end',
-      committee: '$committee.name',
-      location: '$location.name'
+      committeeName: "$committee.name",
+      locationName: "$location.name"
     };
   
     events.approved = await Event.find({

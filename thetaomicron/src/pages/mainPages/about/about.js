@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiCall, Divider } from "../../../components";
+import { apiCall, Divider } from "../../../components/components";
 import { Link } from "react-router-dom";
 
 const AboutUs = () => {

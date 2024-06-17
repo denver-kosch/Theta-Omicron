@@ -1,6 +1,6 @@
 import React from "react";
 // eslint-disable-next-line
-import { apiCall } from "../../../components";
+import { apiCall } from "../../../components/components";
 
 
 const Leadership = () => {

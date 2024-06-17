@@ -15,7 +15,7 @@ const sortedEvents = (table, sort) => {
 };
 
 const row = (event, navigate) => {
-    const {_id, name, description, start, end, location, visibility, committee, mandatory, status} = event;
+    const {_id, name, description, start, end, locationName, visibility, committeeName, mandatory, status} = event;
     
     const options = {
         month: "numeric",
@@ -28,6 +28,7 @@ const row = (event, navigate) => {
     const statusStyle = (status) => {
         return (status === "Pending") ? { backgroundColor: 'yellow', color: 'black' } : (status === "Rejected") ? { backgroundColor: 'red', color: 'black' } : {backgroundColor: '#1AFF00', color: 'black'};
     };
+    console.log(locationName);
     
     return(
     <tr onClick={() => navigate(`/portal/event/${_id}`)} key={_id}>
@@ -35,9 +36,9 @@ const row = (event, navigate) => {
         <td className="desc">{description}</td>
         <td className="start">{new Date(start).toLocaleString('en-US', options)}</td>
         <td className="end">{new Date(end).toLocaleString('en-US', options)}</td>
-        <td className="location">{location}</td>
+        <td className="location">{locationName}</td>
         <td className="vis">{visibility}</td>
-        <td className="com">{committee}</td>
+        <td className="com">{committeeName}</td>
         <td className="mandatory">{mandatory}</td>
         {status && <td className="status" style={statusStyle(status)}>{status}</td>}
     </tr>

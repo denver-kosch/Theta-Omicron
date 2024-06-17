@@ -1,5 +1,5 @@
 import { useEffect, useState, Suspense, lazy } from "react";
-import { apiCall } from "../../../components";
+import { apiCall } from "../../../components/components.js";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaLocationDot, FaPeopleGroup, FaSortUp, FaSortDown } from "react-icons/fa6";
 
@@ -103,13 +103,13 @@ export const AllEvents = () => {
                     <tr className="tableColumns">
                         <th onClick={() => requestSort('name', collection)}>Name {getSortIcon('name', collection)}</th>
                                 <th style={{ width: '100%' }} onClick={() => requestSort('description', collection)}>Description {getSortIcon('description', collection)}</th>
-                                <th onClick={() => requestSort('start', collection)}>Start {getSortIcon('start', collection)}</th>
-                                <th onClick={() => requestSort('end', collection)}>End {getSortIcon('end', collection)}</th>
-                                <th onClick={() => requestSort('location', collection)}><FaLocationDot /> {getSortIcon('location', collection)}</th>
-                                <th onClick={() => requestSort('visibility', collection)}><FaEye /> {getSortIcon('visibility', collection)}</th>
-                                <th onClick={() => requestSort('committee', collection)}><FaPeopleGroup /> {getSortIcon('committee', collection)}</th>
-                                <th onClick={() => requestSort('mandatory', collection)}>Mandatory? {getSortIcon('mandatory', collection)}</th>
-                                {status && <th onClick={() => requestSort('status', collection)}>Status {getSortIcon('status', collection)}</th>}
+                                <th onClick={() => requestSort('start', collection)}>Start {sort.key === 'start' && getSortIcon('start', collection)}</th>
+                                <th onClick={() => requestSort('end', collection)}>End {sort.key === 'end' && getSortIcon('end', collection)}</th>
+                                <th onClick={() => requestSort('location', collection)}><FaLocationDot /> {sort.key === 'location' && getSortIcon('location', collection)}</th>
+                                <th onClick={() => requestSort('visibility', collection)}><FaEye /> {sort.key === 'visibility' && getSortIcon('visibility', collection)}</th>
+                                <th onClick={() => requestSort('committee', collection)}><FaPeopleGroup /> {sort.key !== 'committee' && getSortIcon('committee', collection)}</th>
+                                <th onClick={() => requestSort('mandatory', collection)}>Mandatory? {sort.key === 'mandatory' && getSortIcon('mandatory', collection)}</th>
+                                {status && <th onClick={() => requestSort('status', collection)}>Status {sort.key !== 'status' && getSortIcon('status', collection)}</th>}
                     </tr>
                 </thead>
                 <tbody>

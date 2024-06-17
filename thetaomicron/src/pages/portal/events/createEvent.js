@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { apiCall } from "../../../components";
+import { apiCall } from "../../../components/components";
 
 const CreateEvent = () => {
     const navigate = useNavigate();

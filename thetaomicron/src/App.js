@@ -14,7 +14,9 @@ import CreateEvent from './pages/portal/events/createEvent';
 import PortalEvent from './pages/portal/events/portalEvent';
 import EditEvent from './pages/portal/events/editEvent';
 import { AllEvents } from './pages/portal/events/allEvents';
-import { MainLayout, PortalLayout } from './layouts';
+import MainLayout from './layouts/mainLayout.js';
+import PortalLayout from './layouts/portalLayout.js';
+
 
 
 const App = () => {

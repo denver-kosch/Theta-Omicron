@@ -67,7 +67,7 @@ main {
 			height: auto;
 			opacity: 0;
 			transition: opacity 0.3s ease-in-out;
-			content: url("/images/mail.png");
+			content: url("/assets/images/mail.png");
 		}
 	}
 	&:hover {
@@ -207,7 +207,7 @@ footer {
 							max-width: fit-content;
 							filter: invert(var(--invert));
 							object-fit: contain;
-							content: url('/images/locPin.png');
+							content: url('/assets/images/locPin.png');
 						}
 					}
 					&:hover {
@@ -233,7 +233,7 @@ footer {
 	max-height: 425px;
 	max-width: 90%;
 	border-radius: 3%;
-    content: url('/images/formalSP23.jpg');
+    content: url('/assets/images/formalSP23.jpg');
 }
 .ExecContainer {
 	display: flex;
@@ -359,7 +359,7 @@ footer {
 		max-width: 90%;
 		height: auto;
 		border-radius: 3%;
-		content: url("/images/rush.jpg");
+		content: url("/assets/images/rush.jpg");
 	}
 }
 .directoryContainer {
@@ -442,7 +442,7 @@ nav {
 				height: 75px;
 				margin-right: 20px;
 				filter: invert(var(--invert));
-				content: url('/images/crestBW.png');
+				content: url('/assets/images/crestBW.png');
 			}
 			&:hover {
 				h3 {
@@ -450,7 +450,7 @@ nav {
 				}
 				.logo {
 					filter: invert(0);
-					content: url('/images/crestC.png');
+					content: url('/assets/images/crestC.png');
 				}
 			}
 		}
@@ -502,7 +502,7 @@ nav {
 	max-height: 50px;
 	margin: 20px;
 	width: auto;
-	content: url('/images/ig.png');
+	content: url('/assets/images/ig.png');
 	object-fit: contain;
 }
 .loginContainer {
@@ -752,6 +752,9 @@ table.pTable {
 			user-select: none;         /* Non-prefixed version, currently supported by almost all modern browsers */
 			&:hover {
 				color: $color_2;
+			}
+			* {
+				margin: 0;
 			}
 		}
 	}

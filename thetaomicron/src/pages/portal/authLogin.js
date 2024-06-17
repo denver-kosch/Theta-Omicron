@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { apiCall } from '../../components';
+import { apiCall } from '../../components/components';
 
 
 const Auth = ({children}) => {
