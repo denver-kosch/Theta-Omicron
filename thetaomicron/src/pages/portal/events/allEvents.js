@@ -1,5 +1,5 @@
 import { useEffect, useState, Suspense, lazy } from "react";
-import { apiCall } from "../../../components/components.js";
+import apiCall from "../../../services/apiCall";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaLocationDot, FaPeopleGroup, FaSortUp, FaSortDown } from "react-icons/fa6";
 

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { apiCall, MapView, EventCard } from "../../components/components";
+import { MapView, EventCard } from "../../components/components";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
+import apiCall from "../../services/apiCall";
 
 
 const Event = () => {

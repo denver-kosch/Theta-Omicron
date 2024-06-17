@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { apiCall, MapView, EventCard } from "../../../components/components";
+import { MapView, EventCard } from "../../../components/components";
+import apiCall from "../../../services/apiCall";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
 
 

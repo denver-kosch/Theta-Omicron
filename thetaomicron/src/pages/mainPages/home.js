@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { apiCall, EventCard } from '../../components/components';
+import { EventCard } from '../../components/components';
+import apiCall from "../../services/apiCall";
 
 const Home = () => {
     const [events, setEvents] = useState([]);

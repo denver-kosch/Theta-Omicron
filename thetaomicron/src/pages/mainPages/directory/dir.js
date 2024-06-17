@@ -1,5 +1,5 @@
 import { useEffect, useState, Fragment } from "react";
-import { apiCall } from "../../../components/components";
+import apiCall from "../../../services/apiCall";
 
 const Directory = () => {
   const [brothers, setBrothers] = useState([]);

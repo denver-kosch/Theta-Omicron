@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-// eslint-disable-next-line
-import { apiCall, MapView, EventCard } from "../../../components/components";
+import { MapView } from "../../../components/components";
+import apiCall from "../../../services/apiCall";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
 
 const EditEvent = () => {
