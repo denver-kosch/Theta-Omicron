@@ -1,8 +1,10 @@
-import { Location, Event } from "../mongoDB/models.js";
+import { Location, Event, Committee } from "../mongoDB/models.js";
 import fs from 'fs';
 import { dirname } from "../config.js";
 import { join, extname } from "path";
 import sharp from "sharp";
+import { extractToken } from "./authentication.js";
+import { ApiError } from "../functions.js";
 
 
 
@@ -47,5 +49,23 @@ export const updateEvent = async (req, res) => {
 };
   
 export const approveEvent = async (req) => {
-    
+    const {id:e, committeeId} = req.body;
+    const id = extractToken(req);
+    const officer = (await Committee.findById(committeeId, {_id:0, supervisingOfficer:1})).supervisingOfficer;
+    if (!id.equals(officer)) throw new ApiError(401, 'Unauthorized User');
+
+    const event = await Event.findByIdAndUpdate(e, {status: "Approved"});
+    if (event.status !== "Approved") throw new ApiError(500, 'Error approving event');
+    return {status: 200};
+};
+
+export const rejectEvent = async (req) => {
+    const {id:e, committeeId, reason} = req.body;
+    const id = extractToken(req);
+    const officer = (await Committee.findById(committeeId, {_id:0, supervisingOfficer:1})).supervisingOfficer;
+    if (!id.equals(officer)) throw new ApiError(401, 'Unauthorized User');
+
+    const event = await Event.findByIdAndUpdate(e, {status: "Rejected", rejDetails: {date: new Date(), reason}});
+    if (event.status !== "Rejected") throw new ApiError(500, 'Error rejecting event');
+    return {status: 200};
 };

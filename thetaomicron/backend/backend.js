@@ -7,7 +7,7 @@ import { connectDB, asyncHandler } from './functions.js';
 import { check } from 'express-validator';
 import { addEvent, addMember } from './apiFuncs/create.js';
 import { getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getPortalEvents } from './apiFuncs/read.js';
-import { updateEvent, approveEvent } from './apiFuncs/update.js';
+import { updateEvent, approveEvent, rejectEvent } from './apiFuncs/update.js';
 import { removeEvent } from './apiFuncs/delete.js';
 import { login, auth } from './apiFuncs/authentication.js';
 
@@ -41,7 +41,12 @@ app.post('/auth', asyncHandler(auth));
 
 /* ================== Create ================== */
 app.post('/addMember', [
-  check(['password', 'email', 'fname', 'lname', 'phone', 'street', 'city', 'address'])
+	check(['password', 'email', 'fname', 'lname', 'phone', 'street', 'city', 'address', 'state']).not().isEmpty().isString(),
+	check('email', 'Invalid email').isEmail(),
+	check('phone', 'Invalid phone number').isMobilePhone(),
+	check('state', 'Invalid state').isLength({ min: 2, max: 2 }),
+	check('zip', 'Invalid zip code').isLength({ min: 5, max: 5 }).isNumeric(),
+	check('gradYear', 'Invalid graduation year').isNumeric(),
 ], asyncHandler(addMember));
 
 app.post('/addEvent', upload.single('image'), [
@@ -63,7 +68,7 @@ app.post("/getEvents", [
 ], asyncHandler(getEvents));
 
 app.post("/getCommittees", asyncHandler(getCommittees));
-//Finsished
+
 app.post('/getLocations', asyncHandler(getLocations));
 
 app.post("/getEventCreation", asyncHandler(getEventCreation));
@@ -77,6 +82,8 @@ app.post('/getPortalEvents', asyncHandler(getPortalEvents));
 app.post('/updateEvent', upload.single('image'), asyncHandler(updateEvent));
 
 app.post('/approveEvent', asyncHandler(approveEvent));
+
+app.post('/rejectEvent', asyncHandler(rejectEvent));
 
 /* ================== Delete ================== */
 app.post('/rmEvent', [check('id').not().isEmpty()], asyncHandler(removeEvent));

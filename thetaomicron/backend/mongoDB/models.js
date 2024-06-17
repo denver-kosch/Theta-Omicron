@@ -172,6 +172,17 @@ const eventLocSchema = new Schema({
         required: true
     }
 });
+const eventRejSchema = new Schema({
+    _id: false,
+    date: {
+        type: Date,
+        required: true
+    },
+    reason: {
+        type: String,
+        required: true
+    }
+});
 const eventSchema = new Schema({
     name: {
         type: String,
@@ -207,6 +218,10 @@ const eventSchema = new Schema({
     mandatory: {
         type: Boolean,
         default: false
+    },
+    rejectionDetails: {
+        type: eventRejSchema,
+        required: false
     }
 }, {versionKey: false});
 export const Event = model('Event', eventSchema);

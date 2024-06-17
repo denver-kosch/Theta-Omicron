@@ -40,16 +40,6 @@ export const appendImgPath = (obj, dirname, imgFolder) => {
   return obj;
 };
 
-export const extractToken = req => {
-  try {
-    const token = req.headers.authorization.split(" ")[1];
-    const _id = String((jwt.verify(token, process.env.SESSION_SECRET)).memberId);
-    return isObjectIdOrHexString(_id) && new ObjectId(_id);
-  } catch {
-    return false;
-  }
-}
-
 export const abbrSt = state => {
   const abbrs = {
     "Alabama": "AL",
@@ -114,7 +104,7 @@ export class ApiError extends Error {
   }
 };
 
-// Utility function to send JSON responses
+
 const sendJsonResponse = (res, status, content = {}) => {
     content.success = (status >= 200 && status < 300) ? true : false;
     res.status(status).json(content);
@@ -125,7 +115,7 @@ const handleError = (error, res) => {
   if (error instanceof ApiError) sendJsonResponse(res, error.status, { error: error.message });
   else sendJsonResponse(res, 500, { error: 'Internal Server Error' });
 };
-// Async middleware handler to avoid repeating try-catch
+
 export const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, res, next, res))
   .then(({status, content = {}}) => sendJsonResponse(res, status, content))
   .catch(error => handleError(error, res));

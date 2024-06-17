@@ -1,8 +1,9 @@
 import { Committee, Member, Location, Event } from "../mongoDB/models.js";
 import { appendImgPath } from "../functions.js";
 import { ObjectId } from 'mongodb';
-import { extractToken } from "../functions.js";
 import { dirname } from "../config.js";
+import { ApiError } from "../functions.js";
+import { extractToken } from "./authentication.js";
 
 
 export const getCommittee = async (req) => {
@@ -73,7 +74,7 @@ export const getEvents = async (req) => {
 export const getCommittees = async (req) => {
     // Will return false if invalid id or no id provided
     _id = extractToken(req);
-    const committees = await Committee.find(_id ? {members: {$in: _id}}: {});
+    const committees = await Committee.find(_id ? {members: {$in: _id}} : {});
   
     if (committees) return {status: 200, content: { committees: committees }};
     else throw ApiError(404, "Committees not found");
@@ -93,7 +94,7 @@ export const getEventCreation = async (req) => {
     if (committees && locations) return {status:200, content: { committees: {member: committees, officer}, locations }};
     else throw ApiError(401, "Committees or Locations not found");
 };
-  
+
 export const getEventDetails = async (req) => {
     const token = extractToken(req);
     let event = (await Event.aggregate([
@@ -147,7 +148,7 @@ export const getEventDetails = async (req) => {
     if (!event) throw ApiError(404, "Event not found");
   
     const params = {'committee.id': event.committee.id, _id: {$ne: new Object(event._id)}, status: "Approved"};
-    similar = (await Event.find(params, {name: 1, time: 1, committeeId: 1 })).map(d => appendImgPath(d.toJSON(), dirname, 'events'));
+    similar = (await Event.find(params, {name: 1, time: 1})).map(d => appendImgPath(d.toJSON(), dirname, 'events'));
     event = appendImgPath(event, dirname, 'events');
   
     let isOfficer = false;

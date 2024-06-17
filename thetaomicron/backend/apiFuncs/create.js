@@ -1,12 +1,12 @@
 import { Member, Location } from "../mongoDB/models.js";
 import { startSession } from "mongoose";
 import { abbrSt } from "../functions.js";
-import { ApiError, extractToken } from "../functions.js";
+import { ApiError } from "../functions.js";
 import { existsSync, promises } from 'fs';
 import { join, extname } from 'path';
 import sharp from 'sharp';
 import { dirname } from "../config.js";
-import { hashPassword } from "./authentication.js";
+import { hashPassword, extractToken } from "./authentication.js";
 
 
 export const addMember = async (req) => {
