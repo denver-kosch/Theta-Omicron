@@ -1,5 +1,6 @@
 import { useEffect, useState, Fragment } from "react";
 import apiCall from "../../../services/apiCall";
+import MemberCard from "../../../components/memberCard";
 
 const Directory = () => {
   const [brothers, setBrothers] = useState([]);
@@ -39,20 +40,13 @@ const Directory = () => {
     const chapter = chunk(filteredData, 4);
 
     const renderBrother = brother => {
-      const name = `${brother.firstName} ${brother.lastName}`;
-      const positionsElements = brother.positions.map((position, index, array) => (
+      brother.position = brother.positions.map((position, index, array) => (
         <Fragment key={index}>
-            {position}{index < array.length - 1 && <br />}
+            {position}{index < array.length - 1 && <br/>}
         </Fragment>
       ));
-        
-      return (
-        <div key={brother.memberId} className="card">
-          <img src={brother.imageUrl} alt={name} className="profilePic"/>
-          <p>{name}</p>
-          <p style={{fontWeight: 'bold', fontSize: 'smaller'}}>{positionsElements}</p>
-        </div>
-      );
+
+      return <MemberCard member={brother}/>
     };
 
     return (

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { connectDB, asyncHandler } from './functions.js';
 import { check } from 'express-validator';
 import { addEvent, addMember } from './apiFuncs/create.js';
-import { getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getPortalEvents } from './apiFuncs/read.js';
+import { getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getPortalEvents, getChairmen } from './apiFuncs/read.js';
 import { updateEvent, approveEvent, rejectEvent } from './apiFuncs/update.js';
 import { removeEvent } from './apiFuncs/delete.js';
 import { login, auth } from './apiFuncs/authentication.js';
@@ -77,6 +77,7 @@ app.post("/getEventDetails", asyncHandler(getEventDetails));
 
 app.post('/getPortalEvents', asyncHandler(getPortalEvents));
 
+app.post('/getChairmen', asyncHandler(getChairmen));
 
 /* ================== Update ================== */
 app.post('/updateEvent', upload.single('image'), asyncHandler(updateEvent));

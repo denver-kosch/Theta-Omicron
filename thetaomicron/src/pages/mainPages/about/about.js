@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import { Divider } from "../../../components/components";
+import Divider from "../../../components/divider";
 import { Link } from "react-router-dom";
 import apiCall from "../../../services/apiCall";
+import MemberCard from "../../../components/memberCard";
 
 const AboutUs = () => {
     const [ec, setEC] = useState([]);
-    const  [errorMessage, setErrorMessage] = useState("");
+    const [errMsg, setErrMsg] = useState("");
 
     useEffect(()=>{
-        //If token from previous session, remove it
-        if (localStorage.getItem('token')) localStorage.removeItem('token');
-        
         getEC();
     }, []);
 
@@ -21,20 +19,18 @@ const AboutUs = () => {
             setEC(ec.members);
         }
         else {
-            setErrorMessage("Could not gather Executive Committee at this time!");
-            console.log(ec.error);
+            setErrMsg("Could not gather Executive Committee at this time!");
+            console.error(ec.error);
         }
     };
 
-    const renderEC = officer => {
-        const name = `${officer.firstName} ${officer.lastName}`;
+    const EC = () => {
         return (
-            <div key={officer._id} className="card">
-                <img src={officer.imageUrl} alt={name} className="profilePic"/>
-                <p>{name}</p>
-                <p style={{fontWeight: 'bold'}}>{officer.position.role}</p>
+            <div className="ExecContainer">
+                {ec.length === 0 ? <p>Loading...</p> : ec.map(officer => <MemberCard key={officer._id} member={officer}/>)}
+                {errMsg && <p style={{color: "red"}}>{errMsg}</p>}
             </div>
-        );
+        )
     };
 
     const VertLine = () => {return (<div className="vertical" />)};
@@ -80,7 +76,7 @@ const AboutUs = () => {
                             </p>
                             <VertLine/>
                             <p>
-                                In 1966, Sphinx Club Presidential Candiddate Richard L. Smith recommended that in order to more effectively 
+                                In 1966, Sphinx Club Presidential Candidate Richard L. Smith recommended that in order to more effectively 
                                 grow and spread their brotherhood, Sphinx should incorporate into a larger fraternity. Hence they started 
                                 their search until they came across Kappa Sigma.
                             </p>
@@ -113,14 +109,8 @@ const AboutUs = () => {
             
             <br/>
             <h3 style={{fontWeight: 'bold'}}>Meet the Executive Committee:</h3>
-            <div className="ExecContainer">
-                {(ec.length === 0 && errorMessage === "") ? <p>Loading...</p>:
-                errorMessage !== "" ? <p style={{color: 'red'}}>{errorMessage}</p> :
-                ec.map(officer => renderEC(officer))
-                }
-            </div>
+            <EC/>
             <p>Meet them and other Leaders in the Chapter <Link to={"/about/leadership"} className="easyLink">here</Link></p>
-
 
         </>
     );

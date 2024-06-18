@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import apiCall from "../../../services/apiCall";
+import MemberCard from "../../../components/memberCard";
 
 const Rush = () => {
     const [rushCom, setRush] = useState([]);
@@ -27,23 +28,6 @@ const Rush = () => {
         }
     }
 
-    const renderRush = (member, title) => {
-        const name = `${member.firstName} ${member.lastName}`;
-        const emailLink  = `mailto:${member.email}@muskingum.edu?subject=Interested In Kappa Sigma`;
-        
-        return (
-            <div key={member.memberId} className="card">
-                <a href={emailLink}>
-                    <div>
-                        <img src={member.imageUrl} alt={name} className="profilePic"/>
-                        <img className="emailIcon" alt="Email" />
-                    </div>
-                </a>
-                <p>{name}</p>
-                <p style={{fontWeight: 'bold'}}>{title}</p>
-            </div>
-        );
-    };
 
     const newRush = () => {
         console.log('rendering...');
@@ -57,11 +41,11 @@ const Rush = () => {
         return (
             <>
             <div className="committee">
-                {renderRush(gmc, "Grand Master of Ceremonies")}
-                {renderRush(chairman, "Rush Chairman")}
+                {<MemberCard member={gmc}/>}
+                {<MemberCard member={chairman}/>}
             </div>
             <div className="committee">
-                {committee.map(member => renderRush(member, "Rush Committee"))}
+                {committee.map(member => <MemberCard key={member._id} member={member}/>)}
             </div>
             </>
         );

@@ -2,23 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {APIProvider, Map, AdvancedMarker as Marker} from '@vis.gl/react-google-maps';
 
-export const MemberCard = ({ name, emailLink, memberId, title }) => {
-    const img = `/images/profilePics/${memberId}.jpg`;
-
-    return (
-    <div key={memberId} className="card">
-        <a href={emailLink}>
-            <div>
-                <img src={img} alt={name} className="profilePic"/>
-                <img className="emailIcon" alt="Email" />
-            </div>
-        </a>
-        <p>{name}</p>
-        <p style={{fontWeight: 'bold'}}>{title}</p>
-    </div>
-)};
-
-export const Divider = () => <div className="divider"></div>;
 
 export const MapView = ({c}) => {
     const googleApiKey = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -69,82 +52,6 @@ export const MapView = ({c}) => {
     )
 };
 
-export const Navbar = ({children}) => {
-    const about = {
-        parent: {
-            link: '/about/',
-            title: <>About Us</>
-        },
-        children: [
-            {title: "Leadership", link: "/about/leadership"},
-            {title: "Rush", link: "/about/rush"},
-        ]
-    };
-
-    const directory = {
-        parent: {
-            link: '/directory/',
-            title: <>Brothers<br/>Directory</>
-        },
-        children: [
-            {title: "Family Trees", link: "/directory/trees"},
-            {title: "Alumni", link: "/directory/alumni"},
-        ]
-    };
-
-    return (
-        <>
-            <nav>
-                <div className="navContainer">
-                    <Link to={"/"} className="homeButton navLink">
-                        <img alt='Kappa Sigma Crest' className="logo"/>
-                        <h3>Kappa<br/>Sigma</h3>
-                    </Link>
-                    <div className="navLinks">
-                        <DropDown content={about}/>
-                        <DropDown content={directory}/>
-                        <Link className="navLink" to={"/portal"}>
-                            <h3>Brothers<br/>Portal</h3>
-                        </Link>
-                    </div>
-                </div>
-            </nav>
-            <main>
-                {children}
-            </main>
-            <footer>
-                <div className="IG">
-                    <h2>{'Check us out ->'}</h2>
-                    <a href="https://www.instagram.com/kappasigma_mu/" target="_blank" rel="noopener noreferrer">
-                        <img className="smLogo" alt="Instagram"/>
-                    </a>
-                </div>
-            </footer>
-        </>
-    )
-};
-
-export const DropDown = ({content}) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const {parent, children} = content;
-
-    return (
-    <div className="dropButton" onMouseOver={() => setIsOpen(true)} onMouseOut={() => setIsOpen(false)}>
-        <Link className="navLink" to={parent.link} onClick={() => setIsOpen(false)}>
-            <h3>{parent.title}</h3>
-        </Link>
-        {isOpen &&
-        <div className="dropdown">
-            {children.map(child => {return (
-                <Link className="navLink" to={child.link} onClick={() => setIsOpen(false)}>
-                    <h4>{child.title}</h4>
-                </Link>
-            )})}
-        </div>
-        }
-    </div>
-)};
-
 export const EventCard = ({event, loggedIn}) => {
     const {_id, name, description, time, location, imageUrl} = event;
 
@@ -181,37 +88,4 @@ export const EventCard = ({event, loggedIn}) => {
                 </div>
             </div>
         </Link>
-)};
-
-export const PortalNav = ({children}) => {
-    const logout = () => localStorage.removeItem("token");
-
-    return (
-    <>
-        <nav>
-            <div className="navContainer">
-            <Link to={"/portal"} className="homeButton navLink">
-                        <img alt='Kappa Sigma Crest' className="logo"/>
-                        <h3>Portal Home</h3>
-                    </Link>
-                <div className="navLinks">
-                    <Link className="navLink" to={"/portal/event"}>
-                        <h3>Events</h3>
-                    </Link>
-                    {/* <Link className="navLink" to={"/portal"}>
-                        <h3>Brothers<br/>Directory</h3>
-                    </Link>
-                    <Link className="navLink" to={"/portal"}>
-                        <h3>Brothers<br/>Portal</h3>
-                    </Link> */}
-                    <Link className="navLink" to="/" onClick={logout}>
-                        <h3>Log<br/>Out</h3>
-                    </Link>
-                </div>
-            </div>
-        </nav>
-        <main>
-        {children}
-        </main>
-    </>
 )};

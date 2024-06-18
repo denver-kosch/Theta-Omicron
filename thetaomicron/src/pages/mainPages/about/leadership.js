@@ -1,13 +1,15 @@
-import React from "react";
-// eslint-disable-next-line
-import { apiCall } from "../../../components/components";
+import { useEffect, useState } from "react";
+import apiCall from "../../../services/apiCall";
 
 
 const Leadership = () => {
-    // eslint-disable-next-line
-    const [leadership, setLeadership] = React.useState([]);
+    const [leadership, setLeadership] = useState([]);
 
-    
+    useEffect(() => {
+        const fetchLeaders = async () => {
+            const res = await apiCall('getChairmen');
+        };
+    })
 
     return (
         <>
