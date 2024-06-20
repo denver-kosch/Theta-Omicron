@@ -12,15 +12,12 @@ const PortalNav = ({children}) => {
                         <h3>Portal Home</h3>
                     </Link>
                 <div className="navLinks">
+                    <Link className="navLink" to={"/portal/committees"}>
+                        <h3>Committees</h3>
+                    </Link>
                     <Link className="navLink" to={"/portal/event"}>
-                        <h3>Events</h3>
+                        <h3>All<br/>Events</h3>
                     </Link>
-                    {/* <Link className="navLink" to={"/portal"}>
-                        <h3>Brothers<br/>Directory</h3>
-                    </Link>
-                    <Link className="navLink" to={"/portal"}>
-                        <h3>Brothers<br/>Portal</h3>
-                    </Link> */}
                     <Link className="navLink" to="/" onClick={logout}>
                         <h3>Log<br/>Out</h3>
                     </Link>

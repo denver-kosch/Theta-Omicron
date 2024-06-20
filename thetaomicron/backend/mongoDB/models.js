@@ -281,6 +281,19 @@ const commSchema = new Schema({
 }, {versionKey: false});
 export const Committee = model('committee', commSchema);
 
+const messageSchema = new Schema({
+    username: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    timestamp: { 
+        type: Date, 
+        default: new Date()
+    },
+});
 
-
-
+const Message = model('message', messageSchema);

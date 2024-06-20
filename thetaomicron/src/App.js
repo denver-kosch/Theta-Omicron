@@ -16,6 +16,7 @@ import EditEvent from './pages/portal/events/editEvent';
 import { AllEvents } from './pages/portal/events/allEvents';
 import MainLayout from './layouts/mainLayout.js';
 import PortalLayout from './layouts/portalLayout.js';
+import CommitteePage from './pages/portal/committees/committeePage.js';
 
 
 
@@ -49,6 +50,7 @@ const App = () => {
               <Route path="edit" element={<EditEvent />} />
             </Route>
           </Route>
+          <Route path="committees" element={<CommitteePage />} />
           <Route path="*" element={<Navigate to="/portal/" />} />
         </Route>
 

@@ -2,9 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import { getLocalIP } from './start.js';
-import { isObjectIdOrHexString, connect } from 'mongoose';
-import { ObjectId } from 'mongodb';
-import jwt from 'jsonwebtoken';
+import { connect } from 'mongoose';
 
 dotenv.config();
 
@@ -17,7 +15,7 @@ export const connectDB = async () => {
         console.log(`Attempting MongoDB connect`);
         await connect(process.env.MONGODBURI);
         console.log(`MongoDB connected`);
-        return {port, host};
+        return [port, host];
     } catch (error) {
         console.log(`Error: ${error.message}`);
         process.exit(1);
@@ -104,14 +102,12 @@ export class ApiError extends Error {
   }
 };
 
-
 const sendJsonResponse = (res, status, content = {}) => {
     content.success = (status >= 200 && status < 300) ? true : false;
     res.status(status).json(content);
 };
 
 const handleError = (error, res) => {
-  console.error(error); // Log the error for server-side debugging
   if (error instanceof ApiError) sendJsonResponse(res, error.status, { error: error.message });
   else sendJsonResponse(res, 500, { error: 'Internal Server Error' });
 };

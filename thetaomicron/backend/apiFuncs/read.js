@@ -51,7 +51,6 @@ export const getBros = async () => {
   
 export const getBro = async (req) => {
   const _id = extractToken(req);
-  console.log(_id);
   const info = _id && (await Member.findById(_id, {status:1, lastName:1, positions:1}));
   if (info) return {status: 200, content: {info}};
   else throw new ApiError(404, "Brother not found");
@@ -199,6 +198,7 @@ export const getPortalEvents = async (req) => {
 
 export const getChairmen = async () => {
     const chairmen = await Member.find({positions: {$elemMatch: {role: "Chairman"}}}, {firstName: 1, lastName: 1, positions: 1});
-    if (chairmen) return {status: 200, content: {chairmen}};
+    const ec = await Member.find({positions: {$elemMatch: {name: "Executive Committee"}}}, {firstName: 1, lastName: 1, positions: 1});
+    if (chairmen) return {status: 200, content: {chairmen, ec}};
     else throw new ApiError(404, "Chairmen not found");
 };

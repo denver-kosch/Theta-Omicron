@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
 import path from 'path';
+import {Server} from 'socket.io';
+import { createServer } from 'http';
 import { fileURLToPath } from 'url';
 import { connectDB, asyncHandler } from './functions.js';
 import { check } from 'express-validator';
@@ -16,18 +18,26 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage() }); // Storing files in memory
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.json(), express.urlencoded({ extended: true }), express.static(path.join(__dirname, 'public')), cors());
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Adjust this as needed
+    methods: ["GET", "POST"]
+  }
+});
 
 //connect to db, then listen to port
 (async () => {
   try {
-    const {port, host} = await connectDB();
-    app.listen(port, host, () => {
+    const [port, host] = await connectDB();
+    server.listen(port, host, () => {
       console.log(`Server running on http://${host}:${port}`);
     });
   } catch (error) {
     console.log('Error connecting to database: ' + error.message);
   };
 })();
+
 
 /* ================== Login / Authorization ================== */
 app.post('/login', 

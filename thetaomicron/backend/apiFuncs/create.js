@@ -1,9 +1,10 @@
-import { Member, Location } from "../mongoDB/models.js";
+import { Member, Location, Event } from "../mongoDB/models.js";
 import { startSession } from "mongoose";
 import { abbrSt } from "../functions.js";
 import { ApiError } from "../functions.js";
 import { existsSync, promises } from 'fs';
 import { join, extname } from 'path';
+import { ObjectId } from "mongodb";
 import sharp from 'sharp';
 import { dirname } from "../config.js";
 import { hashPassword, extractToken } from "./authentication.js";
@@ -43,7 +44,6 @@ export const addEvent = async (req) => {
       const state = abbrSt(s);
       location = (await Location.create({ address, city, state, zip, name: newLocName }));
       }
-      
       const event = (await Event.create([{
           name, 
           description, 

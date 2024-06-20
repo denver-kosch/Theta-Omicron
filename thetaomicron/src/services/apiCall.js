@@ -1,8 +1,7 @@
+import serverEndpoint from "./serverEndpoint";
+
 async function apiCall (api, body = {}, headers = {'Content-Type': 'application/json'}) {
-    const port = process.env.REACT_APP_SERVERPORT || 3001;
-    const host = window.location.hostname || 'localhost';
-    const apiLink = `http://${host}:${port}/${api}`;
-    
+    const apiLink = `${serverEndpoint}${api}`;
     const isFormData = body instanceof FormData;
     try {
         const fetchOptions = {

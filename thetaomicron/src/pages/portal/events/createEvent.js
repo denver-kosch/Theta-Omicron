@@ -1,29 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import apiCall from "../../../services/apiCall";
+import {useForm} from "react-hook-form";
 
 const CreateEvent = () => {
     const navigate = useNavigate();
-    const formatDateForInput = (date) => {
-        const local = new Date(date);
-        local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-        return local.toJSON().slice(0,16);
-    };
+    const defaultValues = {location: "", committee: '', start: new Date(), end: new Date(), visibility: ''};
+    const {register, handleSubmit, watch, formState: {errors}} = useForm({defaultValues});
     const [loaded, setLoaded] = useState(false);
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
     const [locOptions, setLocOptions] = useState([]);
     const [commOptions, setCommOptions] = useState([]);
     const [officerComms, setOfficerComms] = useState([]);
-    const [location, setLocation] = useState('-1');
-    const [committee, setCommittee] = useState('');
-    const [newLocName, setNewLocName] = useState('');
-    const [newLocAddress, setNewLocAddress] = useState('');
-    const [start, setStart] = useState(formatDateForInput(new Date()));
-    const [end, setEnd] = useState(formatDateForInput(new Date()));
-    const [image, setImage] = useState(null);
-    const [visibility, setVisibility] = useState('');
-    
+    const location = watch('location');
 
     useEffect(() => {
         const getInfo = async () => {
@@ -35,45 +23,51 @@ const CreateEvent = () => {
         getInfo();
         setLoaded(true);
     },[]);
-
-    const add = async e => {
-        e.preventDefault();
-        const token = localStorage.getItem('token');
-        const data = new FormData();
-        data.append('name', name);
-        data.append('description', description);
-
-        data.append('location', JSON.stringify(locOptions.find(l => l._id === location) ?? location));
-        if (location === '0') {
-            data.append('newLocName', newLocName);
-            data.append('newLocAddress', newLocAddress);
-        }
-
-        data.append('start', start);
-        data.append('end', end);
-        data.append('image', image);
-
-        const com = [...commOptions, ...officerComms].find(e=> e._id === committee);
-        console.log(com);
-        data.append('committee', JSON.stringify(com));
-        data.append('visibility', visibility);
-
-        const newEvent = await apiCall('addEvent', data, {'Authorization': `Bearer ${token}`});
-        if (newEvent.success) {
-            navigate('/portal/event/'+newEvent.newId);
-        }
-        else console.error(newEvent.error);
-    };
     
-    return(
+    const onSubmit = async (data) => {
+        try {
+            const token = localStorage.getItem('token');
+            const formData = new FormData();
+            
+            const { image, location, committee, ...otherData } = data;
+            
+            const com = [...commOptions, ...officerComms].find(e => e._id === committee);
+            formData.append('committee', JSON.stringify(com));
+            
+            formData.append('location', JSON.stringify(locOptions.find(l => l._id === location) ?? location));
+            if (location === '0') {
+                formData.append('newLocName', data.newLocName);
+                formData.append('newLocAddress', data.newLocAddress);
+            }
+
+            formData.append('image', image[0]);  // Append the file
+
+            // Append other fields
+            Object.keys(otherData).forEach((key) => {
+                formData.append(key, otherData[key]);
+            });
+
+            const newEvent = await apiCall('addEvent', formData, { 'Authorization': `Bearer ${token}` });
+            if (newEvent.success) {
+                navigate('/portal/event/' + newEvent.newId);
+            } else {
+                console.error(newEvent.error);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    return (
         <>
             { loaded ? 
             <div className="create">
                 <h1>Create Event</h1>
-                <form onSubmit={add}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="field">
                         <label htmlFor="name">Name: </label>
-                        <input required type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
+                        <input required type="text" id="name" {...register("name", {required: true})} />
+                        {errors.name && <span className="error">Name is required</span>}
                     </div>
 
                     <br/>
@@ -82,23 +76,24 @@ const CreateEvent = () => {
                         <br/>
                         <textarea
                         id="description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        {...register("description", {required: true})}
                         rows={5}
                         />
+                        {errors.description && <span className="error">Description is required</span>}
                     </div>
 
                     <br/>
 
                     <div className="field">
                         <label htmlFor="location">Location: </label>
-                        <select id="location" value={location} onChange={(e) => setLocation(e.target.value)}>
-                            <option key='location-disabled' value={'-1'} disabled>Please select a location</option>
+                        <select id="location" {...register("location", {required: true, validate: value => value !== ''})}>
+                            <option key='location-disabled' value={''} disabled>Please select a location</option>
                             {locOptions.map(location => {
                                 return <option key={location._id} value={location._id}>{location.name}</option>
                             })}
                             <option key='location-0' value={'0'}>Other</option>
                         </select>
+                        {errors.location && <span className="error">Location is required</span>}
                     </div>
 
                     {location === '0' ?
@@ -106,12 +101,14 @@ const CreateEvent = () => {
                             <br/>
                             <div className="field">
                                 <label htmlFor="locationName">New Location Name: </label>
-                                <input required type="text" id="locationName" value={newLocName} onChange={(e) => setNewLocName(e.target.value)} />
+                                <input required type="text" id="locationName" {...register("newLocName", {validate: value => location !== '0' || (location === '0' && value !== '')})} />
+                                {errors.newLocName && <span className="error">New Location Name is required</span>}
                             </div>
                             <br/>
                             <div className="field">
                                 <label htmlFor="locationAddress">New Location Address: </label>
-                                <input required type="text" id="locationAddress" value={newLocAddress} onChange={(e) => setNewLocAddress(e.target.value)} />
+                                <input required type="text" id="locationAddress" {...register("newLocAddress", {validate: value => location !== '0' || (location === '0' && value !== '')})} />
+                                {errors.newLocAddress && <span className="error">New Location Address is required</span>}
                             </div>
                         </>:<></>
                     }
@@ -120,28 +117,34 @@ const CreateEvent = () => {
 
                     <div className="field">
                         <label htmlFor="start">Start: </label>
-                        <input required type="datetime-local" id="start" value={start} onChange={(e) => setStart(e.target.value)} />
+                        <input required type="datetime-local" id="start" {...register("start", {required: true, 
+                            validate: value => new Date(value) > new Date()})}/>
+                        {errors.start && <span className="error">Start date must be in the future</span>}
                     </div>
 
                     <br/>
 
                     <div className="field">
                         <label htmlFor="end">End: </label>
-                        <input required type="datetime-local" id="end" value={end} onChange={(e) => setEnd(e.target.value)} />
+                        <input required type="datetime-local" id="end" {...register("end", {required: true,
+                            validate: value => new Date(value) > new Date(watch('start'))
+                        })} />
+                        {errors.end && <span className="error">End date must be after start date</span>}
                     </div>
 
                     <br/>
 
                     <div className="field">
                         <label htmlFor="image">Image: </label>
-                        <input required type="file" id="image" onChange={(e) => setImage(e.target.files[0])} accept="image/png, image/jpeg, image/jpg" />
+                        <input required type="file" id="image" {...register("image", {required: true})} accept="image/png, image/jpeg, image/jpg" />
+                        {errors.image && <span className="error">Image is required</span>}
                     </div>
 
                     <br/>
 
                     <div className="field">
                         <label htmlFor="committee">Facilitating committee: </label>
-                        <select id="committee" value={committee} onChange={(e) => setCommittee(e.target.value)}>
+                        <select id="committee" {...register("committee", {required: true, validate: value => value !== ''})}>
                             <option key={"committee"} value='' disabled>Please select a committee</option>
                             {commOptions.map(option => (
                                 <option key={`committee-${option._id}`} value={option._id}>{option.name}</option>
@@ -151,13 +154,14 @@ const CreateEvent = () => {
                                 <option key={`ocommittee-${option._id}`} value={option._id}>{option.name}</option>
                             ))}
                         </select>
+                        {errors.committee && <span className="error">Committee is required</span>}
                     </div>
 
                     <br/>
 
                     <div className="field">
                         <label htmlFor="visibility">Visibility: </label>
-                        <select id="visibility" value={visibility} onChange={(e) => setVisibility(e.target.value)}>
+                        <select id="visibility" {...register("visibility", {required: true,validate: value => value !== ''})}>
                             <option value='' disabled>Please select event visibility</option>
                             <option value="Public">Public</option>
                             <option value="Members">Members Only</option>
@@ -170,18 +174,19 @@ const CreateEvent = () => {
                             <option value="Executive Committee">EC Only</option>
                         }
                         </select>
+                        {errors.visibility && <span className="error">Visibility is required</span>}
                     </div>
 
                     <br/>
 
                     <input required type="submit" value="Create"/>
                 </form>
-                <button onClick={() => console.log(start)}>Check</button>
                 
             </div> :
             <div className="loader">Loading...</div>
             }
         </>
-)};
+    );
+};
 
 export default CreateEvent;

@@ -90,7 +90,7 @@ export const AllEvents = () => {
     };
 
     const TableSegment = ({title, collection, status, sort}) => {
-        const Events = lazy(() => import('./tableElems.js'));
+        const Events = lazy(() => import ('../../../components/tableElems'));
 
         return (
             <>

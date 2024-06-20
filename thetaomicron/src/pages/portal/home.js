@@ -15,10 +15,7 @@ const PortalHome = () => {
     }, []); 
 
     return (
-        <>
-            {brother === '' && <h2>Loading...</h2>}
-            {brother !== '' && <h2>Welcome, {brother}</h2>}
-        </>
+        <>{brother === '' ? <h2>Loading...</h2> : <h2>Welcome, {brother}</h2>}</>
     )};
 
 export default PortalHome;

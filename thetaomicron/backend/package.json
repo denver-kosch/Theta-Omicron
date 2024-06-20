@@ -25,7 +25,8 @@
     "mysql2": "^3.10.0",
     "path": "^0.12.7",
     "sequelize": "^6.37.3",
-    "sharp": "^0.33.4"
+    "sharp": "^0.33.4",
+    "socket.io": "^4.7.5"
   },
   "type": "module",
   "devDependencies": {
