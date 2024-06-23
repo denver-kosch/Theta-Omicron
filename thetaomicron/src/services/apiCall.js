@@ -1,7 +1,7 @@
-import serverEndpoint from "./serverEndpoint";
+import ENDPOINT from "./serverEndpoint";
 
 async function apiCall (api, body = {}, headers = {'Content-Type': 'application/json'}) {
-    const apiLink = `${serverEndpoint}${api}`;
+    const apiLink = `${ENDPOINT}${api}`;
     const isFormData = body instanceof FormData;
     try {
         const fetchOptions = {
