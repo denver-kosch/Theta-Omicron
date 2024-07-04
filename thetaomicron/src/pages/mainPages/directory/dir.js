@@ -64,11 +64,6 @@ const Directory = () => {
   return (
     <div className="directoryContainer">
       <div className="topBar">
-      <div>
-          {/* <Link to="trees" className="famTree">
-            <h3>Family Trees</h3>
-          </Link> */}
-        </div>
         <div>
           <h1>BROTHERS DIRECTORY:</h1>
         </div>

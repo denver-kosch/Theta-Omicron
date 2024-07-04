@@ -197,7 +197,25 @@ export const getPortalEvents = async (req) => {
 };
 
 export const getChairmen = async () => {
-    const chairmen = await Member.find({positions: {$elemMatch: {role: "Chairman"}}}, {firstName: 1, lastName: 1, positions: 1});
+    const chairmen = (await Member.aggregate([
+      {$unwind: "$positions"},
+      {$match: {"positions.role": "Chairman"}}, 
+      {
+        $group: {
+          _id: "$_id",
+          firstName: {$first: "$firstName"},
+          lastName: {$first: "$lastName"},
+          positions: {$addToSet: "$positions"}
+        }
+      },
+      {
+        $project: {
+          firstName: 1, 
+          lastName: 1, 
+          positions: 1
+        }
+      }
+    ])).map(doc => appendImgPath(doc, dirname, 'profilePics'));
     const ec = await Member.find({positions: {$elemMatch: {name: "Executive Committee"}}}, {firstName: 1, lastName: 1, positions: 1});
     if (chairmen) return {status: 200, content: {chairmen, ec}};
     else throw new ApiError(404, "Chairmen not found");

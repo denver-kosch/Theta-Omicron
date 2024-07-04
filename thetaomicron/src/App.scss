@@ -782,6 +782,165 @@ table.pTable {
 		}
 	}
 }
+.leadership {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+  
+	.exec {
+		width: 75%;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-evenly;
+		align-items: flex-start;
+		margin-bottom: 50px;
+
+		.bioCard {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			transition: flex 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+			position: relative;
+			cursor: pointer;
+	
+	
+			.pic {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				transition: transform 0.5s ease;
+	
+				* {
+					max-width: 100%;
+				}
+		
+				.name {
+					margin: 0;
+				}
+		
+				img {
+					width: auto;
+					height: 200px;
+					object-fit: cover;
+				}
+		
+				.title {
+					position: static;
+					transition: transform 0.5s ease, position 0.5s ease;
+				}
+			}
+	
+			.bio {
+				text-wrap: balance;
+				max-width: 50%;
+				margin-left: 5%;
+				opacity: 0;
+				max-height: 0;
+				overflow: hidden;
+				display: none;
+				transition: opacity 0.5s ease, max-height 0.5s ease;
+			}
+
+			&.expanded {
+				flex: 4;
+		
+				.pic {
+					transition: transform 0.5s ease;
+				}
+		
+				.bio {
+					opacity: 1;
+					max-height: 500px;
+					display: block;
+					transition: opacity 0.5s ease, max-height 0.5s ease;
+				}
+				.title {
+					transform: rotate(0deg);
+					position: static;
+				}
+			}
+		}
+	
+		.bioCard:not(.expanded) {
+			flex: 0.25;
+			margin: 5px;
+			.pic {
+				.title {
+					transform: rotate(90deg);
+					position: absolute;
+					min-width: 200px;
+					transition: transform 0.5s ease, position 0.5s ease;
+					text-wrap:balance;
+					color: white;
+				}
+				.name {
+					display:none;
+				}
+				img {
+					border-radius: 5%;
+				}
+				&::before {
+					content: '';
+					position: absolute;
+					border-radius: 5%;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity here */
+				}
+			}
+	
+			.bio {
+			opacity: 0;
+			max-height: 0;
+			display: none;
+			transition: opacity 0.5s ease, max-height 0.5s ease;
+			}
+		}
+
+		&.all-collapsed {
+			.bioCard {
+				.pic {
+					.title {
+						transform: rotate(0deg);
+						position: static;
+						text-wrap: wrap;
+						color: var(--text-color)
+					}
+					.name {
+						display:block;
+					}
+					img {
+						border-radius: 5%;
+					}
+					&::before {
+						content: '';
+						position: absolute;
+						top: 0;
+						left: 0;
+						width: 100%;
+						height: 100%;
+						background-color: rgba(0, 0, 0, 0); /* Adjust opacity here */
+					}
+				}
+			}
+		}
+	}
+  
+	.title {
+	  // font-size: 1.5em;
+	  margin-bottom: 20px;
+	}
+  }
+  
+
+
+
 @media (prefers-color-scheme: dark) {
 	:root {
 		--background-color: #1d1d1d;
