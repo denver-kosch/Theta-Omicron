@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { EventCard } from '../../components/components';
 import apiCall from "../../services/apiCall";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+    const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -31,6 +33,7 @@ const Home = () => {
                     {(events.length === 0 && !loading) && <div style={{color: 'red'}}>No upcoming events!</div>}
                     {events.length !== 0 && events.map(event => <EventCard key={event._id} event={event}/>)}
                 </div>
+                <button onClick={() => navigate("event/calendar")}>More Events</button>
             </div>
     )};
 

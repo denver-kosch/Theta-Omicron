@@ -9,7 +9,7 @@ import PortalHome from "./pages/portal/home";
 import Home from "./pages/mainPages/home";
 import Leadership from "./pages/mainPages/about/leadership";
 import Alumni from "./pages/mainPages/directory/alumni";
-import Event from './pages/mainPages/eventDetails';
+import Event from './pages/mainPages/events/eventDetails';
 import CreateEvent from './pages/portal/events/createEvent';
 import PortalEvent from './pages/portal/events/portalEvent';
 import EditEvent from './pages/portal/events/editEvent';
@@ -17,6 +17,7 @@ import { AllEvents } from './pages/portal/events/allEvents';
 import MainLayout from './layouts/mainLayout.js';
 import PortalLayout from './layouts/portalLayout.js';
 import CommitteePage from './pages/portal/committees/committeePage.js';
+import EventCal from './pages/mainPages/events/calendar.js';
 
 
 
@@ -36,7 +37,10 @@ const App = () => {
             <Route path="leadership" element={<Leadership />} />
             <Route path="rush" element={<Rush />} />
           </Route>
-          <Route path="event/:id" element={<Event />} />
+          <Route path="event">
+            <Route path=":id" element={<Event />} />
+            <Route path="calendar" element={<EventCal/>}/>
+          </Route>
           <Route path="portal/login" element={<PortalLogin />} />
         </Route>
         

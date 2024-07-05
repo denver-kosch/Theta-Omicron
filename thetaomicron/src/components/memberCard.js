@@ -5,7 +5,6 @@ const MemberCard = ({member}) => {
     const email = contactInfo?.schoolEmail ? `mailto:${contactInfo.schoolEmail}@muskingum.edu?subject=Interested In Kappa Sigma` : 
                   contactInfo?.email ? contactInfo.email : null;
 
-
     return (
     email ? <div className="card">
         <a href={email}>
