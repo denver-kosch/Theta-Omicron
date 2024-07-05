@@ -10,47 +10,33 @@ const Rush = () => {
         getRush();
     },[]);
 
-    useEffect(()=>{
-        console.log("Rush Com: " + rushCom);
-    }, [rushCom]);
-
     const getRush = async () => {
         try {
-            let committee = await apiCall('getCommittee', {name: "Rush Committee", emails: true, pics: true});
-            if (committee) {
-                setRush(committee.members);
-                console.log(committee.members);
-            }
-            else setRushErr("Could not gather rush committee at this time!");
+            const committee = await apiCall('getCommittee', {name: "Rush Committee", emails: true, pics: true});
+            committee?.success ? setRush(committee.members) : setRushErr("Could not gather rush committee at this time!");
         } catch (error) {
             console.error("Failed to fetch rush committee:", error);
             setRushErr("Could not gather rush committee at this time due to an error.");
         }
-    }
+    };
 
 
-    const newRush = () => {
-        console.log('rendering...');
+    const RushCom = () => {
         const gmc = rushCom.find(r => r.position.role === "Grand Master of Ceremonies");
-        console.log(gmc)
         const chairman = rushCom.find(r => r.position.role === "Chairman");
-        console.log(chairman);
-        const committee = rushCom.filter(r => r.position.role === "Member");
-        console.log(committee);
+        const committee = rushCom.filter(r => r.position.role === "Member").map(r => {return {...r, position:"Committee Member"}});
 
         return (
             <>
-            <div className="committee">
-                {<MemberCard member={gmc}/>}
-                {<MemberCard member={chairman}/>}
-            </div>
-            <div className="committee">
-                {committee.map(member => <MemberCard key={member._id} member={member}/>)}
-            </div>
+                <div className="committee">
+                    <MemberCard member={gmc}/>
+                    <MemberCard member={chairman}/>
+                </div>
+                <div className="committee">
+                    {committee.map(member => <MemberCard key={member._id} member={member}/>)}
+                </div>
             </>
-        );
-
-    };
+    )};
 
     return (
       <>
@@ -66,17 +52,14 @@ const Rush = () => {
         </div>
         <br/>
         <h4>If you are interested in joining the greatest in the world, reach out to any of the Brothers of the Rush Committee:</h4>
-            {(() => {
-                if (rushComErr !== '') 
-                return <h5 style={{color: 'red'}}>{rushComErr}</h5>;
-            })()}
+        {(rushComErr !== '') &&<h5 style={{color: 'red'}}>{rushComErr}</h5>}
         {rushCom.length !== 0 &&
             <div className='committeeContainer'>
-                {newRush()}
+                <RushCom/>
             </div>
         }
       </>
     );
-  }
+}
 
   export default Rush;

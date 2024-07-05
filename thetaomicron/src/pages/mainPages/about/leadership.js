@@ -1,7 +1,6 @@
 import { useEffect, useState, Fragment } from "react";
 import apiCall from "../../../services/apiCall";
-import MemberCard from "../../../components/memberCard";
-
+import BrothersGrid from "../../../components/cardGrid";
 
 const Leadership = () => {
     const [leadership, setLeadership] = useState([]);
@@ -28,6 +27,7 @@ const Leadership = () => {
         };
         fetchLeaders();
     },[]);
+
 
 
     const ExecComponent = () => {
@@ -66,9 +66,9 @@ const Leadership = () => {
             <ExecComponent/>
 
             <h2>Committee Chairmen</h2>
-            <div className="chairmen">
-                {leadership.map((member, index) => <MemberCard key={index} member={member} />)} 
-            </div>
+            <table className="chairmen">
+                <BrothersGrid brothers={leadership}/>
+            </table>
         </div>
 )}
 

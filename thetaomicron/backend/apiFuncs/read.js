@@ -33,7 +33,7 @@ export const getBros = async () => {
         const arr = [];
         d.positions.forEach(p => {
           if (p.committeeName === "Executive Committee") arr.push(p.role)
-          else if (p.role === "Chairman") arr.push(`${p.committeeName.split(" ")[0]} Chairman`);
+          else if (/Committee/.test(p.committeeName) && p.role === "Chairman") arr.push(`${p.committeeName.split(" ")[0]} Chairman`);
           else arr.push(p.committeeName);
         });
   
