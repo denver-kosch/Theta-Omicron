@@ -57,13 +57,19 @@ export const getBro = async (req) => {
 };
   
 export const getEvents = async (req) => {
-    const { vis, days, mandatory, status } = req.body;
+    const { vis, days, mandatory, status, timeframe } = req.body;
     const query = [];
     if (vis) query.push({visibility: vis});
     if (days) query.push({ "time.start": { $gte: new Date(), $lte: new Date(new Date().setDate(new Date().getDate() + days)) }});
     if (typeof mandatory == 'boolean') query.push({mandatory});
     if (status) query.push({status});
-  
+    if (timeframe) {
+      const {month, year} = timeframe;
+      const start = new Date(year, month, 1);
+      const end = new Date(year, month + 1, 0);
+      query.push({"time.start": {$gte: start, $lte: end}});
+    }
+
     const events = await Event.find((query.length > 0) ? {$and: query} : {}, { name: 1, description: 1, time: 1, location: "$location.name" });
   
     for (let i=0; i<events.length; i++) events[i] = appendImgPath(events[i].toJSON(), dirname, 'events');
