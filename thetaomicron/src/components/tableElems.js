@@ -28,7 +28,6 @@ const row = (event, navigate) => {
     const statusStyle = (status) => {
         return (status === "Pending") ? { backgroundColor: 'yellow', color: 'black' } : (status === "Rejected") ? { backgroundColor: 'red', color: 'black' } : {backgroundColor: '#1AFF00', color: 'black'};
     };
-    console.log(locationName);
     
     return(
     <tr onClick={() => navigate(`/portal/event/${_id}`)} key={_id}>
@@ -45,8 +44,8 @@ const row = (event, navigate) => {
 )};
 
 const Events = ({events, collection, sort, navigate, emptyRow, status}) => {
-    if (!events) return null;
-    return (
+    return !events ?  null : 
+    (
         <>
         {events[collection].length === 0 && emptyRow(status ? 9 : 8)}
         {sortedEvents(events[collection], sort).map(e => row(e, navigate))}

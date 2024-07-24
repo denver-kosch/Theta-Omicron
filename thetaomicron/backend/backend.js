@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url';
 import { connectDB, asyncHandler } from './functions.js';
 import { check } from 'express-validator';
 import { addEvent, addMember } from './apiFuncs/create.js';
-import { getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getPortalEvents, getChairmen } from './apiFuncs/read.js';
+import { getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getPortalEvents, getChairmen, getNotes, getPositions } from './apiFuncs/read.js';
 import { updateEvent, approveEvent, rejectEvent } from './apiFuncs/update.js';
 import { removeEvent } from './apiFuncs/delete.js';
 import { login, auth } from './apiFuncs/authentication.js';
@@ -96,6 +96,10 @@ app.post("/getEventDetails", asyncHandler(getEventDetails));
 app.post('/getPortalEvents', asyncHandler(getPortalEvents));
 
 app.post('/getChairmen', asyncHandler(getChairmen));
+
+app.post('/getNotes', asyncHandler(getNotes));
+
+app.post('/getPositions', asyncHandler(getPositions));
 
 /* ================== Update ================== */
 app.post('/updateEvent', upload.single('image'), asyncHandler(updateEvent));

@@ -16,7 +16,7 @@ import EditEvent from './pages/portal/events/editEvent';
 import { AllEvents } from './pages/portal/events/allEvents';
 import MainLayout from './layouts/mainLayout.js';
 import PortalLayout from './layouts/portalLayout.js';
-import CommitteePage from './pages/portal/committees/committeePage.js';
+import CommitteePage from './pages/portal/committees/committeePage.jsx';
 import EventCal from './pages/mainPages/events/calendar.js';
 
 

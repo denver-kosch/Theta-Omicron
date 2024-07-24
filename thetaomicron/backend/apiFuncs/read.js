@@ -80,11 +80,18 @@ export const getEvents = async (req) => {
 
 export const getCommittees = async (req) => {
     // Will return false if invalid id or no id provided
-    _id = extractToken(req);
-    const committees = await Committee.find(_id ? {members: {$in: _id}} : {});
-  
-    if (committees) return {status: 200, content: { committees: committees }};
-    else throw ApiError(404, "Committees not found");
+    try {
+		const _id = extractToken(req);
+
+		const committees = await Committee.find(_id ? {members: _id} : {});
+
+		if (committees) return {status: 200, content: { committees: committees }};
+		else throw ApiError(404, "Committees not found");
+    }
+    catch (error) {
+		console.error(error);
+		throw ApiError(401, "Invalid token");
+    }
 };
   
 export const getLocations = async () => {
@@ -225,4 +232,17 @@ export const getChairmen = async () => {
     const ec = await Member.find({positions: {$elemMatch: {name: "Executive Committee"}}}, {firstName: 1, lastName: 1, positions: 1});
     if (chairmen) return {status: 200, content: {chairmen, ec}};
     else throw new ApiError(404, "Chairmen not found");
+};
+
+export const getNotes = async (req) => {
+	const notes = await Member.find({_id: extractToken(req)}, {notepad: 1});
+	if (notes) return {status: 200, content: {notes}};
+	else throw new ApiError(404, "Notes not found");
+};
+
+export const getPositions = async (req) => {
+	const id = extractToken(req);
+	const positions = await Member.findById(id, {positions: 1});
+	if (positions) return {status: 200, content: {positions: positions.positions}};
+	else throw new ApiError(404, "Positions not found");
 };

@@ -149,10 +149,11 @@ const CreateEvent = () => {
                             {commOptions.map(option => (
                                 <option key={`committee-${option._id}`} value={option._id}>{option.name}</option>
                             ))}
-                            {officerComms.length > 0 && <option key={"ocommittee"} value='' disabled>Officer Committees</option>}
-                            {officerComms.map(option => (
-                                <option key={`ocommittee-${option._id}`} value={option._id}>{option.name}</option>
-                            ))}
+                            {officerComms.length > 0 && <optgroup key={"ocommittee"} label='Officer Committees'>
+                                {officerComms.map(option => (
+                                    <option key={`ocommittee-${option._id}`} value={option._id}>{option.name}</option>
+                                ))}
+                            </optgroup>}
                         </select>
                         {errors.committee && <span className="error">Committee is required</span>}
                     </div>

@@ -34,7 +34,7 @@ export const extractToken = req => {
     try {
         const token = req.headers.authorization.split(" ")[1];
         const _id = String((jwt.verify(token, process.env.SESSION_SECRET)).memberId);
-        return isObjectIdOrHexString(_id) && new ObjectId(_id);
+        return (isObjectIdOrHexString(_id) && new ObjectId(_id));
     } catch {
         return false;
     }

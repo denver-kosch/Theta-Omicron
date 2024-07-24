@@ -132,7 +132,11 @@ const memberSchema = new Schema({
         enum: ['SuperAdmin', 'Admin', 'User'],
         default: 'User'
     },
-    positions: [positionSchema]
+    positions: [positionSchema],
+    notepad: {
+        type: String,
+        default: ""
+    },
 }, {versionKey: false});
 export const Member = model('Member', memberSchema);
 
@@ -295,5 +299,4 @@ const messageSchema = new Schema({
         default: new Date()
     },
 });
-
 const Message = model('message', messageSchema);

@@ -216,6 +216,7 @@ footer {
 						display: -webkit-box;
 						-webkit-box-orient: vertical;
 						-webkit-line-clamp: 2;
+						line-clamp: 2;
 						overflow: hidden;
 						text-overflow: ellipsis;
 					}
@@ -960,14 +961,24 @@ table.pTable {
 		tbody {
 			width: 100%;
 			tr {
-				height: 20%;
 				.calendar-day, .empty-cell {
 					border: .5px solid var(--text-color);
 					vertical-align: top;
 					margin: .5px;
+					position: relative;
 					h3 {
 						text-align: left;
 						margin: 0;
+					}
+					.ribbon {
+						position: absolute;
+						top: 25px;
+						height: 20px;
+						background-color: red;
+						color: white;
+						padding: 2px 0;
+						border-radius: 5px;
+						z-index: 1;
 					}
 				}
 				.currentDay {
