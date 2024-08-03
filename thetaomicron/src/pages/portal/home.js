@@ -7,7 +7,7 @@ const PortalHome = () => {
 
     useEffect(() => {
         (async () => {
-            const brotherInfo = await apiCall('getBro', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+            const brotherInfo = await apiCall('getBro', {}, {'Authorization': `Bearer ${sessionStorage.getItem("token")}`});
             const bI = brotherInfo?.info;
             if (!bI) return;
             const title = (bI.status === 'Pledge') ? "Mr. " + bI.lastName : `Brother ` + bI.lastName;

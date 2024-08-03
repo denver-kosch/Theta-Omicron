@@ -91,7 +91,7 @@ const committeeMap = {
 };
 
 const CommitteePosition = ({ position }) => {
-    const Component = committeeMap[position.committeeName][position.role];
+    const Component = committeeMap[position.committeeName]?.[position.role];
   
     return (
       <Suspense fallback={<div>Loading...</div>}>
