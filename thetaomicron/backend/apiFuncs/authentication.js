@@ -22,7 +22,7 @@ export const auth = async (req) => {
     if (!token) throw new ApiError(401, 'No token provided');
     const payload = jwt.verify(token, tokenSecret);
     const timeLeft = payload.exp - Math.floor(Date.now() / 1000);
-    if (timeLeft < 10 * 60) token = jwt.sign({memberId: payload.memberId}, tokenSecret, {expiresIn: '1h'});
+    if (timeLeft < 10 * 60) token = jwt.sign({memberId: payload.memberId}, tokenSecret);
     
     return {status:200, content: {token}, token};
     } catch (error) {
