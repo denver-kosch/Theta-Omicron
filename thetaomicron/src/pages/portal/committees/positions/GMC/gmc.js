@@ -8,12 +8,12 @@ const GMC = () => {
 
     useEffect(() => {
         const fetchNotepad = async () => {
-            const response = await apiCall("getNotes", {}, {Authorization: `Bearer ${sessionStorage.getItem('token')}`});
+            const response = await apiCall("getNotes", {}, {Authorization: `Bearer ${localStorage.getItem('token')}`});
             if (response.success) setNotepad(response.notepad);
             else console.error("Error getting notepad", response.error);
         };
         const fetchChairReports = async () => {
-            const response = await apiCall("getReports", {}, {Authorization: `Bearer ${sessionStorage.getItem('token')}`});
+            const response = await apiCall("getReports", {}, {Authorization: `Bearer ${localStorage.getItem('token')}`});
             if (response.success) setReports(response.reports);
             else console.error("Error getting chair reports", response.error);
         };

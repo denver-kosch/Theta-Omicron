@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 const PortalNav = ({children}) => {
-    const logout = () => sessionStorage.removeItem("token");
+    const logout = () => localStorage.removeItem("token");
 
     return (
     <>

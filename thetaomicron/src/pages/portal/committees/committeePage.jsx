@@ -10,7 +10,7 @@ const CommitteePage = () => {
     }, []);
 
     const getPositions = async () => {
-        const response = await apiCall("getPositions", {}, {'Authorization': `Bearer ${sessionStorage.getItem("token")}`});
+        const response = await apiCall("getPositions", {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
         if (response.success) setPositions(response.positions);
         else console.error(response.error);
     };
