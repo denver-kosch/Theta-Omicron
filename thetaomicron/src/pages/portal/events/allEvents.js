@@ -17,7 +17,7 @@ export const AllEvents = () => {
     }, []); 
     
     const getEvents = async () => {
-        const res = await apiCall('getPortalEvents', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+        const res = await apiCall('getPortalEvents', {}, {'Authorization': `Bearer ${sessionStorage.getItem("token")}`});
         setEvents(res.events);
     };
     

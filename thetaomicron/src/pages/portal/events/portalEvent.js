@@ -19,7 +19,7 @@ const PortalEvent = () => {
     //default value is lakeside 115
     const [lat, setLat] = useState(39.99832093770602);
     const [lng, setLng] = useState(-81.73459124217224);
-    const token = useMemo(() => ({'Authorization': `Bearer ${localStorage.getItem('token')}`}), []);
+    const token = useMemo(() => ({'Authorization': `Bearer ${sessionStorage.getItem('token')}`}), []);
 
     useEffect(() => {
         const fetchEventDetails = async () => {
@@ -70,7 +70,7 @@ const PortalEvent = () => {
 
     const handleRej = async op => {
         if (op === 'del') {
-            const res = await apiCall('rmEvent', {id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+            const res = await apiCall('rmEvent', {id}, {'Authorization': `Bearer ${sessionStorage.getItem('token')}`});
             if (!res.success) console.error(res.error);
             navigate('portal/event');
         }
@@ -78,7 +78,7 @@ const PortalEvent = () => {
     };
 
     const handlePend = async op => {
-        const token = {'Authorization': `Bearer ${localStorage.getItem('token')}`};
+        const token = {'Authorization': `Bearer ${sessionStorage.getItem('token')}`};
         const res = (op === 'approve') ? 
             await apiCall('approveEvent', {id, committeeId: event.committee.id}, token) :
             await apiCall('rejectEvent', {id, reason: rejReason, committeeId: event.committee.id}, token);

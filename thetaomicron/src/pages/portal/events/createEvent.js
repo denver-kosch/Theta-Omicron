@@ -15,7 +15,7 @@ const CreateEvent = () => {
 
     useEffect(() => {
         const getInfo = async () => {
-            const options = await apiCall('getEventCreation', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+            const options = await apiCall('getEventCreation', {}, {'Authorization': `Bearer ${sessionStorage.getItem("token")}`});
             setLocOptions(options.locations);
             setCommOptions(options.committees.member);
             setOfficerComms(options.committees.officer);
@@ -26,7 +26,7 @@ const CreateEvent = () => {
     
     const onSubmit = async (data) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             const formData = new FormData();
             
             const { image, location, committee, ...otherData } = data;

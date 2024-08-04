@@ -9,10 +9,10 @@ const Auth = ({children}) => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             const result = await apiCall('auth', {}, {'Authorization': `Bearer ${token}`});
             setIsAuthenticated(result && result.success);
-            if (result.success) localStorage.setItem("token", result.token);
+            if (result.success) sessionStorage.setItem("token", result.token);
         };
         checkAuth();
     }, [location]);
@@ -21,7 +21,7 @@ const Auth = ({children}) => {
 
     // Redirect them to the login page, but save the current location they were trying to go to if not authenticated
     if (!isAuthenticated) {
-        if (localStorage.getItem("token")) localStorage.removeItem("token");
+        if (sessionStorage.getItem("token")) sessionStorage.removeItem("token");
         return <Navigate to="/portal/login" state={{ from: location }} replace={true} />;
     }
     
@@ -55,7 +55,7 @@ const PortalLogin = () => {
             setErrorMessage(result.error);
             setPassword('');
         } else {
-            localStorage.setItem("token", result.token);
+            sessionStorage.setItem("token", result.token);
             const from = location.state?.from?.pathname ?? "/portal";
             navigate(from, {replace: true});
         }
