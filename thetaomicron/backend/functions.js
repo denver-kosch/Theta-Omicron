@@ -1,19 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv';
-import { getLocalIP } from './start.js';
 import { connect } from 'mongoose';
-
-dotenv.config();
-
-const port = process.env.PORT  || 3001;
-const host = getLocalIP() || 'localhost';
-
+import { port, host, mongodbUri } from './config.js';
 
 export const connectDB = async () => {
     try {
         console.log(`Attempting MongoDB connect`);
-        await connect(process.env.MONGODBURI);
+        await connect(mongodbUri);
         console.log(`MongoDB connected`);
         return [port, host];
     } catch (error) {
