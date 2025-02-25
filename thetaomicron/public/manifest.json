@@ -3,9 +3,9 @@
   "name": "Kappa Sigma Theta-Omicron",
   "icons": [
     {
-      "src": "crestC.png",
-      "sizes": "688x1176",
-      "type": "image/png"
+      "src": "favicon.ico",
+      "sizes": "1176x1176",
+      "type": "image/x-icon"
     }
   ],
   "start_url": ".",
