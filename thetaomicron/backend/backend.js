@@ -26,14 +26,6 @@ const io = new Server(server, {
   }
 });
 
-io.on('connection',socket => {
-	console.log('a user connected');
-	socket.on('disconnect', () => {
-	  console.log('user disconnected');
-	});
-  }
-);
-
 //connect to db, then listen to port
 (async () => {
   try {
@@ -45,6 +37,13 @@ io.on('connection',socket => {
     console.log('Error connecting to database: ' + error.message);
   };
 })();
+
+
+//Log each request received)
+app.use((req, res, next) => {
+  console.log(`${req.method} request for '${req.url}'`);
+  next();
+});
 
 
 /* ================== Login / Authorization ================== */

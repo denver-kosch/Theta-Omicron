@@ -26,9 +26,13 @@ export const getCommittee = async (req) => {
     if (members.length > 0) return {status:200, content: {members}, members};
     else throw new ApiError(404, "Committee not found");
 };
-  
+
 export const getBros = async () => {
-    const bros = (await Member.find({status: "Initiate"}, {firstName: 1,lastName: 1,positions: 1 }).sort({lastName: 1, firstName: 1}))
+    console.log("Fetching brothers");
+    const brosLengthCheck = await Member.countDocuments();
+    console.log(`Number of brothers found: ${brosLengthCheck}`);
+    const bros = Member.find({status: "Initiate"}, {firstName: 1,lastName: 1,positions: 1 }
+      .sort({lastName: 1, firstName: 1}))
       .map(doc => appendImgPath(doc.toJSON(), dirname, 'profilePics')).map(d => {
         const arr = [];
         d.positions.forEach(p => {
@@ -48,15 +52,16 @@ export const getBros = async () => {
       if (bros) return {status: 200, content: {bros}, bros};
       else throw new ApiError(404, "Brothers not found");
 };
-  
+
 export const getBro = async (req) => {
   const _id = extractToken(req);
   const info = _id && (await Member.findById(_id, {status:1, lastName:1, positions:1}));
   if (info) return {status: 200, content: {info}};
   else throw new ApiError(404, "Brother not found");
 };
-  
+
 export const getEvents = async (req) => {
+    console.log("Fetching events with params:", req.body);
     const { vis, days, mandatory, status, timeframe } = req.body;
     const query = [];
     if (vis) query.push({visibility: vis});
@@ -93,13 +98,13 @@ export const getCommittees = async (req) => {
 		throw ApiError(401, "Invalid token");
     }
 };
-  
+
 export const getLocations = async () => {
     const locations = await Location.find({});
     if (locations) return {status:200, content: { locations: locations }, locations};
     else throw Error("Locations not found");
 };
-  
+
 export const getEventCreation = async (req) => {
     const _id = extractToken(req);
     const committees = await Committee.find({members: {$in: [_id]}}, {name: 1});
@@ -175,7 +180,7 @@ export const getEventDetails = async (req) => {
     delete event.committee.members, event.committee.officer;
     return {status: 200, content: { event, similar, isOfficer, isCommittee, isChairman}};
 };
-  
+
 export const getPortalEvents = async (req) => {
     const _id = extractToken(req);
     const events = {};

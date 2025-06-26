@@ -19,27 +19,25 @@ const EventCal = () => {
 
     //TODO Add optional month feature, make dictionary, and cache month info in it (include year to accomodate for cache misses)
     const fetchEvents = async (month, year) => {
+        let events = [];
         setLoading(true);
         try {
             const result = await apiCall('getEvents', { status: 'Approved', timeframe: {month, year} });
             if (result.success) {
-                const events = result.events;
+                events = result.events;
                 updateCache(prevCache => ({
                     ...prevCache,
                     [month]: { year, events }
                 }));
-                setLoading(false);
-                return events;
-            } else {
-                setError(result.error);
-                setLoading(false);
-                return [];
-            }
+            } else setError(result.error);
+            
         } catch (error) {
             console.error(error);
             setError(error);
+        }
+        finally {
             setLoading(false);
-            return [];
+            return events;
         }
     };
 
