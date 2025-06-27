@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync, spawn } from "child_process";
 import { networkInterfaces } from 'os';
 import fs from "fs";
 import { fileURLToPath } from 'url';
@@ -9,11 +9,7 @@ const getLocalIP = () => {
     const interfaces = networkInterfaces();
     for (const interfaceName in interfaces) {
       const iface = interfaces[interfaceName];
-      for (const alias of iface) {
-        if (alias.family === 'IPv4' && !alias.internal) {
-          return alias.address;
-        }
-      }
+      for (const alias of iface) if (alias.family === 'IPv4' && !alias.internal) return alias.address;
     }
     return "127.0.0.1";
 };
@@ -33,19 +29,15 @@ const getLocalIP = () => {
 
   // Check if the REACT_APP_API_URL variable already exists
   const regex = /^REACT_APP_API_URL=.*$/gm;
-  if (regex.test(envContent)) {
-      // Replace the existing line
-      envContent = envContent.replace(regex, newApiUrl);
-  } else {
-      // Append the new line if it does not exist
-      envContent += `\n${newApiUrl}\n`;
-  }
-
+  envContent = regex.test(envContent) ? envContent.replace(regex, newApiUrl) : `${envContent}\n${newApiUrl}\n`;
+  
   // Write the updated content back to the .env file
   fs.writeFileSync(envPath, envContent);
 
   console.log(`Starting React development server on IP: ${ip}`);
 
   // Set the HOST environment variable and start the server
-  execSync(`HOST=${ip} react-scripts start`, { stdio: 'inherit' });
+  const devServer = spawn("react-scripts", ["start"], { env: { ...process.env, HOST: ip }, stdio: "inherit" });
+
+  devServer.on("close", (code) => {console.log(`React dev server exited with code ${code}`)});
 })();

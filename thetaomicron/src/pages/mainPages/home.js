@@ -11,41 +11,34 @@ const Home = () => {
     useEffect(() => {
         const getEvents = async () => {
             const get = await apiCall('getEvents', {days: 200, status: 'Approved'});
-            if (get.success) {
-                setEvents(get.events);
-                setLoading(false);
-            }
-            else {
-                console.error(get.error);
-                setLoading(false);
-            }
+            if (get.success) setEvents(get.events);
+            else console.error(get.error);
+            setLoading(false);
         };
         getEvents();
     }, []);
 
-    const EventPanel = () => {
-
-        return (
-            <div className="eventPanel">
-                <h2>Upcoming Events:</h2>
-                <div className="eventCards">
-                    {loading && <div>Loading...</div>}
-                    {(events.length === 0 && !loading) && <div style={{color: 'red'}}>No upcoming events!</div>}
-                    {events.length !== 0 && events.map(event => <EventCard key={event._id} event={event}/>)}
-                </div>
-                <button onClick={() => navigate("event/calendar")}>More Events</button>
+    const EventPanel = () => (
+        <div className="eventPanel">
+            <h2>Upcoming Events:</h2>
+            <div className="eventCards">
+                {loading ? <div>Loading...</div> 
+                : events.length === 0 ?  <div style={{ color: 'red' }}>No upcoming events!</div> 
+                : events.map(event => <EventCard key={event._id} event={event} />)
+                }
             </div>
-    )};
+            <button onClick={() => navigate("event/calendar")}>More Events</button>
+        </div>
+    );
 
     return (
-        <>
-            <div className="main">
-                <h1>KAPPA SIGMA<br/>THETA-OMICRON CHAPTER</h1>
-                <div className="right">
-                    <EventPanel/>
-                </div>
+        <div className="main">
+            <h1>KAPPA SIGMA<br/>THETA-OMICRON CHAPTER</h1>
+            <div className="right">
+                <EventPanel/>
             </div>
-        </>
-)}
+        </div>
+    )
+};
 
 export default Home;

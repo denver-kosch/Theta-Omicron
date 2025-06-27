@@ -8,7 +8,6 @@ import { PortalLogin } from "./pages/portal/authLogin";
 import PortalHome from "./pages/portal/home";
 import Home from "./pages/mainPages/home";
 import Leadership from "./pages/mainPages/about/leadership";
-import Alumni from "./pages/mainPages/directory/alumni";
 import Event from './pages/mainPages/events/eventDetails';
 import CreateEvent from './pages/portal/events/createEvent';
 import PortalEvent from './pages/portal/events/portalEvent';
@@ -30,7 +29,6 @@ const App = () => {
           <Route path="directory">
             <Route index element={<Directory />} />
             <Route path="trees" element={<FamilyTree />} />
-            <Route path="alumni" element={<Alumni />} />
           </Route>
           <Route path="about">
             <Route index element={<AboutUs />} />

@@ -62,5 +62,5 @@ This project is currently being developed by (as new contributors arise, they wi
 
 Feel free to reach out with any questions, comments, or even suggestions for improvement!
 * Email: dkosch2@gmail.com
-* LinkedIn: www.linkedin.com/in/denver-kosch
+* LinkedIn: https://www.linkedin.com/in/denver-kosch
 * Github: https://github.com/denver-kosch

@@ -49,9 +49,7 @@ const Event = () => {
         const formatted2  = date2.toLocaleString("en-US", options);
         const [datePart1, timePart1] = formatted1.split(", ");
         const [datePart2, timePart2] = formatted2.split(", ");
-        if (datePart1 === datePart2)
-            return <h3>{datePart1} {`${timePart1} - ${timePart2}`}</h3>;
-        
+        if (datePart1 === datePart2)return <h3>{`${datePart1} ${timePart1} - ${timePart2}`}</h3>;
         return <h3>{`${datePart1} ${timePart1} - ${datePart2} ${timePart2}`}</h3>;
     };
 
