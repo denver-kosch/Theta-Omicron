@@ -1,4 +1,4 @@
-import '@/App.scss';
+import '@/styles/App.scss';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import AboutUs from '@/pages/mainPages/about/about';
 import Rush from "@/pages/mainPages/about/rush";

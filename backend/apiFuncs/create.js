@@ -1,13 +1,14 @@
-import { Member, Location, Event } from "../mongoDB/models.js";
+import { Member, Location, Event, Minutes} from "../mongoDB/models.js";
 import { startSession } from "mongoose";
 import { abbrSt } from "../functions.js";
 import { ApiError } from "../functions.js";
-import { existsSync, promises } from 'fs';
+import { existsSync, promises as fs } from 'fs';
 import { join, extname } from 'path';
 import { ObjectId } from "mongodb";
 import sharp from 'sharp';
 import { dirname } from "../config.js";
 import { hashPassword, extractToken } from "./authentication.js";
+import { exec } from 'child_process';
 
 
 export const addMember = async (req) => {
@@ -15,7 +16,7 @@ export const addMember = async (req) => {
   const password = await hashPassword(req.body.password);
   const address = {street, city, state, zip, country: country ?? "USA"};
   const contactInfo = {email, phone, schoolEmail: school};
-  const member = await Member.create({
+  await Member.create({
     firstName, lastName, contactInfo, password, address, 
     initiationYear: initiation, graduationYear: graduation, 
     ritualCerts: r ?? 0, status: status ?? "Pledge"
@@ -55,13 +56,13 @@ export const addEvent = async (req) => {
       
       if (req.file) {
         const folderPath = join(dirname, 'public','images','events');
-        if (!existsSync(folderPath)) await promises.mkdir(folderPath, { recursive: true });
+        if (!existsSync(folderPath)) await fs.mkdir(folderPath, { recursive: true });
         const uploadPath = join(folderPath, `${event._id.toString()}${extname(req.file.originalname)}`);
         await sharp(req.file.buffer).jpeg({ quality: 90 }).toFile(uploadPath);
       } else {
         const placeholderImagePath = join(dirname, 'public','images','events', 'default.jpg');
         const uploadPath = join(folderPath, `${event._id.toString()}.jpg`);
-        await promises.copyFile(placeholderImagePath, uploadPath);
+        await fs.copyFile(placeholderImagePath, uploadPath);
       }
 
       await session.commitTransaction();
@@ -69,5 +70,42 @@ export const addEvent = async (req) => {
   } catch (err) {
       await session.abortTransaction();
       throw new ApiError(400, err.message);
-  } finally {session.endSession();}
+  } finally {session.endSession()}
+};
+
+export const uploadMinutes = async (req) => {
+  try {
+    const _id = extractToken(req);
+    if (!req.file) throw new ApiError(400, 'No file uploaded');
+    const { date, type } = req.body;
+
+    const baseName = `${date}_${type}`;
+    const outputDir = join(dirname, 'secure', 'documents', 'minutes');
+    const outputPdfPath = join(outputDir, `${baseName}.pdf`);
+
+    if (!existsSync(outputDir)) await fs.mkdir(outputDir, { recursive: true });
+
+    const fileExt = extname(req.file.originalname).toLowerCase();
+    if (!['.pdf', '.docx', '.doc', '.odt'].includes(fileExt)) throw new ApiError(400, 'Invalid file type. Only PDF, DOCX, DOC, and ODT files are allowed.');
+
+    if (fileExt === '.pdf') await fs.writeFile(outputPdfPath, req.file.buffer);
+    else {
+      const tempInputPath = join(outputDir, `${baseName}${fileExt}`);
+      await fs.writeFile(tempInputPath, req.file.buffer);
+      await new Promise((resolve, reject) => {
+        const libreOfficeCmd = '/Applications/LibreOffice.app/Contents/MacOS/soffice';
+        const command = `${libreOfficeCmd} --headless --convert-to pdf "${tempInputPath}" --outdir "${outputDir}"`;
+        exec(command, (err) => {
+          if (err) return reject(new ApiError(500, 'Failed to convert document to PDF'));
+          resolve();
+        });
+      });
+      await fs.unlink(tempInputPath);
+    }
+
+    await Minutes.create({ date, type, filePath: `${baseName}.pdf`, uploadedBy: _id });
+    return { status: 201, path: `${baseName}.pdf` };
+  } catch (err) {
+    throw new ApiError(500, err.message);
+  }
 };

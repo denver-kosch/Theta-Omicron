@@ -73,6 +73,17 @@ const positionSchema = new Schema({
         type: String,
         required: true,
         default: ""
+    },
+    ecOrder: {
+        type: Number,
+        validate: {
+            validator: v => v >= 0 && v <= 5,
+            message: props => `${props.value} is not a valid EC order.`
+        }
+    },
+    bio: {
+        type: String,
+        default: ""
     }
 });
 const memberSchema = new Schema({
@@ -299,4 +310,28 @@ const messageSchema = new Schema({
         default: new Date()
     },
 });
-const Message = model('message', messageSchema);
+export const Message = model('message', messageSchema);
+
+
+const minutesSchema = new Schema({
+    date: {
+        type: Date,
+        required: true
+    },
+    type: {
+        type: String,
+        required: true,
+        default: 'Chapter'
+    },
+    filePath: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    uploadedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'Member',
+        required: true
+    }
+}, {versionKey: false});
+export const Minutes = model('minutes', minutesSchema);

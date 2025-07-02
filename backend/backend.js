@@ -5,19 +5,24 @@ import path from 'path';
 import {Server} from 'socket.io';
 import { createServer } from 'http';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 import { connectDB, asyncHandler } from './functions.js';
 import { check } from 'express-validator';
-import { addEvent, addMember } from './apiFuncs/create.js';
-import { getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getPortalEvents, getChairmen, getNotes, getPositions } from './apiFuncs/read.js';
+import { addEvent, addMember, uploadMinutes } from './apiFuncs/create.js';
+import { getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getPortalEvents, getChairmen, getNotes, getPositions, getMinutes } from './apiFuncs/read.js';
 import { updateEvent, approveEvent, rejectEvent } from './apiFuncs/update.js';
-import { removeEvent } from './apiFuncs/delete.js';
-import { login, auth } from './apiFuncs/authentication.js';
+import { removeEvent, deleteMinutes } from './apiFuncs/delete.js';
+import { login, auth, extractToken } from './apiFuncs/authentication.js';
 
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() }); // Storing files in memory
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-app.use(express.json(), express.urlencoded({ extended: true }), express.static(path.join(__dirname, 'public')), cors());
+app.use(express.json(), express.urlencoded({ extended: true }), cors());
+
+// Only expose public/images
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
@@ -71,6 +76,8 @@ app.post('/addEvent', upload.single('image'), [
   check(['start', 'end'], 'All form fields are required').not().isEmpty().isDate(),
 ], asyncHandler(addEvent));
 
+app.post('/uploadMinutes', upload.single('file'), asyncHandler(uploadMinutes));
+
 /* ================== Read ================== */
 app.post('/getCommittee', asyncHandler(getCommittee));
 
@@ -100,6 +107,8 @@ app.post('/getNotes', asyncHandler(getNotes));
 
 app.post('/getPositions', asyncHandler(getPositions));
 
+app.post('/getMinutes', asyncHandler(getMinutes));
+
 /* ================== Update ================== */
 app.post('/updateEvent', upload.single('image'), asyncHandler(updateEvent));
 
@@ -109,3 +118,15 @@ app.post('/rejectEvent', asyncHandler(rejectEvent));
 
 /* ================== Delete ================== */
 app.post('/rmEvent', [check('id').not().isEmpty()], asyncHandler(removeEvent));
+
+app.post('/deleteMinutes', [check('minutesId').not().isEmpty()], asyncHandler(deleteMinutes));
+
+/* ================== Miscellaneous ================== */
+app.get('/secure/minutes/:filename', (req, res) => {
+  if (!extractToken(req)) return res.status(401).send('Unauthorized');
+  const { filename } = req.params;
+  const filePath = path.join(__dirname, 'secure', 'documents', 'minutes', filename);
+  if (!filePath.startsWith(path.join(__dirname, 'secure', 'documents', 'minutes'))) return res.status(400).send('Invalid file path');
+  if (!fs.existsSync(filePath)) return res.status(404).send('File not found');
+  res.sendFile(filePath);
+});

@@ -20,7 +20,6 @@ const Navbar = ({children}) => {
         },
         children: [
             {title: "Family Trees", link: "/directory/trees"},
-            {title: "Alumni", link: "/directory/alumni"},
         ]
     };
 

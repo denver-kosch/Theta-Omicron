@@ -90,7 +90,7 @@ const PortalEvent = () => {
     };
 
     return (
-        <>{loading ? <div className="loader">Loading...</div>
+        loading ? <div className="loader">Loading...</div>
         : <div className="event">
             {((isOfficer || isCommittee) && event.status === "Rejected") && <div className="reject banner">
                 <p>Rejected on {fDate(event.rejDetails.date)}: {event.rejDetails.reason}</p>
@@ -143,7 +143,7 @@ const PortalEvent = () => {
                 </div>
             </div>}
         </div>
-        }</>
+        
 )};
 
 export default PortalEvent;

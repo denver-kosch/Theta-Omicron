@@ -1,0 +1,25 @@
+:root {
+	--background-color: #f5f5f5;
+	--text-color: #000;
+	--link-color: #ae1717;
+	--invert: 0;
+	--hover-color: #bbb;
+	--footer-color: #004B23;
+    --font-family: 'Courier New', Courier, monospace;
+	--border-color: #ccc;
+	//give a darker color for alternating backgrounds
+	--alt-bg-color: #e5e5e5;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background-color: #1d1d1d;
+		--text-color: #fff;
+		--link-color: #f03434;
+		--invert: 1;
+		--hover-color: #444;
+		--footer-color: #af912c;
+		--border-color: #555;
+		--alt-bg-color: #2d2d2d;
+	}
+}

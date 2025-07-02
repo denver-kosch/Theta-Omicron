@@ -1,0 +1,40 @@
+.directoryContainer {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+    .topBar {
+        display: flex;
+        width: 90%;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-wrap: wrap;
+        >div {
+            width: 33%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            >* {
+                width: fit-content;
+            }
+        }
+    }
+    .directory {
+        width: 80%;
+        .directoryRow {
+            height: fit-content;
+            vertical-align: top;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: space-evenly;
+            >td {
+                width: 25%;
+            }
+            .card {
+                width: 100%;
+            }
+        }
+    }
+}

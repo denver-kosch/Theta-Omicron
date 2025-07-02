@@ -1,0 +1,7 @@
+// _mixins.scss
+@mixin flex($dir: row, $justify: center, $align: center) {
+  display: flex;
+  flex-direction: $dir;
+  justify-content: $justify;
+  align-items: $align;
+}

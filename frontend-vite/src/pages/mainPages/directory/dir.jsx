@@ -53,12 +53,11 @@ const Directory = () => {
 
       <br/>
 
-      {isLoading && <h3>Loading...</h3>}
-      {!isLoading &&
-      <table className="directory">
-        <BrothersGrid brothers={filtered}/>
-      </table>
-      }
+      {isLoading ? <h3>Loading...</h3> : (
+        <table className="directory">
+          <BrothersGrid brothers={filtered}/>
+        </table>
+      )}
       {(!isLoading && error !== '') && <h4 style={{color: 'red'}}>{error}</h4>}
     </div>
   );

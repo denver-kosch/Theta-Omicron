@@ -1,7 +1,7 @@
-import { Committee, Member, Location, Event } from "../mongoDB/models.js";
+import { Committee, Member, Location, Event, Minutes } from "../mongoDB/models.js";
 import { appendImgPath } from "../functions.js";
 import { ObjectId } from 'mongodb';
-import { dirname } from "../config.js";
+import { dirname, host, port } from "../config.js";
 import { ApiError } from "../functions.js";
 import { extractToken } from "./authentication.js";
 
@@ -245,4 +245,26 @@ export const getPositions = async (req) => {
 	const positions = await Member.findById(id, {positions: 1});
 	if (positions) return {status: 200, content: {positions: positions.positions}};
 	else throw new ApiError(404, "Positions not found");
+};
+
+export const getMinutes = async (req) => {
+  // Get minutes, sorted by date with most recent first, limited to 50 minutes (TBD for the rest of the minutes)
+  try {
+    const _id = extractToken(req);
+    if (!_id) throw new ApiError(401, 'Unauthorized');
+
+    const { numMinutes } = req.body;
+    const query = Minutes.find({}, { date: 1, type: 1, filePath: 1 }).sort({ date: -1 });
+    if (numMinutes) query.limit(numMinutes);
+    const minutes = await query;
+
+    minutes.forEach(minute => {
+      minute.filePath = `http://${host}:${port}/secure/minutes/${minute.filePath}`;
+    });
+    if (minutes) return {status: 200, content: {minutes}};
+    else throw new ApiError(404, 'Minutes not found');
+  } catch (error) {
+    console.error('Error fetching minutes:', error);
+    throw  new ApiError(500, 'Internal server error');
+  }
 };
