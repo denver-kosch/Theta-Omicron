@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import apiCall from "../../services/apiCall";
+import api from "@/services/apiCall";
 
 
 const Auth = ({children}) => {
@@ -10,7 +10,7 @@ const Auth = ({children}) => {
     useEffect(() => {
         const checkAuth = async () => {
             const token = localStorage.getItem('token');
-            const result = await apiCall('auth', {}, {'Authorization': `Bearer ${token}`});
+            const result = awaitapi('auth', {}, {'Authorization': `Bearer ${token}`});
             setIsAuthenticated(result && result.success);
             if (result.success) localStorage.setItem("token", result.token);
         };
@@ -50,7 +50,7 @@ const PortalLogin = () => {
             return;
         }
 
-        const result = await apiCall("login", {email: email, password: password});
+        const result = awaitapi("login", {email: email, password: password});
         if (!result || !result.success) {
             setErrorMessage(result.error);
             setPassword('');

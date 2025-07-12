@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MapView, EventCard } from "@/components/components";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
-import apiCall from "../../../services/apiCall";
+import api from "@/services/apiCall";
 
 
 const Event = () => {
@@ -16,7 +16,7 @@ const Event = () => {
 
     useEffect(() => {
         const fetchEventDetails = async () => {
-            const result = await apiCall(`getEventDetails`, {id});
+            const result = awaitapi(`getEventDetails`, {id});
             if (result && result.success) {
                 setEvent(result.event);
                 setSimilars(result.similar);

@@ -9,6 +9,7 @@
 	--border-color: #ccc;
 	//give a darker color for alternating backgrounds
 	--alt-bg-color: #e5e5e5;
+	--modal-color: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -21,5 +22,6 @@
 		--footer-color: #af912c;
 		--border-color: #555;
 		--alt-bg-color: #2d2d2d;
+		--modal-color: #1d1d1d;
 	}
 }

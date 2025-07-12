@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import apiCall from "../../../services/apiCall";
+import api from "@/services/apiCall";
 import Modal from 'react-modal';
 
 //Display them in a calendar format
@@ -21,7 +21,7 @@ const EventCal = () => {
     const fetchEvents = async (month, year) => {
         setLoading(true);
         try {
-            const result = await apiCall('getEvents', { status: 'Approved', timeframe: {month, year} });
+            const result = awaitapi('getEvents', { status: 'Approved', timeframe: {month, year} });
             if (result.success) {
                 const events = result.events;
                 updateCache(prevCache => ({

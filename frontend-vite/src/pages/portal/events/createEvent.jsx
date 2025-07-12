@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import apiCall from "../../../services/apiCall";
+import api from "@/services/apiCall";
 import {useForm} from "react-hook-form";
 
 const CreateEvent = () => {
@@ -15,7 +15,7 @@ const CreateEvent = () => {
 
     useEffect(() => {
         const getInfo = async () => {
-            const options = await apiCall('getEventCreation', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+            const options = awaitapi('getEventCreation', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
             setLocOptions(options.locations);
             setCommOptions(options.committees.member);
             setOfficerComms(options.committees.officer);
@@ -47,7 +47,7 @@ const CreateEvent = () => {
                 formData.append(key, otherData[key]);
             });
 
-            const newEvent = await apiCall('addEvent', formData, { 'Authorization': `Bearer ${token}` });
+            const newEvent = awaitapi('addEvent', formData, { 'Authorization': `Bearer ${token}` });
             if (newEvent.success) {
                 navigate('/portal/event/' + newEvent.newId);
             } else {

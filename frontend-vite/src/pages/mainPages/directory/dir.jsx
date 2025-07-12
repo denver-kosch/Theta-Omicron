@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import apiCall from "../../../services/apiCall";
+import {api } from "@/services/apiCall";
 import BrothersGrid from "@/components/cardGrid";
 
 const Directory = () => {
@@ -14,7 +14,7 @@ const Directory = () => {
   },[]);
 
   const getBrothers = async () => {
-    let response = await apiCall("getBros");
+    let response = awaitapi("brothers");
     console.log(response);
     setIsLoading(false);
     if (response?.success) {

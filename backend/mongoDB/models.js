@@ -148,9 +148,12 @@ const memberSchema = new Schema({
         type: String,
         default: ""
     },
+    unexcusedCount: {
+        type: Number,
+        default: 0
+    },
 }, {versionKey: false});
 export const Member = model('Member', memberSchema);
-
 
 const timeSchema = new Schema({
     _id: false,
@@ -162,7 +165,8 @@ const timeSchema = new Schema({
         type: Date,
         required: true,
     }
-});
+}, {versionKey: false});
+
 const eventComSchema = new Schema({
     _id: false,
     id: {
@@ -241,7 +245,6 @@ const eventSchema = new Schema({
 }, {versionKey: false});
 export const Event = model('Event', eventSchema);
 
-
 const locationSchema = new Schema({
     name: {
         type: String,
@@ -273,7 +276,6 @@ const locationSchema = new Schema({
     }
 }, {versionKey: false});
 export const Location = model('location', locationSchema);
-
 
 const commSchema = new Schema({
     name: {
@@ -312,7 +314,6 @@ const messageSchema = new Schema({
 });
 export const Message = model('message', messageSchema);
 
-
 const minutesSchema = new Schema({
     date: {
         type: Date,
@@ -321,7 +322,6 @@ const minutesSchema = new Schema({
     type: {
         type: String,
         required: true,
-        default: 'Chapter'
     },
     filePath: {
         type: String,
@@ -334,4 +334,4 @@ const minutesSchema = new Schema({
         required: true
     }
 }, {versionKey: false});
-export const Minutes = model('minutes', minutesSchema);
+export const Minutes = model('minutes', minutesSchema); 

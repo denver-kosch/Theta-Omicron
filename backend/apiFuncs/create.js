@@ -9,6 +9,8 @@ import sharp from 'sharp';
 import { dirname } from "../config.js";
 import { hashPassword, extractToken } from "./authentication.js";
 import { exec } from 'child_process';
+import { updateAttendance } from "./update.js";
+import pdf from 'pdf-parse-new';
 
 
 export const addMember = async (req) => {
@@ -39,12 +41,13 @@ export const addEvent = async (req) => {
       let location = JSON.parse(req.body.location);
       
       if (location === '0') {
-      if (!/^\d+[A-Za-z\s]+\,[A-Za-z\s]+\, [A-Z]{2} \d{5}$/.test(newLocAddress)) throw Error("Address not in address format")
-      const [address, city, sz] = newLocAddress.split(', ');
-      const [s, zip] = sz.split(' ');
-      const state = abbrSt(s);
-      location = (await Location.create({ address, city, state, zip, name: newLocName }));
+        if (!/^\d+[A-Za-z\s]+\,[A-Za-z\s]+\, [A-Z]{2} \d{5}$/.test(newLocAddress)) throw Error("Address not in address format")
+        const [address, city, sz] = newLocAddress.split(', ');
+        const [s, zip] = sz.split(' ');
+        const state = abbrSt(s);
+        location = (await Location.create({ address, city, state, zip, name: newLocName }));
       }
+
       const event = (await Event.create([{
           name, 
           description, 
@@ -64,7 +67,6 @@ export const addEvent = async (req) => {
         const uploadPath = join(folderPath, `${event._id.toString()}.jpg`);
         await fs.copyFile(placeholderImagePath, uploadPath);
       }
-
       await session.commitTransaction();
       return {status: 201, content: {newId: event._id}};
   } catch (err) {
@@ -102,6 +104,22 @@ export const uploadMinutes = async (req) => {
       });
       await fs.unlink(tempInputPath);
     }
+
+    const newPdfBuffer = await fs.readFile(outputPdfPath);
+    const parsedData = (await pdf(newPdfBuffer)).text;
+
+    const match = parsedData.match(/Brothers Unexcused included:\s*[:\-]?\s*(.*)/i);
+    let unexcused = [];
+
+    if (match && match[1]) {
+      unexcused = match[1]
+        .split(';')
+        .map(n => n.trim())
+        .filter(n => n.length > 0);
+    }
+
+    console.log("Unexcused brothers:", unexcused);
+    await updateAttendance(unexcused);
 
     await Minutes.create({ date, type, filePath: `${baseName}.pdf`, uploadedBy: _id });
     return { status: 201, path: `${baseName}.pdf` };

@@ -1,5 +1,5 @@
 import { useEffect, useState, Suspense, lazy } from "react";
-import apiCall from "../../../services/apiCall";
+import api from "@/services/apiCall";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaLocationDot, FaPeopleGroup, FaSortUp, FaSortDown } from "react-icons/fa6";
 
@@ -17,7 +17,7 @@ export const AllEvents = () => {
     }, []); 
     
     const getEvents = async () => {
-        const res = await apiCall('getPortalEvents', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+        const res = awaitapi('getPortalEvents', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
         setEvents(res.events);
     };
     

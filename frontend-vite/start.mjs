@@ -37,7 +37,6 @@ const getLocalIP = () => {
     ? envContent.replace(regex, newApiUrl)
     : envContent += `\n${newApiUrl}\n`;
   
-
   // Write the updated content back to the .env file
   fs.writeFileSync(envPath, envContent);
 

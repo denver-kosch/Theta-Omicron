@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
-import apiCall from "@/services/apiCall";
+import { fDate } from "@/services/dateFormatting";
+import api from "@/services/apiCall";
 import axios from "axios";
 
 const GS = () => {
@@ -11,7 +12,7 @@ const GS = () => {
   const [showAll, setShowAll] = useState(false);
   
   const fetchMinutes = async (numMinutes = null) => {
-    const response = await apiCall('getMinutes', {numMinutes}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+    const response = awaitapi('getMinutes', {numMinutes}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
     if (response.success) setMinutesList(response.minutes);
     else console.error(response.error);
   };
@@ -20,15 +21,14 @@ const GS = () => {
     fetchMinutes(20);
   }, []);
 
+  useEffect(() => {
+    minutesList.forEach(m => console.log(m.date));
+  }, [minutesList]);
+
   const handleViewMinutes = async (minutes) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(minutes.filePath, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        responseType: 'blob'
-      });
+      const response = await axios.get(minutes.filePath, { headers: {Authorization: `Bearer ${token}`},responseType: 'blob' });
       const blobUrl = URL.createObjectURL(response.data);
       setPdfUrl(blobUrl);
       setPdfModalOpen(true);
@@ -41,8 +41,7 @@ const GS = () => {
   const handleDeleteMinutes = async (minutes) => {
     if (!window.confirm("Are you sure you want to delete these minutes?")) return;
     try {
-      const response = await apiCall('deleteMinutes', { minutesId: minutes._id }, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
-      console.log("Delete response:", response);
+      const response = awaitapi('deleteMinutes', { minutesId: minutes._id }, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
       if (response.success) {
         alert("Minutes deleted successfully");
         setMinutesList((prev) => prev.filter(m => m._id !== minutes._id));
@@ -56,16 +55,12 @@ const GS = () => {
   const MinutesTable = ({ rows, onView, onEdit, onDelete }) => (
     <table style={{ border: '1px solid white', marginTop: '20px', width: '100%' }}>
       <thead>
-        <tr>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Actions</th>
-        </tr>
+        <tr><th>Date</th><th>Type</th><th>Actions</th></tr>
       </thead>
       <tbody>
         {rows.map((minutes) => (
           <tr key={minutes._id}>
-            <td>{new Date(minutes.date).toLocaleDateString()}</td>
+            <td>{fDate(minutes.date, { includeTime: false})}</td>
             <td>{minutes.type}</td>
             <td>
               <button onClick={() => onView(minutes)}>View</button>
@@ -120,14 +115,12 @@ const GS = () => {
           formData.append('type', data.type !== "Other" ? data.type : data.otherType);
           formData.append('file', data.file[0]);
 
-          const response = await apiCall('uploadMinutes', formData, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+          const response = awaitapi('uploadMinutes', formData, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
           if (response.success) {
             alert(initialData ? 'Minutes updated successfully' : 'Minutes uploaded successfully');
             setSelectedMinutes(null);
             fetchMinutes(showAll ? null : 20);
-          } else {
-            throw new Error(response);
-          }
+          } else throw new Error(response);
         } catch (error) {
           console.error('Error:', error);
           alert(`Error: ${error.message}`);
@@ -137,11 +130,11 @@ const GS = () => {
       return (
         <div className="modal-backdrop">
           <div className="modal">
-            <h2>{initialData ? "Edit Meeting Minutes" : "Upload Meeting Minutes"}</h2>
+            <h2>{initialData.date ? "Edit Meeting Minutes" : "Upload Meeting Minutes"}</h2>
             <form onSubmit={handleSubmit(submitMinutes)}>
               <div>
                 <label>Date:</label>
-                <input type="date" {...register("date", { required: true })} />
+                <input type="date" {...register("date", { required: true })} defaultValue={initialData.date} />
                 {errors.date && <span>This field is required</span>}
               </div>
               <div>
@@ -149,6 +142,9 @@ const GS = () => {
                 <select {...register("type", { required: true })}>
                   <option value="Chapter">Chapter</option>
                   <option value="EC">EC</option>
+                  <option value="Initiation">Initiation</option>
+                  <option value="Nominations">Nominations</option>
+                  <option value="Elections">Elections</option>
                   <option value="Other">Other</option>
                 </select>
                 {errors.type && <span>This field is required</span>}
@@ -205,7 +201,7 @@ const GS = () => {
             onDelete={handleDeleteMinutes}
           />
           {selectedMinutes && <MinutesModal initialData={selectedMinutes} onClose={() => setSelectedMinutes(null)} />}
-          {pdfModalOpen && (
+          {pdfModalOpen && 
             <div className="modal-backdrop" style={{ zIndex: 1000 }}>
               <div className="modal" style={{ width: '80%', height: '90%' }}>
                 <h3>Viewing Minutes</h3>
@@ -219,10 +215,19 @@ const GS = () => {
                 <button onClick={() => setPdfModalOpen(false)}>Close</button>
               </div>
             </div>
-          )}
+          }
           {showAll && <FullList onClose={() => setShowAll(false)} />}
         </div>
     )
+  };
+
+  const AttendanceTracker = () => {
+    return (
+      <div>
+        <h3>Attendance Tracker</h3>
+        {/* Attendance tracking logic goes here */}
+      </div>
+    );
   };
 
   return (

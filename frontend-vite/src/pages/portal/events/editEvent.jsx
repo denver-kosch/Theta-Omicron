@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { MapView } from "../../../components/components";
-import apiCall from "../../../services/apiCall";
+import { MapView } from "@/components/components";
+import api from "@/services/apiCall";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
 
 const EditEvent = () => {
@@ -28,7 +28,7 @@ const EditEvent = () => {
 
     useEffect(() => {
         const fetchEventDetails = async () => {
-            const result = await apiCall(`getEventDetails`, {id, loggedIn: true});
+            const result = awaitapi(`getEventDetails`, {id, loggedIn: true});
             if (result && result.success) {
                 setEvent(result.event);
             }

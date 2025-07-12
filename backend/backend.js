@@ -14,6 +14,8 @@ import { updateEvent, approveEvent, rejectEvent } from './apiFuncs/update.js';
 import { removeEvent, deleteMinutes } from './apiFuncs/delete.js';
 import { login, auth, extractToken } from './apiFuncs/authentication.js';
 
+console.log('Starting server...');
+console.time('Server Startup');
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() }); // Storing files in memory
@@ -27,7 +29,8 @@ const server = createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "*", // Adjust this as needed
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
@@ -44,6 +47,7 @@ io.on('connection',socket => {
     const [port, host] = await connectDB();
     server.listen(port, host, () => {
       console.log(`Server running on http://${host}:${port}`);
+      console.timeEnd('Server Startup');
     });
   } catch (error) {
     console.log('Error connecting to database: ' + error.message);
@@ -62,7 +66,7 @@ app.post('/login',
 app.post('/auth', asyncHandler(auth));
 
 /* ================== Create ================== */
-app.post('/addMember', [
+app.post('/members', [
 	check(['password', 'email', 'fname', 'lname', 'phone', 'street', 'city', 'address', 'state']).not().isEmpty().isString(),
 	check('email', 'Invalid email').isEmail(),
 	check('phone', 'Invalid phone number').isMobilePhone(),
@@ -71,55 +75,55 @@ app.post('/addMember', [
 	check('gradYear', 'Invalid graduation year').isNumeric(),
 ], asyncHandler(addMember));
 
-app.post('/addEvent', upload.single('image'), [
+app.post('/events', upload.single('image'), [
   check(['name', 'description', 'committeeId', 'visibility'], 'All form fields are required').not().isEmpty().isString(),
   check(['start', 'end'], 'All form fields are required').not().isEmpty().isDate(),
 ], asyncHandler(addEvent));
 
-app.post('/uploadMinutes', upload.single('file'), asyncHandler(uploadMinutes));
+app.post('/minutes', upload.single('file'), asyncHandler(uploadMinutes));
 
 /* ================== Read ================== */
-app.post('/getCommittee', asyncHandler(getCommittee));
+app.get('/committees/:id', asyncHandler(getCommittee));
 
-app.post("/getBros", asyncHandler(getBros));
+app.get("/brothers", asyncHandler(getBros));
 
-app.post("/getBro", asyncHandler(getBro));
+app.get("/brothers/:id", asyncHandler(getBro));
 
-app.post("/getEvents", [
+app.get("/events", [
   check('vis').optional().trim(),
   check('days').optional().isNumeric(),
   check('mandatory').optional().isBoolean()
 ], asyncHandler(getEvents));
 
-app.post("/getCommittees", asyncHandler(getCommittees));
+app.get("/committees", asyncHandler(getCommittees));
 
-app.post('/getLocations', asyncHandler(getLocations));
+app.get('/locations', asyncHandler(getLocations));
 
-app.post("/getEventCreation", asyncHandler(getEventCreation));
+app.get("/eventCreation", asyncHandler(getEventCreation));
 
-app.post("/getEventDetails", asyncHandler(getEventDetails));
+app.get("/events/:id", asyncHandler(getEventDetails));
 
-app.post('/getPortalEvents', asyncHandler(getPortalEvents));
+app.get('/portalEvents', asyncHandler(getPortalEvents));
 
-app.post('/getChairmen', asyncHandler(getChairmen));
+app.get('/chairmen', asyncHandler(getChairmen));
 
-app.post('/getNotes', asyncHandler(getNotes));
+app.get('/notes/:id', asyncHandler(getNotes));
 
-app.post('/getPositions', asyncHandler(getPositions));
+app.get('/positions/:id', asyncHandler(getPositions));
 
-app.post('/getMinutes', asyncHandler(getMinutes));
+app.get('/minutes/', asyncHandler(getMinutes));
 
 /* ================== Update ================== */
-app.post('/updateEvent', upload.single('image'), asyncHandler(updateEvent));
+app.put('/updateEvent', upload.single('image'), asyncHandler(updateEvent));
 
-app.post('/approveEvent', asyncHandler(approveEvent));
+app.put('/approveEvent', asyncHandler(approveEvent));
 
-app.post('/rejectEvent', asyncHandler(rejectEvent));
+app.put('/rejectEvent', asyncHandler(rejectEvent));
 
 /* ================== Delete ================== */
-app.post('/rmEvent', [check('id').not().isEmpty()], asyncHandler(removeEvent));
+app.delete('/rmEvent', [check('id').not().isEmpty()], asyncHandler(removeEvent));
 
-app.post('/deleteMinutes', [check('minutesId').not().isEmpty()], asyncHandler(deleteMinutes));
+app.delete('/deleteMinutes', [check('minutesId').not().isEmpty()], asyncHandler(deleteMinutes));
 
 /* ================== Miscellaneous ================== */
 app.get('/secure/minutes/:filename', (req, res) => {

@@ -27,26 +27,27 @@ export const getCommittee = async (req) => {
     else throw new ApiError(404, "Committee not found");
 };
   
-export const getBros = async () => {
-    const bros = (await Member.find({status: "Initiate"}, {firstName: 1,lastName: 1,positions: 1 }).sort({lastName: 1, firstName: 1}))
-      .map(doc => appendImgPath(doc.toJSON(), dirname, 'profilePics')).map(d => {
-        const arr = [];
-        d.positions.forEach(p => {
-          if (p.committeeName === "Executive Committee") arr.push(p.role)
-          else if (/Committee/.test(p.committeeName) && p.role === "Chairman") arr.push(`${p.committeeName.split(" ")[0]} Chairman`);
-          else arr.push(p.committeeName);
-        });
-  
-        return {
-          firstName: d.firstName,
-          lastName: d.lastName,
-          email: d.email,
-          imageUrl: d.imageUrl,
-          positions: arr
-        }
+export const getBros = async (req) => {
+  const { chairmen } = req.query;
+  const bros = chairmen ? await getChairmen() : (await Member.find({status: "Initiate"}, {firstName: 1,lastName: 1,positions: 1 }).sort({lastName: 1, firstName: 1}))
+    .map(doc => appendImgPath(doc.toJSON(), dirname, 'profilePics')).map(d => {
+      const arr = [];
+      d.positions.forEach(p => {
+        if (p.committeeName === "Executive Committee") arr.push(p.role)
+        else if (/Committee/.test(p.committeeName) && p.role === "Chairman") arr.push(`${p.committeeName.split(" ")[0]} Chairman`);
+        else arr.push(p.committeeName);
       });
-      if (bros) return {status: 200, content: {bros}, bros};
-      else throw new ApiError(404, "Brothers not found");
+
+      return {
+        firstName: d.firstName,
+        lastName: d.lastName,
+        email: d.email,
+        imageUrl: d.imageUrl,
+        positions: arr
+      }
+    });
+    if (bros) return {status: 200, content: { bros }, bros};
+    else throw new ApiError(404, "Brothers not found");
 };
   
 export const getBro = async (req) => {
@@ -230,7 +231,7 @@ export const getChairmen = async () => {
       }
     ])).map(doc => appendImgPath(doc, dirname, 'profilePics'));
     const ec = await Member.find({positions: {$elemMatch: {name: "Executive Committee"}}}, {firstName: 1, lastName: 1, positions: 1});
-    if (chairmen) return {status: 200, content: {chairmen, ec}};
+    if (chairmen) return {chairmen, ec};
     else throw new ApiError(404, "Chairmen not found");
 };
 

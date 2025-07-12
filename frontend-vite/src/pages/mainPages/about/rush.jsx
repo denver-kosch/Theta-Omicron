@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import apiCall from "../../../services/apiCall";
+import { useEffect, useState } from "react";
+import api from "@/services/apiCall";
 import MemberCard from "@/components/memberCard";
 
 const Rush = () => {
@@ -12,7 +12,7 @@ const Rush = () => {
 
     const getRush = async () => {
         try {
-            const committee = await apiCall('getCommittee', {name: "Rush Committee", emails: true, pics: true});
+            const committee = awaitapi('getCommittee', {name: "Rush Committee", emails: true, pics: true});
             committee?.success ? setRush(committee.members) : setRushErr("Could not gather rush committee at this time!");
         } catch (error) {
             console.error("Failed to fetch rush committee:", error);

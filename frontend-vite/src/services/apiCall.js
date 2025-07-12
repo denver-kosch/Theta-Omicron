@@ -1,14 +1,15 @@
-import ENDPOINT from "./serverEndpoint";
+import ENDPOINT from "@/services/serverEndpoint";
 
-async function apiCall (api, body = {}, headers = {'Content-Type': 'application/json'}) {
+export default async (api, { method = "GET", body = {}, headers = { 'Content-Type': 'application/json' } } = {}) => {
     const apiLink = `${ENDPOINT}${api}`;
-    const isFormData = body instanceof FormData;
+    console.log(`API Call: ${apiLink} | Method: ${method} | Body:`, body);
     try {
         const fetchOptions = {
-            method: "POST",
-            headers: isFormData ? headers : { 'Content-Type': 'application/json', ...headers },
-            body: isFormData ? body : JSON.stringify(body)
+            method,
+            headers: body instanceof FormData ? headers : { 'Content-Type': 'application/json', ...headers }
         };
+        if (method !== "GET" && body) fetchOptions.body = body instanceof FormData ? body : JSON.stringify(body);
+        
         const result = await fetch(apiLink, fetchOptions);
         
         if (result.status >= 200 && result.status < 300) return result.json();
@@ -20,5 +21,3 @@ async function apiCall (api, body = {}, headers = {'Content-Type': 'application/
         return error;
     }
 };
-
-export default apiCall;

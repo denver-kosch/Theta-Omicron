@@ -16,16 +16,13 @@ export const connectDB = async () => {
 };
 
 export const appendImgPath = (obj, dirname, imgFolder) => {
-  const id = obj._id.toString();
-  const imagePath = `images/${imgFolder}/${id}`;
-  let imageUrl = `/images/${imgFolder}/default.png`;
-
-  for (let ext of ['jpg', 'png', 'jpeg']) {
-    if (fs.existsSync(path.join(dirname, 'public', `${imagePath}.${ext}`))) {
-      imageUrl = `/images/${imgFolder}/${id}.${ext}`;
-      break;
-    }
-  }
+  const id = String(obj._id);
+  const basePath = path.join(dirname, 'public', 'images', imgFolder);
+  const exts = ['jpg', 'png', 'jpeg'];
+  const foundExt = exts.find(ext => fs.existsSync(path.join(basePath, `${id}.${ext}`)));
+  const imageUrl = foundExt
+    ? `/images/${imgFolder}/${id}.${foundExt}`
+    : `/images/${imgFolder}/default.jpeg`;
 
   obj.imageUrl = `http://${host}:${port}${imageUrl}`;
   return obj;

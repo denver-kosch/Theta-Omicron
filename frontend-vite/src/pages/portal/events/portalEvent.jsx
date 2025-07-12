@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { MapView, EventCard } from "../../../components/components";
-import apiCall from "../../../services/apiCall";
+import { MapView, EventCard } from "@/components/components";
+import api from "@/services/apiCall";
 import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
+import { fDate } from "@/services/dateFormatting"
 
 
 const PortalEvent = () => {
@@ -23,7 +24,7 @@ const PortalEvent = () => {
 
     useEffect(() => {
         const fetchEventDetails = async () => {
-            const result = await apiCall(`getEventDetails`, {id}, token);
+            const result = awaitapi(`getEventDetails`, {id}, token);
             if (result && result.success) {
                 setEvent(result.event);
                 setSimilars(result.similar);
@@ -32,7 +33,6 @@ const PortalEvent = () => {
             }
             else console.error(result.error);
 
-            
             // setGeocodeKey(import.meta.env.VITE_GOOGLE_API_KEY);
             // fromAddress(`${result.event.location.address}, ${result.event.location.city}, ${result.event.location.state} ${result.event.location.zip}`)
             // .then(({ results }) => {
@@ -41,25 +41,10 @@ const PortalEvent = () => {
             //     setLng(lng);
             // }).catch(console.error);
 
-
             setLoading(false);
         };
         fetchEventDetails();
     }, [id, token]);
-
-
-    const fDate = date => {
-        const options = {
-            month: "numeric",
-            day: "numeric",
-            year: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            hour12: true,
-        };
-        return new Date(date).toLocaleString('en-US', options);
-    };
-    
 
     const FormatDates = ({date1, date2}) => {
         const formatted1  = fDate(date1);
@@ -73,7 +58,7 @@ const PortalEvent = () => {
 
     const handleRej = async op => {
         if (op === 'del') {
-            const res = await apiCall('rmEvent', {id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+            const res = awaitapi('rmEvent', {id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
             if (!res.success) console.error(res.error);
             navigate('portal/event');
         }
@@ -83,8 +68,8 @@ const PortalEvent = () => {
     const handlePend = async op => {
         const token = {'Authorization': `Bearer ${localStorage.getItem('token')}`};
         const res = (op === 'approve') ? 
-            await apiCall('approveEvent', {id, committeeId: event.committee.id}, token) :
-            await apiCall('rejectEvent', {id, reason: rejReason, committeeId: event.committee.id}, token);
+            awaitapi('approveEvent', {id, committeeId: event.committee.id}, token) :
+            awaitapi('rejectEvent', {id, reason: rejReason, committeeId: event.committee.id}, token);
         if (!res.success) console.error(res.error);
         navigate(0);
     };

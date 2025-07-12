@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import apiCall from "../../../services/apiCall";
+import api from "@/services/apiCall";
 import CommitteePosition from './positions/committeesMap';
 
 const CommitteePage = () => {
@@ -7,7 +7,7 @@ const CommitteePage = () => {
 
     useEffect(() => {
         const getPositions = async () => {
-            const response = await apiCall("getPositions", {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+            const response = awaitapi("getPositions", {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
             if (response.success) setPositions(response.positions);
             else console.error(response.error);
         };

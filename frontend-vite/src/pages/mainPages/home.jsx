@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { EventCard } from '@/components/components';
-import apiCall from "../../services/apiCall";
+import api from "@/services/apiCall";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -10,13 +10,15 @@ const Home = () => {
 
     useEffect(() => {
         const getEvents = async () => {
-            apiCall('getEvents', {days: 200, status: 'Approved'}).then(events => {
+            api('getEvents', { method: 'POST', body: { days: 200, status: "Approved" }, headers: { 'Content-Type': 'application/json' } })
+            .then(events => {
                 if (events.success) setEvents(events.events);
                 else console.error(events.error);
                 setLoading(false);
             });
         };
         getEvents();
+        console.log("Home page loaded");
     }, []);
 
     const EventPanel = () => {
@@ -41,11 +43,9 @@ const Home = () => {
             </div>
             <div className="center">
                 <h2>WELCOME TO OUR WEBSITE</h2>
-                <p>
-                    We are the Theta-Omicron chapter of Kappa Sigma at Muskingum University in New Concord, Ohio.
+                <p>We are the Theta-Omicron chapter of Kappa Sigma at Muskingum University in New Concord, Ohio.
                     Our chapter was founded in 1966 and has been going strong ever since. We are a brotherhood of
-                    men dedicated to scholarship, leadership, and service.
-                </p>
+                    men dedicated to scholarship, leadership, and service.</p>
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 import { useEffect, useState, Fragment } from "react";
-import apiCall from "../../../services/apiCall";
+import api from "@/services/apiCall";
 import BrothersGrid from "@/components/cardGrid";
 
 const Leadership = () => {
@@ -8,7 +8,7 @@ const Leadership = () => {
 
     useEffect(() => {
         const fetchLeaders = async () => {
-            const res = await apiCall('getChairmen');
+            const res = awaitapi('getChairmen');
             if (res.success) {
                 res.chairmen = res.chairmen.map(chairman => ({
                     ...chairman,
@@ -22,7 +22,7 @@ const Leadership = () => {
                 setLeadership(res.chairmen);
             }
 
-            const ec = await apiCall("getCommittee", {name: "Executive Committee", pics: true});
+            const ec = awaitapi("getCommittee", {name: "Executive Committee", pics: true});
             if (ec.success) setEC(ec.members.sort((a,b) => a.position.ecOrder - b.position.ecOrder))
         };
         fetchLeaders();

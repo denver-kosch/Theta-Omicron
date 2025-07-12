@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Divider from "@/components/divider";
 import { Link } from "react-router-dom";
-import apiCall from "../../../services/apiCall";
+import api from "@/services/apiCall";
 import MemberCard from "@/components/memberCard";
 
 const AboutUs = () => {
@@ -13,7 +13,7 @@ const AboutUs = () => {
     }, []);
 
     const getEC = async () => {
-        const ec =  await apiCall("getCommittee", {name: "Executive Committee", pics: true});
+        const ec =  awaitapi("getCommittee", {name: "Executive Committee", pics: true});
         if (ec.success) {
             ec.members.sort((a,b) => a.position.ecOrder - b.position.ecOrder);
             setEC(ec.members);

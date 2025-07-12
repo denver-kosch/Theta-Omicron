@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import apiCall from "../../services/apiCall";
+import api from "@/services/apiCall";
 
 
 const PortalHome = () => {
@@ -7,7 +7,7 @@ const PortalHome = () => {
 
     useEffect(() => {
         (async () => {
-            const brotherInfo = await apiCall('getBro', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+            const brotherInfo = awaitapi('getBro', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
             const bI = brotherInfo?.info;
             if (!bI) return;
             const title = (bI.status === 'Pledge') ? "Mr. " + bI.lastName : `Brother ` + bI.lastName;
