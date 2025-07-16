@@ -10,7 +10,7 @@ const Auth = ({children}) => {
     useEffect(() => {
         const checkAuth = async () => {
             const token = localStorage.getItem('token');
-            const result = awaitapi('auth', {}, {'Authorization': `Bearer ${token}`});
+            const result = await api('auth', {}, {'Authorization': `Bearer ${token}`});
             setIsAuthenticated(result && result.success);
             if (result.success) localStorage.setItem("token", result.token);
         };
@@ -50,7 +50,7 @@ const PortalLogin = () => {
             return;
         }
 
-        const result = awaitapi("login", {email: email, password: password});
+        const result = await api("login", {email: email, password: password});
         if (!result || !result.success) {
             setErrorMessage(result.error);
             setPassword('');

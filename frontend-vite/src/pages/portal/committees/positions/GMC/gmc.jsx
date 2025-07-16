@@ -8,17 +8,17 @@ const GMC = () => {
 
     useEffect(() => {
         const fetchNotepad = async () => {
-            const response = awaitapi("getNotes", {}, {Authorization: `Bearer ${localStorage.getItem('token')}`});
+            const response = await api("getNotes", {}, {Authorization: `Bearer ${localStorage.getItem('token')}`});
             if (response.success) setNotepad(response.notepad);
             else console.error("Error getting notepad", response.error);
         };
         const fetchChairReports = async () => {
-            const response = awaitapi("getReports", {}, {Authorization: `Bearer ${localStorage.getItem('token')}`});
+            const response = await api("getReports", {}, {Authorization: `Bearer ${localStorage.getItem('token')}`});
             if (response.success) setReports(response.reports);
             else console.error("Error getting chair reports", response.error);
         };
         const fetchToDoList = async () => {
-            const response = awaitapi("getChecklist", {}, {Authorization: `Bearer ${localStorage.getItem('token')}`});
+            const response = await api("getChecklist", {}, {Authorization: `Bearer ${localStorage.getItem('token')}`});
             if (response.success) setChecklist(response.checklist);
             else console.error("Error getting checklist", response.error);
         };

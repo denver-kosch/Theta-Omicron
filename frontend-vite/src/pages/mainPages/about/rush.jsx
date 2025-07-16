@@ -12,7 +12,7 @@ const Rush = () => {
 
     const getRush = async () => {
         try {
-            const committee = awaitapi('getCommittee', {name: "Rush Committee", emails: true, pics: true});
+            const committee = await api('committees/Rush Committee?emails=true&pics=true', {name: "Rush Committee", emails: true, pics: true});
             committee?.success ? setRush(committee.members) : setRushErr("Could not gather rush committee at this time!");
         } catch (error) {
             console.error("Failed to fetch rush committee:", error);
@@ -25,7 +25,6 @@ const Rush = () => {
         const gmc = rushCom.find(r => r.position.role === "Grand Master of Ceremonies");
         const chairman = rushCom.find(r => r.position.role === "Chairman");
         const committee = rushCom.filter(r => r.position.role === "Member").map(r => {return {...r, position:"Committee Member"}});
-
         return (
             <>
                 <div className="committee">

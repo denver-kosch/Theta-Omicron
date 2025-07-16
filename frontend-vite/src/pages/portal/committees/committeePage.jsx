@@ -7,7 +7,7 @@ const CommitteePage = () => {
 
     useEffect(() => {
         const getPositions = async () => {
-            const response = awaitapi("getPositions", {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+            const response = await api("getPositions", {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
             if (response.success) setPositions(response.positions);
             else console.error(response.error);
         };

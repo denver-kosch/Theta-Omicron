@@ -28,7 +28,7 @@ const EditEvent = () => {
 
     useEffect(() => {
         const fetchEventDetails = async () => {
-            const result = awaitapi(`getEventDetails`, {id, loggedIn: true});
+            const result = await api(`getEventDetails`, {id, loggedIn: true});
             if (result && result.success) {
                 setEvent(result.event);
             }

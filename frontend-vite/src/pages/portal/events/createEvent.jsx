@@ -15,7 +15,7 @@ const CreateEvent = () => {
 
     useEffect(() => {
         const getInfo = async () => {
-            const options = awaitapi('getEventCreation', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
+            const options = await api('getEventCreation', {}, {'Authorization': `Bearer ${localStorage.getItem("token")}`});
             setLocOptions(options.locations);
             setCommOptions(options.committees.member);
             setOfficerComms(options.committees.officer);
@@ -47,7 +47,7 @@ const CreateEvent = () => {
                 formData.append(key, otherData[key]);
             });
 
-            const newEvent = awaitapi('addEvent', formData, { 'Authorization': `Bearer ${token}` });
+            const newEvent = await api('addEvent', formData, { 'Authorization': `Bearer ${token}` });
             if (newEvent.success) {
                 navigate('/portal/event/' + newEvent.newId);
             } else {

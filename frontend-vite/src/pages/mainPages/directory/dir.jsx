@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {api } from "@/services/apiCall";
+import api from "@/services/apiCall";
 import BrothersGrid from "@/components/cardGrid";
 
 const Directory = () => {
@@ -10,22 +10,16 @@ const Directory = () => {
   const [filtered, setFiltered] = useState([]);
 
   useEffect(() => {
-    getBrothers()
-  },[]);
-
-  const getBrothers = async () => {
-    let response = awaitapi("brothers");
-    console.log(response);
-    setIsLoading(false);
-    if (response?.success) {
-      setBrothers(response.bros);
-      setFiltered(response.bros);
-    }
-    else {
-      setError("Could not load directory at this time");
+    const getBrothers = async () => {
+      let response = await api("brothers");
       console.log(response);
-    }
-  };
+      setIsLoading(false);
+      if (response?.success) setBrothers(response.bros);
+      else setError("Could not load directory at this time");
+    };
+    getBrothers();
+  }, []);
+
 
   useEffect(() => {
     const filteredData = brothers.filter(item => item.firstName.toLowerCase().includes(criteria.toLowerCase()) 

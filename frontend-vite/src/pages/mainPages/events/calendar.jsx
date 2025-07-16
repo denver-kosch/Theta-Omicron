@@ -21,7 +21,7 @@ const EventCal = () => {
     const fetchEvents = async (month, year) => {
         setLoading(true);
         try {
-            const result = awaitapi('getEvents', { status: 'Approved', timeframe: {month, year} });
+            const result = await api('getEvents', { status: 'Approved', timeframe: {month, year} });
             if (result.success) {
                 const events = result.events;
                 updateCache(prevCache => ({

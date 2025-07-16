@@ -83,7 +83,7 @@ app.post('/events', upload.single('image'), [
 app.post('/minutes', upload.single('file'), asyncHandler(uploadMinutes));
 
 /* ================== Read ================== */
-app.get('/committees/:id', asyncHandler(getCommittee));
+app.get('/committees/:identifier', asyncHandler(getCommittee));
 
 app.get("/brothers", asyncHandler(getBros));
 

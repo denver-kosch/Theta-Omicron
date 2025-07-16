@@ -13,7 +13,7 @@ const AboutUs = () => {
     }, []);
 
     const getEC = async () => {
-        const ec =  awaitapi("getCommittee", {name: "Executive Committee", pics: true});
+        const ec =  await api("committees/Executive Committee?pics=true");
         if (ec.success) {
             ec.members.sort((a,b) => a.position.ecOrder - b.position.ecOrder);
             setEC(ec.members);

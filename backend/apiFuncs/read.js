@@ -7,26 +7,27 @@ import { extractToken } from "./authentication.js";
 
 
 export const getCommittee = async (req) => {
-    const { name, _id, emails, pics } = req.body;
-    
+    const { identifier } = req.params;
+    const { pics, emails } = req.query;
+
     const projections = {firstName: 1, lastName: 1, position: "$positions"};
     if (emails) projections["contactInfo.schoolEmail"] = 1;
-    
-    const committee = name ? await Committee.findOne({name}, {supervisingOfficer: 1, members: 1}) : await Committee.findOne({_id}, {supervisingOfficer: 1, members: 1});
-    
+
+    const committee = await Committee.findOne({name: identifier}, {supervisingOfficer: 1, members: 1});
+
     let members = await Member.aggregate([
     { $match: { _id: {$in: [...committee.members, committee.supervisingOfficer]}} },
     { $unwind: "$positions" },  // Flatten the positions array
     { $match: { $or: [{"positions.committeeId": committee._id}, {'positions.committeeName': "Executive Committee"}] } },
     { $project: projections }
     ]);
-
+    
     if (pics) members = members.map(doc => appendImgPath(doc, dirname, 'profilePics'));
 
     if (members.length > 0) return {status:200, content: {members}, members};
     else throw new ApiError(404, "Committee not found");
 };
-  
+
 export const getBros = async (req) => {
   const { chairmen } = req.query;
   const bros = chairmen ? await getChairmen() : (await Member.find({status: "Initiate"}, {firstName: 1,lastName: 1,positions: 1 }).sort({lastName: 1, firstName: 1}))
@@ -49,7 +50,7 @@ export const getBros = async (req) => {
     if (bros) return {status: 200, content: { bros }, bros};
     else throw new ApiError(404, "Brothers not found");
 };
-  
+
 export const getBro = async (req) => {
   const _id = extractToken(req);
   const info = _id && (await Member.findById(_id, {status:1, lastName:1, positions:1}));

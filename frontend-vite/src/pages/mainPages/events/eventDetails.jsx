@@ -16,7 +16,7 @@ const Event = () => {
 
     useEffect(() => {
         const fetchEventDetails = async () => {
-            const result = awaitapi(`getEventDetails`, {id});
+            const result = await api(`getEventDetails`, {id});
             if (result && result.success) {
                 setEvent(result.event);
                 setSimilars(result.similar);

@@ -8,7 +8,7 @@ const Leadership = () => {
 
     useEffect(() => {
         const fetchLeaders = async () => {
-            const res = awaitapi('getChairmen');
+            const res = await api('getChairmen');
             if (res.success) {
                 res.chairmen = res.chairmen.map(chairman => ({
                     ...chairman,
@@ -22,7 +22,7 @@ const Leadership = () => {
                 setLeadership(res.chairmen);
             }
 
-            const ec = awaitapi("getCommittee", {name: "Executive Committee", pics: true});
+            const ec = await api("getCommittee", {name: "Executive Committee", pics: true});
             if (ec.success) setEC(ec.members.sort((a,b) => a.position.ecOrder - b.position.ecOrder))
         };
         fetchLeaders();

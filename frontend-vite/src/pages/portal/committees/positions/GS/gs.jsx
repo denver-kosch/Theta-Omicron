@@ -12,7 +12,7 @@ const GS = () => {
   const [showAll, setShowAll] = useState(false);
   
   const fetchMinutes = async (numMinutes = null) => {
-    const response = awaitapi('getMinutes', {numMinutes}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+    const response = await api('getMinutes', {numMinutes}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
     if (response.success) setMinutesList(response.minutes);
     else console.error(response.error);
   };
@@ -41,7 +41,7 @@ const GS = () => {
   const handleDeleteMinutes = async (minutes) => {
     if (!window.confirm("Are you sure you want to delete these minutes?")) return;
     try {
-      const response = awaitapi('deleteMinutes', { minutesId: minutes._id }, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+      const response = await api('deleteMinutes', { minutesId: minutes._id }, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
       if (response.success) {
         alert("Minutes deleted successfully");
         setMinutesList((prev) => prev.filter(m => m._id !== minutes._id));
@@ -115,7 +115,7 @@ const GS = () => {
           formData.append('type', data.type !== "Other" ? data.type : data.otherType);
           formData.append('file', data.file[0]);
 
-          const response = awaitapi('uploadMinutes', formData, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+          const response = await api('uploadMinutes', formData, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
           if (response.success) {
             alert(initialData ? 'Minutes updated successfully' : 'Minutes uploaded successfully');
             setSelectedMinutes(null);

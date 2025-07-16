@@ -24,7 +24,7 @@ const PortalEvent = () => {
 
     useEffect(() => {
         const fetchEventDetails = async () => {
-            const result = awaitapi(`getEventDetails`, {id}, token);
+            const result = await api(`getEventDetails`, {id}, token);
             if (result && result.success) {
                 setEvent(result.event);
                 setSimilars(result.similar);
@@ -58,7 +58,7 @@ const PortalEvent = () => {
 
     const handleRej = async op => {
         if (op === 'del') {
-            const res = awaitapi('rmEvent', {id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+            const res = await api('rmEvent', {id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
             if (!res.success) console.error(res.error);
             navigate('portal/event');
         }
@@ -68,8 +68,8 @@ const PortalEvent = () => {
     const handlePend = async op => {
         const token = {'Authorization': `Bearer ${localStorage.getItem('token')}`};
         const res = (op === 'approve') ? 
-            awaitapi('approveEvent', {id, committeeId: event.committee.id}, token) :
-            awaitapi('rejectEvent', {id, reason: rejReason, committeeId: event.committee.id}, token);
+            await api('approveEvent', {id, committeeId: event.committee.id}, token) :
+            await api('rejectEvent', {id, reason: rejReason, committeeId: event.committee.id}, token);
         if (!res.success) console.error(res.error);
         navigate(0);
     };
