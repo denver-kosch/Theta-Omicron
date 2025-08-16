@@ -7,7 +7,7 @@ import { extractToken } from "./authentication.js";
 import { ApiError } from "../functions.js";
 
 
-export const updateEvent = async (req, res) => {
+export const updateEvent = async (req) => {
     let {eventId, name, description, start, end, type, visibility, location} = req.body;
     if (location == 0) {
         const {newLocName, newLocAddress} = req.body;
@@ -27,21 +27,20 @@ export const updateEvent = async (req, res) => {
         // Save the new image if provided
         if (req.file) {
             const newImagePath = join(folderPath, `${eventId}${extname(req.file.originalname)}`);
-            await sharp(req.file.buffer)
-            .jpeg({ quality: 90 })
-            .toFile(newImagePath);
+            sharp(req.file.buffer).jpeg({ quality: 90 }).toFile(newImagePath);
         }
 
-        const event = await Event.findByIdAndUpdate(eventId, updates);
+        Event.findByIdAndUpdate(eventId, updates);
 
         return {status: 200};
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        throw new ApiError(error.status || 500, error.message || 'Error updating event');
     }
 };
   
 export const approveEvent = async (req) => {
-    const {id, committeeId} = req.body;
+    const { id } = req.params;
+    const {committeeId} = req.body;
     const _id = extractToken(req);
     const officer = (await Committee.findById(committeeId, {_id:0, supervisingOfficer:1})).supervisingOfficer;
     if (!_id.equals(officer)) throw new ApiError(401, 'Unauthorized User');
@@ -52,7 +51,8 @@ export const approveEvent = async (req) => {
 };
 
 export const rejectEvent = async (req) => {
-    const {id, committeeId, reason} = req.body;
+    const { id } = req.params;
+    const { committeeId, reason } = req.body;
     const _id = extractToken(req);
     const officer = (await Committee.findById(committeeId, {_id:0, supervisingOfficer:1})).supervisingOfficer;
     if (!_id.equals(officer)) throw new ApiError(401, 'Unauthorized User');
@@ -71,4 +71,14 @@ export const updateAttendance = async (unexcusedList) => {
         );
         if (!updatedMember) console.error(`Member not found: ${firstName} ${lastName}`);
     });
+};
+
+export const updateCommittee = async (req) => {
+    try {
+        const committee = await Committee.findOneAndUpdate({ name: { $regex: req.params.name, $options: "i" } }, req.body);
+        if (!committee) throw new ApiError(404, 'Committee not found');
+        return {status: 200};
+    } catch (error) {
+        throw new ApiError(error.status || 500, error.message || 'Error updating committee');
+    }
 };

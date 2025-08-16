@@ -7,12 +7,12 @@ import { createServer } from 'http';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import { connectDB, asyncHandler } from './functions.js';
-import { check } from 'express-validator';
+import { check, body, validationResult } from 'express-validator';
 import { addEvent, addMember, uploadMinutes } from './apiFuncs/create.js';
-import { getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getPortalEvents, getChairmen, getNotes, getPositions, getMinutes } from './apiFuncs/read.js';
-import { updateEvent, approveEvent, rejectEvent } from './apiFuncs/update.js';
+import { getCommittee, getBros, getBro, getEvents, getCommittees, getLocations, getEventCreation, getEventDetails, getChairmen, getNotes, getPositions, getMinutes, getSelf } from './apiFuncs/read.js';
+import { updateEvent, approveEvent, rejectEvent, updateCommittee } from './apiFuncs/update.js';
 import { removeEvent, deleteMinutes } from './apiFuncs/delete.js';
-import { login, auth, extractToken } from './apiFuncs/authentication.js';
+import { login, auth, extractToken, checkAdmin } from './apiFuncs/authentication.js';
 
 console.log('Starting server...');
 console.time('Server Startup');
@@ -22,7 +22,6 @@ const upload = multer({ storage: multer.memoryStorage() }); // Storing files in 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.json(), express.urlencoded({ extended: true }), cors());
 
-// Only expose public/images
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
 const server = createServer(app);
@@ -54,12 +53,20 @@ io.on('connection',socket => {
   };
 })();
 
+const validateRequest = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  next();
+}
+
 
 /* ================== Login / Authorization ================== */
 app.post('/login', 
 [
   check('email').trim().isEmail(),
-  //check('password').isLength({ min: 8 }) // Will implement when we eventually add length requirement
+  validateRequest
 ], asyncHandler(login));
 
 
@@ -73,11 +80,13 @@ app.post('/members', [
 	check('state', 'Invalid state').isLength({ min: 2, max: 2 }),
 	check('zip', 'Invalid zip code').isLength({ min: 5, max: 5 }).isNumeric(),
 	check('gradYear', 'Invalid graduation year').isNumeric(),
+	validateRequest
 ], asyncHandler(addMember));
 
 app.post('/events', upload.single('image'), [
   check(['name', 'description', 'committeeId', 'visibility'], 'All form fields are required').not().isEmpty().isString(),
   check(['start', 'end'], 'All form fields are required').not().isEmpty().isDate(),
+  validateRequest
 ], asyncHandler(addEvent));
 
 app.post('/minutes', upload.single('file'), asyncHandler(uploadMinutes));
@@ -87,12 +96,19 @@ app.get('/committees/:identifier', asyncHandler(getCommittee));
 
 app.get("/brothers", asyncHandler(getBros));
 
-app.get("/brothers/:id", asyncHandler(getBro));
+app.get("/brothers/:slug", asyncHandler(getBro));
+
+app.get("/me", asyncHandler(getSelf));
+
+app.get("/me/admin", asyncHandler(checkAdmin));
+
+app.get("/me/positions", asyncHandler(getPositions));
 
 app.get("/events", [
   check('vis').optional().trim(),
   check('days').optional().isNumeric(),
-  check('mandatory').optional().isBoolean()
+  check('mandatory').optional().isBoolean(),
+  validateRequest
 ], asyncHandler(getEvents));
 
 app.get("/committees", asyncHandler(getCommittees));
@@ -103,27 +119,32 @@ app.get("/eventCreation", asyncHandler(getEventCreation));
 
 app.get("/events/:id", asyncHandler(getEventDetails));
 
-app.get('/portalEvents', asyncHandler(getPortalEvents));
-
 app.get('/chairmen', asyncHandler(getChairmen));
 
 app.get('/notes/:id', asyncHandler(getNotes));
 
-app.get('/positions/:id', asyncHandler(getPositions));
-
 app.get('/minutes/', asyncHandler(getMinutes));
 
 /* ================== Update ================== */
-app.put('/updateEvent', upload.single('image'), asyncHandler(updateEvent));
+app.put('/updateEvent/:id', upload.single('image'), asyncHandler(updateEvent));
 
-app.put('/approveEvent', asyncHandler(approveEvent));
+app.put('/events/:id/approve', asyncHandler(approveEvent));
 
-app.put('/rejectEvent', asyncHandler(rejectEvent));
+app.put('/events/:id/reject', asyncHandler(rejectEvent));
+
+app.put('/committees/:name', [
+  check('name').not().isEmpty().isString(),
+  body('rushLink').optional().isURL(),
+  validateRequest
+], asyncHandler(updateCommittee));
 
 /* ================== Delete ================== */
-app.delete('/rmEvent', [check('id').not().isEmpty()], asyncHandler(removeEvent));
+app.delete('/events/:id', asyncHandler(removeEvent));
 
-app.delete('/deleteMinutes', [check('minutesId').not().isEmpty()], asyncHandler(deleteMinutes));
+app.delete('/minutes', [
+  check('minutesId').not().isEmpty(),
+  validateRequest
+], asyncHandler(deleteMinutes));
 
 /* ================== Miscellaneous ================== */
 app.get('/secure/minutes/:filename', (req, res) => {

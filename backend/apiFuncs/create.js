@@ -30,7 +30,7 @@ export const addEvent = async (req) => {
   const session = await startSession();
   try {
       session.startTransaction();
-      const _id = extractToken(req);
+      const {_id} = extractToken(req);
       if (!_id) throw new ApiError(401, 'Unauthorized');
       
       const {name, description, start, end, visibility, newLocName, newLocAddress} = req.body;
@@ -39,9 +39,9 @@ export const addEvent = async (req) => {
       const time = {start, end};
       
       let location = JSON.parse(req.body.location);
-      
+      console.log(req.body);
       if (location === '0') {
-        if (!/^\d+[A-Za-z\s]+\,[A-Za-z\s]+\, [A-Z]{2} \d{5}$/.test(newLocAddress)) throw Error("Address not in address format")
+        if (!/^(\d+)?[A-Za-z\s]+\,[A-Za-z\s]+\, [A-Z]{2} \d{5}$/.test(newLocAddress)) throw Error("Address not in address format")
         const [address, city, sz] = newLocAddress.split(', ');
         const [s, zip] = sz.split(' ');
         const state = abbrSt(s);
@@ -77,7 +77,7 @@ export const addEvent = async (req) => {
 
 export const uploadMinutes = async (req) => {
   try {
-    const _id = extractToken(req);
+    const { _id } = extractToken(req);
     if (!req.file) throw new ApiError(400, 'No file uploaded');
     const { date, type } = req.body;
 
@@ -111,12 +111,7 @@ export const uploadMinutes = async (req) => {
     const match = parsedData.match(/Brothers Unexcused included:\s*[:\-]?\s*(.*)/i);
     let unexcused = [];
 
-    if (match && match[1]) {
-      unexcused = match[1]
-        .split(';')
-        .map(n => n.trim())
-        .filter(n => n.length > 0);
-    }
+    if (match && match[1]) unexcused = match[1].split(';').map(n => n.trim()).filter(n => n.length > 0);
 
     console.log("Unexcused brothers:", unexcused);
     await updateAttendance(unexcused);

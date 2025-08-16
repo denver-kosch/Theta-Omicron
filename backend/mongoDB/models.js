@@ -277,7 +277,7 @@ const locationSchema = new Schema({
 }, {versionKey: false});
 export const Location = model('location', locationSchema);
 
-const commSchema = new Schema({
+const committeeSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -294,9 +294,13 @@ const commSchema = new Schema({
     members: {
         type: [Schema.Types.ObjectId],
         ref: 'Member',
+    },
+    link: {
+        type: String,
+        required: false
     }
 }, {versionKey: false});
-export const Committee = model('committee', commSchema);
+export const Committee = model('committee', committeeSchema);
 
 const messageSchema = new Schema({
     username: {

@@ -22,7 +22,7 @@ export const appendImgPath = (obj, dirname, imgFolder) => {
   const foundExt = exts.find(ext => fs.existsSync(path.join(basePath, `${id}.${ext}`)));
   const imageUrl = foundExt
     ? `/images/${imgFolder}/${id}.${foundExt}`
-    : `/images/${imgFolder}/default.jpeg`;
+    : `/images/${imgFolder}/default.png`;
 
   obj.imageUrl = `http://${host}:${port}${imageUrl}`;
   return obj;
@@ -105,4 +105,9 @@ export const asyncHandler = fn => (req, res, next) => Promise.resolve(fn(req, re
   .then(({status, content = {}}) => sendJsonResponse(res, status, content))
   .catch(error => handleError(error, res));
 
+export const generateUserSlug = (brother) => {
+  const { firstName, lastName, _id } = brother;
+  return `${firstName.toLowerCase().replace(/\s+/g, '')}-${lastName.toLowerCase().replace(/\s+/g, '')}-${_id}`;
+};
 
+export const decodeUserSlug = (slug) => slug.split("-");
