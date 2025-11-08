@@ -39,9 +39,9 @@ const PortalLogin = () => {
         setErrorMessage(errorMsg);
         setPassword('');
     };
-
+    
     const handleSubmit = async () => {
-        if(!email || !password) {
+        if (!email || !password) {
             badInput("Please enter both email address and password.");
             return;
         } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
@@ -74,7 +74,7 @@ const PortalLogin = () => {
                 </div>
                 <br/>
                 <div>
-                    <label htmlFor='password'>Password: </label>
+                    <label htmlFor='password'>Password:</label>
                     <input
                     id="password"
                     type='password'
@@ -83,7 +83,7 @@ const PortalLogin = () => {
                     onChange={e=>setPassword(e.target.value)}
                     />
                 </div>
-                <button type="submit" onClick={handleSubmit}>Login</button>
+                <button type="button" className="submit" tabIndex="0" onClick={handleSubmit}>Login</button>
             </div>
         </div>
     );

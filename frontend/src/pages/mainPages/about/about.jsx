@@ -14,10 +14,7 @@ const AboutUs = () => {
 
     const getEC = async () => {
         const ec =  await api("committees/Executive Committee?pics=true");
-        if (ec.success) {
-            ec.members.sort((a,b) => a.position.ecOrder - b.position.ecOrder);
-            setEC(ec.members);
-        }
+        if (ec.success) setEC(ec.members.sort((a,b) => a.position.ecOrder - b.position.ecOrder));
         else {
             setErrMsg("Could not gather Executive Committee at this time!");
             console.error(ec.error);

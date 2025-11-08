@@ -108,7 +108,7 @@ export const uploadMinutes = async (req) => {
     const newPdfBuffer = await fs.readFile(outputPdfPath);
     const parsedData = (await pdf(newPdfBuffer)).text;
 
-    const match = parsedData.match(/Brothers Unexcused included:\s*[:\-]?\s*(.*)/i);
+    const match = parsedData.match(/Brothers Unexcused included:\s*[:\-]?\s*(.*)\n$/i);
     let unexcused = [];
 
     if (match && match[1]) unexcused = match[1].split(';').map(n => n.trim()).filter(n => n.length > 0);

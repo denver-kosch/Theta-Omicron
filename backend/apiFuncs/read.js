@@ -1,5 +1,5 @@
 import { Committee, Member, Location, Event, Minutes } from "../mongoDB/models.js";
-import { appendImgPath, decodeUserSlug } from "../functions.js";
+import { appendImgPath, decodeUserSlug, log } from "../functions.js";
 import { ObjectId } from "mongodb";
 import { dirname, host, port } from "../config.js";
 import { ApiError, generateUserSlug } from "../functions.js";
@@ -9,7 +9,7 @@ import { extractToken } from "./authentication.js";
 export const getCommittee = async (req) => {
     const { identifier } = req.params;
     const { pics, emails, link } = req.query;
-    console.log(link, "Link query param:", identifier);
+    log("Link query param:", identifier);
 
     const committeeProjections = {supervisingOfficer: 1, members: 1};
     if (link) committeeProjections['link'] = 1;
@@ -42,9 +42,7 @@ export const getBros = async (req) => {
         p.role : (/Committee/.test(p.committeeName) && p.role === "Chairman" ?
         `${p.committeeName.split(" ")[0]} Chairman` : p.committeeName)
       );
-
       const slug = slugs ? generateUserSlug(d) : null;
-
       return {
         firstName: d.firstName,
         lastName: d.lastName,
@@ -54,8 +52,8 @@ export const getBros = async (req) => {
         slug: slug
       }
     });
-    if (bros) return {status: 200, content: { bros }, bros};
-    else throw new ApiError(404, "Brothers not found");
+  if (bros) return {status: 200, content: { bros }, bros};
+  else throw new ApiError(404, "Brothers not found");
 };
 
 export const getBro = async (req) => {
@@ -92,7 +90,7 @@ export const regularEvents = async (req) => {
     query.push({ "time.start": { $gte: new Date(), $lte: new Date(new Date().setDate(new Date().getDate() + days)) }});
   }
 
-  let eventsQuery = Event.find((query.length > 0) ? {$and: query} : {}, { name: 1, description: 1, time: 1, location: "$location.name" });
+  let eventsQuery = Event.find((query.length > 0) ? {$and: query} : {}, { name: 1, description: 1, time: 1, location: "$location.name" }).sort({ "time.start": 1 });
   if (limit) eventsQuery = eventsQuery.limit(Number(limit));
 
   const events = (await eventsQuery)
@@ -259,8 +257,7 @@ export const getChairmen = async () => {
         }
       }
     ])).map(doc => appendImgPath(doc, dirname, 'profilePics'));
-    const ec = await Member.find({positions: {$elemMatch: {name: "Executive Committee"}}}, {firstName: 1, lastName: 1, positions: 1});
-    if (chairmen) return {chairmen, ec};
+    if (chairmen) return {chairmen};
     else throw new ApiError(404, "Chairmen not found");
 };
 
@@ -273,7 +270,6 @@ export const getNotes = async (req) => {
 export const getPositions = async (req) => {
 	const { _id, isAdmin } = extractToken(req);
 	const { positions } = await Member.findById(_id, {positions: 1});
-  console.log("Positions:", positions);
 	if (positions?.length > 0 || isAdmin) return {status: 200, content: {positions}};
 	else throw new ApiError(404, "Positions not found");
 };
@@ -290,7 +286,7 @@ export const getMinutes = async (req) => {
     const minutes = await query;
 
     minutes.forEach(minute => {
-      minute.filePath = `http://${host}:${port}/secure/minutes/${minute.filePath}`;
+      minute.filePath = `https://${host}:${port}/secure/minutes/${minute.filePath}`;
     });
     if (minutes) return {status: 200, content: {minutes}};
     else throw new ApiError(404, 'Minutes not found');

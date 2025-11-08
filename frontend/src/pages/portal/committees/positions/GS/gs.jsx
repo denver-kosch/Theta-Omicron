@@ -178,6 +178,7 @@ const MinutesDashboard = ({style}) => {
     </div>
   );
 
+
   return (
     <div className="minutes-dashboard" style={style}>
       <h2>Manage Uploaded Minutes</h2>
@@ -217,6 +218,65 @@ const MinutesDashboard = ({style}) => {
   )
 };
 
+const ECUpdateModal = ({ initialData, onClose, onSubmit }) => {
+  const [oldEC, setOldEC] = useState(initialData || {});
+  const [newEC, setNewEC] = useState({});
+
+  const handleChange = (e) => {
+    const { position, person, id } = e.target;
+    setNewEC(prev => ({ ...prev, [position]: { person, id } }));
+  };
+  
+  useEffect(() => {
+    const getOldEC = async () => {
+      try {
+        const response = await api('committees/Executive%20Committee', { headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}});
+        if (response.success) setOldEC(response.committee.positions);
+        else console.error(response.error);
+      } catch (error) {
+        console.error('Error fetching EC roster:', error);
+      }
+    };
+    getOldEC();
+  }, [oldEC]);
+
+  const updateEC = async (data) => {
+    try {
+      const response = await fetch(`${ENDPOINT}/committees/Executive%20Committee`, { method: 'PUT', headers: { 'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+      if (!response.ok) throw new Error('Failed to update EC roster');
+      const updatedData = await response.json();
+      setSelectedMinutes(updatedData);
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`Error: ${error.message}`);
+    }
+  };
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <h2>Update Executive Committee Roster</h2>
+        <form onSubmit={(e) => { e.preventDefault(); onSubmit(newEC); }}>
+          {Object.entries(oldEC).map(([position, info]) => (
+            <div key={position}>
+              <label>{position}:</label>
+              <input
+                type="text"
+                position={position}
+                person={info.person}
+                id={info.id}
+                defaultValue={info.person}
+                onChange={handleChange}
+              />
+            </div>
+          ))}
+          <button type="submit">Update Roster</button>
+          <button type="button" onClick={onClose}>Cancel</button>
+        </form>
+      </div></div>
+  )
+};
+
 const GS = () => {
   const GSOutline = ({style}) => (
     <div className="gs-outline" style={style}>
@@ -237,6 +297,7 @@ const GS = () => {
         <div className="gs-subcomponent">
           <MinutesDashboard style={{ width: "50%",}} />
           <GSOutline style={{ width: "50%", justifyContent: 'center' }} />
+
         </div>
       </div>
     </div>

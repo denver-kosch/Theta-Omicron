@@ -2,6 +2,8 @@ import { config } from "dotenv";
 import { dirname as _dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { networkInterfaces } from "os";
+import path from 'path';
+import fs from 'fs';
 
 config({ path: `.env.${process.env.NODE_ENV || "development"}` });
 
@@ -18,3 +20,5 @@ export const dirname = _dirname(fileURLToPath(import.meta.url));
 export const mongodbUri = process.env.MONGODB_URI;
 export const port = process.env.PORT || 3001;
 export const host = getLocalIP() || 'localhost';
+export const key = fs.readFileSync(path.resolve('..', 'certs', 'localhost+3-key.pem'));
+export const cert = fs.readFileSync(path.resolve('..', 'certs', 'localhost+3.pem'));

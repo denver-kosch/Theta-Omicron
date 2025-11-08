@@ -4,7 +4,7 @@
   "description": "This repository stores a WIP web application designed for usage by the Brothers of the Theta-Omicron Chapter of the Kappa Sigma Fraternity for both advertisement of the Chapter and utility for officers and chairmen/committees. The app contains/will contain various pages and will, in due time, also include a mobile app for Brothers' utility.",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
+    "dev": "concurrently -n \"f,b\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\""
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,8 @@
   "homepage": "https://github.com/denver-kosch/Theta-Omicron#readme",
   "devDependencies": {
     "concurrently": "^9.2.0"
+  },
+  "dependencies": {
+    "https": "^1.0.0"
   }
 }

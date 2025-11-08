@@ -24,7 +24,7 @@ export const appendImgPath = (obj, dirname, imgFolder) => {
     ? `/images/${imgFolder}/${id}.${foundExt}`
     : `/images/${imgFolder}/default.png`;
 
-  obj.imageUrl = `http://${host}:${port}${imageUrl}`;
+  obj.imageUrl = `https://${host}:${port}${imageUrl}`;
   return obj;
 };
 
@@ -111,3 +111,7 @@ export const generateUserSlug = (brother) => {
 };
 
 export const decodeUserSlug = (slug) => slug.split("-");
+
+export const log = (...content) => {
+  console.log(`%c${content.join(" ")}`, "background-color:#00d138;");
+};

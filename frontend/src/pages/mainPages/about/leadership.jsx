@@ -8,9 +8,9 @@ const Leadership = () => {
 
     useEffect(() => {
         const fetchLeaders = async () => {
-            const res = await api('getChairmen');
+            const res = await api('brothers?chairmen=true');
             if (res.success) {
-                res.chairmen = res.chairmen.map(chairman => ({
+                res.bros.chairmen = res.bros.chairmen.map(chairman => ({
                     ...chairman,
                     position: chairman.positions.map((position, index, array) => (
                       <Fragment key={index}>
@@ -19,11 +19,11 @@ const Leadership = () => {
                       </Fragment>
                     ))
                 }));
-                setLeadership(res.chairmen);
+                setLeadership(res.bros.chairmen);
             }
 
-            const ec = await api("getCommittee", {name: "Executive Committee", pics: true});
-            if (ec.success) setEC(ec.members.sort((a,b) => a.position.ecOrder - b.position.ecOrder))
+            const ec = await api("committees/Executive Committee?pics=true");
+            if (ec.success) setEC(ec.members.sort((a,b) => a.position.ecOrder - b.position.ecOrder));
         };
         fetchLeaders();
     },[]);

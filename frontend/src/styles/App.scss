@@ -284,10 +284,21 @@ nav {
 				max-height: fit-content;
 			}
 		}
-		button {
+		.submit {
 			margin-top: 1vh;
+			background-color: var(--link-bg-color);
+			color: var(--link-alt-text-color);
+			font-weight: bold;
+			width: fit-content;
+			padding: 10px;
+			display: inline-flex;
+			border-radius: 5px;
+			cursor: pointer;
+			&:hover {
+				background-color: var(--hover-color);
+			}
 		}
-	
+
 	}
 }
 .create {
