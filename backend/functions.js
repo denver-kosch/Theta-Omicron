@@ -24,7 +24,7 @@ export const appendImgPath = (obj, dirname, imgFolder) => {
     ? `/images/${imgFolder}/${id}.${foundExt}`
     : `/images/${imgFolder}/default.png`;
 
-  obj.imageUrl = `https://${host}:${port}${imageUrl}`;
+  obj.imageUrl = `http://${host}:${port}${imageUrl}`;
   return obj;
 };
 

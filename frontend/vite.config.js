@@ -13,10 +13,6 @@ export default defineConfig({
   server: {
     host: true,
     port: 3000,
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, '..', 'certs', 'localhost+3-key.pem')),
-      cert: fs.readFileSync(path.resolve(__dirname, '..', 'certs', 'localhost+3.pem')),
-    },
   },
   esbuild: {
     loader: 'jsx',

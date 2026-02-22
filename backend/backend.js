@@ -3,9 +3,8 @@ import cors from 'cors';
 import multer from 'multer';
 import path from 'path';
 import {Server} from 'socket.io';
-import { createServer } from 'https';
+import { createServer } from 'http';
 import { fileURLToPath } from 'url';
-import { key, cert } from './config.js';
 import fs from 'fs';
 import { connectDB, asyncHandler } from './functions.js';
 import { check, body, validationResult } from 'express-validator';
@@ -25,7 +24,7 @@ app.use(express.json(), express.urlencoded({ extended: true }), cors());
 
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
-const server = createServer({ key, cert }, app);
+const server = createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "*", // Adjust this as needed
@@ -47,7 +46,7 @@ io.on('connection',socket => {
   try {
     const [port, host] = await connectDB();
     server.listen(port, host, () => {
-      console.log(`Server running on https://${host}:${port}`);
+      console.log(`Server running on http://${host}:${port}`);
       console.timeEnd('Server Startup');
     });
   } catch (error) {
@@ -57,9 +56,7 @@ io.on('connection',socket => {
 
 const validateRequest = (req, res, next) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   next();
 }
 

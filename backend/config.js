@@ -20,5 +20,3 @@ export const dirname = _dirname(fileURLToPath(import.meta.url));
 export const mongodbUri = process.env.MONGODB_URI;
 export const port = process.env.PORT || 3001;
 export const host = getLocalIP() || 'localhost';
-export const key = fs.readFileSync(path.resolve('..', 'certs', 'localhost+3-key.pem'));
-export const cert = fs.readFileSync(path.resolve('..', 'certs', 'localhost+3.pem'));

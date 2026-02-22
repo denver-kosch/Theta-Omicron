@@ -4,15 +4,15 @@
   "main": "backend.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "NODE_ENV=development nodemon backend.js",
-    "start": "NODE_ENV=production node backend.js"
+    "dev": "cross-env NODE_ENV=development nodemon backend.js",
+    "start": "cross-env NODE_ENV=production node backend.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
@@ -32,5 +32,8 @@
     "sharp": "^0.33.4",
     "socket.io": "^4.7.5"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "cross-env": "^10.1.0"
+  }
 }

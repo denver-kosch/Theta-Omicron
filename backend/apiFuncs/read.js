@@ -49,7 +49,7 @@ export const getBros = async (req) => {
         email: d.email,
         imageUrl: d.imageUrl,
         positions: arr,
-        slug: slug
+        slug
       }
     });
   if (bros) return {status: 200, content: { bros }, bros};
