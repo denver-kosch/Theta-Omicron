@@ -2,8 +2,6 @@ import { config } from "dotenv";
 import { dirname as _dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { networkInterfaces } from "os";
-import path from 'path';
-import fs from 'fs';
 
 config({ path: `.env.${process.env.NODE_ENV || "development"}` });
 

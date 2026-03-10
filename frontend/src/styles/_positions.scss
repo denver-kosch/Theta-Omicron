@@ -82,4 +82,30 @@
             }
         }
     }
+    .important-links {
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 10px;
+        margin: 0 auto;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            li {
+                margin-bottom: 5px;
+                width: fit-content;
+                a {
+                    color: var(--link-color);
+                    text-decoration: none;
+                    font-weight: bold;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
 }

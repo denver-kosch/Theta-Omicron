@@ -31,6 +31,7 @@ const MinutesDashboard = ({style}) => {
   const handleViewMinutes = async (minutes) => {
     try {
       const token = localStorage.getItem("token");
+      console.log(minutes.filePath);
       const response = await axios.get(minutes.filePath, { headers: {Authorization: `Bearer ${token}`},responseType: 'blob' });
       const blobUrl = URL.createObjectURL(response.data);
       setPdfUrl(blobUrl);
@@ -270,10 +271,32 @@ const ECUpdateModal = ({ initialData, onClose, onSubmit }) => {
               />
             </div>
           ))}
-          <button type="submit">Update Roster</button>
+          <button type="submit" onClick={updateEC}>Update Roster</button>
           <button type="button" onClick={onClose}>Cancel</button>
         </form>
-      </div></div>
+      </div>
+    </div>
+  )
+};
+
+const ImportantLinks = () => {
+  const links = [
+    { name: "KappaSig.net", url: "https://www.kappasig.net/"},
+    { name: "National Archives Submission", url: "https://formstack.io/1178A"},
+    { name: "Caduceus Submission", url: "https://formstack.io/143A4"}
+  ];
+
+  return (
+    <div className="important-links">
+      <h2>Important Links</h2>
+      <ul>
+        {links.map(link => (
+          <li key={link.url}>
+            <a href={link.url} target="_blank" rel="noopener noreferrer">{link.name}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 };
 
@@ -297,7 +320,9 @@ const GS = () => {
         <div className="gs-subcomponent">
           <MinutesDashboard style={{ width: "50%",}} />
           <GSOutline style={{ width: "50%", justifyContent: 'center' }} />
-
+        </div>
+        <div className="gs-subcomponent" >
+          <ImportantLinks />
         </div>
       </div>
     </div>

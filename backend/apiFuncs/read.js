@@ -286,7 +286,7 @@ export const getMinutes = async (req) => {
     const minutes = await query;
 
     minutes.forEach(minute => {
-      minute.filePath = `https://${host}:${port}/secure/minutes/${minute.filePath}`;
+      minute.filePath = `http://${host}:${port}/secure/minutes/${minute.filePath}`;
     });
     if (minutes) return {status: 200, content: {minutes}};
     else throw new ApiError(404, 'Minutes not found');
