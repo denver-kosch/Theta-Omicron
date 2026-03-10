@@ -1,5 +1,0 @@
-.env*
-node_modules/
-secure/
-public/
-! .env.example

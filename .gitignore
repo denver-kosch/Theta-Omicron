@@ -23,4 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
-.env
+#Backend .gitignore contents
+.env*
+secure/
+public/
+! .env.example
