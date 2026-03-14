@@ -28,8 +28,7 @@ export const appendImgPath = (obj, dirname, imgFolder) => {
   return obj;
 };
 
-export const abbrSt = state => {
-  return {
+export const abbrSt = state => ({
     "Alabama": "AL",
     "Alaska": "AK",
     "Arizona": "AZ",
@@ -80,8 +79,7 @@ export const abbrSt = state => {
     "West Virginia": "WV",
     "Wisconsin": "WI",
     "Wyoming": "WY"
-  }[state] ?? state;
-};
+  }[state] ?? state);
 
 export class ApiError extends Error {
   constructor(status, message) {

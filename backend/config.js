@@ -16,5 +16,5 @@ const getLocalIP = () => {
 export const tokenSecret = process.env.SESSION_SECRET;
 export const dirname = _dirname(fileURLToPath(import.meta.url));
 export const mongodbUri = process.env.MONGODB_URI;
-export const port = process.env.PORT || 3001;
+export const port = process.env.PORT || 3307;
 export const host = getLocalIP() || 'localhost';

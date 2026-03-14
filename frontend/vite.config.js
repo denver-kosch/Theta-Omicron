@@ -17,5 +17,12 @@ export default defineConfig({
   esbuild: {
     loader: 'jsx',
     include: /\.jsx?$/, // treat all .js in src/ as JSX
-  }
+  },
+  optimizeDeps: {
+  include: [
+    "@fullcalendar/core",
+    "@fullcalendar/daygrid",
+    "@fullcalendar/list"
+  ]
+}
 })
