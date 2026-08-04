@@ -1,0 +1,8 @@
+packages:
+  - frontend
+  - backend
+allowBuilds:
+  '@parcel/watcher': true
+  bcrypt: true
+  esbuild: true
+  sharp: true

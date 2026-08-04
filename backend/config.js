@@ -3,7 +3,7 @@ import { dirname as _dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { networkInterfaces } from "os";
 
-config({ path: `.env.${process.env.NODE_ENV || "development"}` });
+config({ path: `../.env` });
 
 const getLocalIP = () => {
     const interfaces = networkInterfaces();
@@ -16,5 +16,5 @@ const getLocalIP = () => {
 export const tokenSecret = process.env.SESSION_SECRET;
 export const dirname = _dirname(fileURLToPath(import.meta.url));
 export const mongodbUri = process.env.MONGODB_URI;
-export const port = process.env.PORT || 3307;
+export const port = process.env.DB_PORT || 3307;
 export const host = getLocalIP() || 'localhost';
