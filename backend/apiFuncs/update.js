@@ -37,7 +37,7 @@ export const updateEvent = async (req) => {
         throw new ApiError(error.status || 500, error.message || 'Error updating event');
     }
 };
-  
+    
 export const approveEvent = async (req) => {
     const { id } = req.params;
     const {committeeId} = req.body;

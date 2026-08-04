@@ -40,7 +40,7 @@ const CreateEvent = () => {
                 formData.append('newLocAddress', newLocAddress);
             }
 
-            formData.append('image', image[0]);  // Append the file
+            formData.append('image', image[0]);    // Append the file
 
             // Append other fields
             Object.keys(otherData).forEach((key) => formData.append(key, otherData[key]));

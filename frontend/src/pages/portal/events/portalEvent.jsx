@@ -47,8 +47,8 @@ const PortalEvent = () => {
     }, []);
 
     const FormatDates = ({date1, date2}) => {
-        const formatted1  = fDate(date1);
-        const formatted2  = fDate(date2);
+        const formatted1    = fDate(date1);
+        const formatted2    = fDate(date2);
         const [datePart1, timePart1] = formatted1.split(", ");
         const [datePart2, timePart2] = formatted2.split(", ");
         return (datePart1 === datePart2) ? 

@@ -6,75 +6,75 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import listPlugin from "@fullcalendar/list";
 
 export default function EventCal() {
-  const calendarElRef = useRef(null);
-  const calendarInstanceRef = useRef(null);
-  const eventCacheRef = useRef({});
-  const navigate = useNavigate();
+    const calendarElRef = useRef(null);
+    const calendarInstanceRef = useRef(null);
+    const eventCacheRef = useRef({});
+    const navigate = useNavigate();
 
-  useEffect(() => {
+    useEffect(() => {
     if (!calendarElRef.current || calendarInstanceRef.current) return;
 
     const fetchEvents = async (month, year) => {
-      const cacheKey = `${year}-${month}`;
+        const cacheKey = `${year}-${month}`;
 
-      if (eventCacheRef.current[cacheKey]) return eventCacheRef.current[cacheKey];
+        if (eventCacheRef.current[cacheKey]) return eventCacheRef.current[cacheKey];
 
-      try {
+        try {
         const response = await api(`events?month=${month + 1}&year=${year}&status=Approved`);
         if (!response.success) throw new Error(response.error);
 
         const mappedEvents = (response.events || []).map((event) => ({
-          id: event._id,
-          title: event.name,
-          start: event.time.start,
-          end: event.time.end,
+            id: event._id,
+            title: event.name,
+            start: event.time.start,
+            end: event.time.end,
         }));
 
         eventCacheRef.current[cacheKey] = mappedEvents;
         return mappedEvents;
-      } catch (err) {
+        } catch (err) {
         console.error("Failed to fetch events:", err);
         return [];
-      }
+        }
     };
 
     const calendar = new Calendar(calendarElRef.current, {
-      plugins: [dayGridPlugin, listPlugin],
-      initialView: window.innerWidth < 768 ? "listMonth" : "dayGridMonth",
-      headerToolbar: {
+        plugins: [dayGridPlugin, listPlugin],
+        initialView: window.innerWidth < 768 ? "listMonth" : "dayGridMonth",
+        headerToolbar: {
         right: "today prev,next",
         center: "title",
         left: "dayGridMonth,listMonth",
-      },
-      buttonText: {
+        },
+        buttonText: {
         dayGridMonth: "Month",
         listMonth: "List",
         today: "Today",
-      },
-      datesSet: async (info) => {
+        },
+        datesSet: async (info) => {
         const month = info.view.currentStart.getMonth();
         const year = info.view.currentStart.getFullYear();
         const events = await fetchEvents(month, year);
         if (!calendarInstanceRef.current) return;
         calendarInstanceRef.current.removeAllEvents();
         calendarInstanceRef.current.addEventSource(events);
-      },
-      eventClick: (info) => {
+        },
+        eventClick: (info) => {
         info.jsEvent.preventDefault();
         const eventEnd = info.event.end || info.event.start;
         if (eventEnd && eventEnd < (new Date())) return;
         navigate(`/event/${info.event.id}`);
-      },
+        },
     });
 
     calendar.render();
     calendarInstanceRef.current = calendar;
 
     return () => {
-      calendar.destroy();
-      calendarInstanceRef.current = null;
+        calendar.destroy();
+        calendarInstanceRef.current = null;
     };
-  }, [navigate]);
+    }, [navigate]);
 
-  return <div ref={calendarElRef} />;
+    return <div ref={calendarElRef} />;
 }

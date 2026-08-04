@@ -525,9 +525,9 @@ table.pTable {
 		.tableColumns th {
 			cursor: pointer;
 			-webkit-user-select: none; /* Chrome, Safari, Opera */
-			-moz-user-select: none;    /* Firefox */
-			-ms-user-select: none;     /* Internet Explorer/Edge */
-			user-select: none;         /* Non-prefixed version, currently supported by almost all modern browsers */
+			-moz-user-select: none;        /* Firefox */
+			-ms-user-select: none;         /* Internet Explorer/Edge */
+			user-select: none;                 /* Non-prefixed version, currently supported by almost all modern browsers */
 			&:hover {
 				color: var(--link-color);
 			}

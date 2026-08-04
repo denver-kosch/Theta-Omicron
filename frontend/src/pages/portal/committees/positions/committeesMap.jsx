@@ -44,64 +44,64 @@ const committeeMap = {
 
 
     "Public Relations Committee": {
-      Chairman: lazy(() => import('./GS/PR/chairman')),
-      Committee: lazy(() => import('./GS/PR/committee')),
+        Chairman: lazy(() => import('./GS/PR/chairman')),
+        Committee: lazy(() => import('./GS/PR/committee')),
     },
     "Alumni Relations Committee": {
-      Chairman: lazy(() => import('./GS/Alumni/chairman')),
-      Committee: lazy(() => import('./GS/Alumni/committee')),
+        Chairman: lazy(() => import('./GS/Alumni/chairman')),
+        Committee: lazy(() => import('./GS/Alumni/committee')),
     },
     "Awards Committee": {
-      Chairman: lazy(() => import('./GS/Awards/chairman')),
-      Committee: lazy(() => import('./GS/Awards/committee')),
+        Chairman: lazy(() => import('./GS/Awards/chairman')),
+        Committee: lazy(() => import('./GS/Awards/committee')),
     },
     "Intramural Committee": {
-      Chairman: lazy(() => import('./GS/Intramurals/chairman')),
-      Committee: lazy(() => import('./GS/Intramurals/committee')),
+        Chairman: lazy(() => import('./GS/Intramurals/chairman')),
+        Committee: lazy(() => import('./GS/Intramurals/committee')),
     },
 
 
     "Fundraising Committee": {
-      Chairman: lazy(() => import('./GT/Fundraising/chairman')),
-      Committee: lazy(() => import('./GT/Fundraising/committee')),
+        Chairman: lazy(() => import('./GT/Fundraising/chairman')),
+        Committee: lazy(() => import('./GT/Fundraising/committee')),
     },
     "Philanthropy Committee": {
-      Chairman: lazy(() => import('./GT/Philanthropy/chairman')),
-      Committee: lazy(() => import('./GT/Philanthropy/committee')),
+        Chairman: lazy(() => import('./GT/Philanthropy/chairman')),
+        Committee: lazy(() => import('./GT/Philanthropy/committee')),
     },
 
 
     "Executive Committee": {
-      'Grand Master': lazy(() => import('./GM/gm')),
-      'Grand Procurator': lazy(() => import('./GP/gp')),
-      'Grand Master of Ceremonies': lazy(() => import('./GMC/gmc')),
-      'Grand Treasurer': lazy(() => import('./GT/gt')),
-      'Grand Scribe': lazy(() => import('./GS/gs')),
+        'Grand Master': lazy(() => import('./GM/gm')),
+        'Grand Procurator': lazy(() => import('./GP/gp')),
+        'Grand Master of Ceremonies': lazy(() => import('./GMC/gmc')),
+        'Grand Treasurer': lazy(() => import('./GT/gt')),
+        'Grand Scribe': lazy(() => import('./GS/gs')),
     },
 
     "Assistant Grand Treasurer": {
-      Chairman: lazy(() => import('./GT/agt'))
+        Chairman: lazy(() => import('./GT/agt'))
     },
     "Assistant Grand Scribe": {
-      Chairman: lazy(() => import('./GS/ags'))
+        Chairman: lazy(() => import('./GS/ags'))
     },
     "Guard": {
-      Chairman: lazy(() => import('./GP/guard'))
+        Chairman: lazy(() => import('./GP/guard'))
     }
 };
 
 const CommitteePosition = ({position}) => {
-  const Component = committeeMap[position.committeeName]?.[position.role];
+    const Component = committeeMap[position.committeeName]?.[position.role];
 
-  return (
+    return (
     <Suspense fallback={<div>Loading...</div>}>
-      {Component ? <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}><Component /></div> : <div>Component not found</div>}
+        {Component ? <div style={{ border: '1px solid black', padding: '10px', margin: '10px' }}><Component /></div> : <div>Component not found</div>}
     </Suspense>
-  );
+    );
 };
 
 export const allPositions = Object.entries(committeeMap).flatMap(([committeeName, roles]) =>
-  Object.keys(roles).map(role => ({ committeeName, role }))
+    Object.keys(roles).map(role => ({ committeeName, role }))
 );
 
 export default CommitteePosition;

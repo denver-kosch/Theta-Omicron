@@ -38,15 +38,15 @@ const Event = () => {
     
     const FormatDates = ({date1, date2}) => {
         const options = {
-          month: "numeric",
-          day: "numeric",
-          year: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
+            month: "numeric",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
         };
-        const formatted1  = date1.toLocaleString("en-US", options);
-        const formatted2  = date2.toLocaleString("en-US", options);
+        const formatted1    = date1.toLocaleString("en-US", options);
+        const formatted2    = date2.toLocaleString("en-US", options);
         const [datePart1, timePart1] = formatted1.split(", ");
         const [datePart2, timePart2] = formatted2.split(", ");
         if (datePart1 === datePart2) return <h3>{datePart1} {`${timePart1} - ${timePart2}`}</h3>;

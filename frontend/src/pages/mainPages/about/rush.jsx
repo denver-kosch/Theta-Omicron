@@ -39,7 +39,7 @@ const Rush = () => {
     )};
 
     return (
-      <>
+        <>
         <h1>WHY KAPPA SIGMA?</h1>
         <div className="aboutRush">
             <div>
@@ -58,8 +58,8 @@ const Rush = () => {
                 <RushCom/>
             </div>
         }
-      </>
+        </>
     );
 }
 
-  export default Rush;
+    export default Rush;

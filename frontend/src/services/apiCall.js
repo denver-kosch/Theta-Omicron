@@ -14,7 +14,7 @@ export default async (api, { method = "GET", body = {}, headers = { 'Content-Typ
         
         if (result.status >= 200 && result.status < 300) return result.json();
         
-        const errorData = await result.text();  // Get the error message if not OK
+        const errorData = await result.text();    // Get the error message if not OK
         throw new Error(errorData);
     } catch (error) {
         console.error("Error making API call:", error);
