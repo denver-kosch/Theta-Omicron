@@ -26,6 +26,6 @@ dist-ssr
 
 #Backend .gitignore contents
 .env*
-secure/
-public/
+secure/*
+public/images
 ! .env.example
