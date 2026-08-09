@@ -8,47 +8,47 @@ import { isObjectIdOrHexString } from "mongoose";
 import { ObjectId } from "mongodb";
 
 export const login = async (req) => {
-    const { email, password } = req.body;
-    const member = await Member.findOne({'contactInfo.email': email}, '_id password privileges');
-    if (member && await compare(password, member.password)) {
-        const token = jwt.sign({ memberId: member._id, privileges: member.privileges }, tokenSecret, { expiresIn: '1h' });
-        return {status:200, content: {token}, token};
-    } else throw new ApiError(401, 'Invalid email or password' );
+	const { email, password } = req.body;
+	const member = await Member.findOne({'contactInfo.email': email}, '_id password privileges');
+	if (member && await compare(password, member.password)) {
+		const token = jwt.sign({ memberId: member._id, privileges: member.privileges }, tokenSecret, { expiresIn: '1h' });
+		return {status:200, content: {token}, token};
+	} else throw new ApiError(401, 'Invalid email or password' );
 };
 
 export const auth = async (req) => {
-    try {
-        let token = req.headers.authorization.split(" ")[1];
-        if (!token) throw new ApiError(401, 'No token provided');
-        const payload = jwt.verify(token, tokenSecret);
-        const timeLeft = payload.exp - Math.floor(Date.now() / 1000);
-        if (timeLeft < 10 * 60) {
-            token = jwt.sign({ memberId: payload.memberId, privileges: payload.privileges }, tokenSecret);
-        }
-        return {status:200, content: {token}, token};
-    } catch (error) {
-        throw new ApiError(401, error.message);
-    }
+	try {
+		let token = req.headers.authorization.split(" ")[1];
+		if (!token) throw new ApiError(401, 'No token provided');
+		const payload = jwt.verify(token, tokenSecret);
+		const timeLeft = payload.exp - Math.floor(Date.now() / 1000);
+		if (timeLeft < 10 * 60) {
+			token = jwt.sign({ memberId: payload.memberId, privileges: payload.privileges }, tokenSecret);
+		}
+		return {status:200, content: {token}, token};
+	} catch (error) {
+		throw new ApiError(401, error.message);
+	}
 };
 
 export const extractToken = req => {
-    try {
-        const token = req.headers.authorization.split(" ")[1];
-        const {memberId, privileges} = jwt.verify(token, tokenSecret);
-        const idStr = String(memberId);
-        const _id = isObjectIdOrHexString(idStr) && new ObjectId(idStr);
-        const isAdmin = ['Admin', 'SuperAdmin'].includes(privileges);
-        const isSuperAdmin = privileges === 'SuperAdmin';
-        return { _id, isAdmin, isSuperAdmin };
-    } catch {
-        return false;
-    }
+	try {
+		const token = req.headers.authorization.split(" ")[1];
+		const {memberId, privileges} = jwt.verify(token, tokenSecret);
+		const idStr = String(memberId);
+		const _id = isObjectIdOrHexString(idStr) && new ObjectId(idStr);
+		const isAdmin = ['Admin', 'SuperAdmin'].includes(privileges);
+		const isSuperAdmin = privileges === 'SuperAdmin';
+		return { _id, isAdmin, isSuperAdmin };
+	} catch {
+		return false;
+	}
 };
 
 export const checkAdmin = (req) => {
-    const { isAdmin } = extractToken(req);
-    if (!isAdmin) throw new ApiError(403, 'Forbidden: Admin privileges required');
-    return { status: 200, content: { isAdmin } };
+	const { isAdmin } = extractToken(req);
+	if (!isAdmin) throw new ApiError(403, 'Forbidden: Admin privileges required');
+	return { status: 200, content: { isAdmin } };
 };
 
 export const hashPassword = async (p) => await hash(p, 10);

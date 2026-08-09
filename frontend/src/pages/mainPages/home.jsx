@@ -43,9 +43,11 @@ const Home = () => {
             </div>
             <div className="center">
                 <h2>WELCOME TO OUR WEBSITE</h2>
-                <p>We are the Theta-Omicron chapter of Kappa Sigma at Muskingum University in New Concord, Ohio.
-                    Our chapter was founded in 1966 and has been going strong ever since. We are a brotherhood of
-                    men dedicated to scholarship, leadership, and service.</p>
+                <p>
+                    We are the Theta-Omicron Chapter of Kappa Sigma at Muskingum University in New Concord, Ohio.
+                    Our Chapter was founded in 1966 and has been going strong ever since. We are a Brotherhood of
+                    men dedicated to Scholarship, Leadership, Fellowship, and Service.
+                </p>
             </div>
         </div>
     );

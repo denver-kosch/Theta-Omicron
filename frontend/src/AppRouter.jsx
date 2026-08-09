@@ -19,7 +19,7 @@ import CommitteePage from '@/pages/portal/committees/committeePage';
 import EventCal from '@/pages/mainPages/events/calendar';
 
 
-const App = () => {
+const AppRouter = () => {
     return (
         <Router>
             <Routes>
@@ -27,7 +27,7 @@ const App = () => {
                     <Route index element={<Home />} />
                     <Route path="directory">
                         <Route index element={<Directory />} />
-                        <Route path="trees" element={<FamilyTree />} />
+                        {/* <Route path="trees" element={<FamilyTree />} /> */}
                     </Route>
                     <Route path="about">
                         <Route index element={<AboutUs />} />
@@ -61,4 +61,4 @@ const App = () => {
     );
 }
 
-export default App;
+export default AppRouter;
