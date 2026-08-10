@@ -14,16 +14,6 @@ const Navbar = ({children}) => {
 		]
 	};
 
-	const directory = {
-		parent: {
-			link: '/directory/',
-			title: <>Brothers<br/>Directory</>
-		},
-		children: [
-			{title: "Family Trees", link: "/directory/trees"},
-		]
-	};
-
 	return (
 		<>
 			<nav>
@@ -34,7 +24,6 @@ const Navbar = ({children}) => {
 					</Link>
 					<div className="navLinks">
 						<DropDown content={about}/>
-						{/* <DropDown content={directory}/> */}
 						<Link className="navLink" to={"/directory"}>
 							<h3>Brothers<br/>Directory</h3>
 						</Link>

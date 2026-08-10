@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import api from "@/services/apiCall"
 
-const chairman = () => {
+const Chairman = () => {
     const { register, handleSubmit, reset } = useForm();
 
     const onSubmit = async (data) => {
@@ -22,4 +22,4 @@ const chairman = () => {
     );
 };
 
-export default chairman;
+export default Chairman;

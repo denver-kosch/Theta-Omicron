@@ -1,6 +1,6 @@
 import ENDPOINT from "@/services/serverEndpoint";
 
-export default async (api, { method = "GET", body = {}, headers = { 'Content-Type': 'application/json' } } = {}) => {
+export default async (api, { method = "GET", body, headers = {} } = {}) => {
     const apiLink = `${ENDPOINT}${api}`;
     // console.log(`API Call: ${apiLink} | Method: ${method} | Body:`, body);
     try {
@@ -12,12 +12,12 @@ export default async (api, { method = "GET", body = {}, headers = { 'Content-Typ
         
         const result = await fetch(apiLink, fetchOptions);
         
-        if (result.status >= 200 && result.status < 300) return result.json();
+        if (result.ok) return result.status === 204 ? { success: true } : result.json();
         
         const errorData = await result.text();    // Get the error message if not OK
         throw new Error(errorData);
     } catch (error) {
         console.error("Error making API call:", error);
-        return error;
+        return { success: false, error: error.message };
     }
 };

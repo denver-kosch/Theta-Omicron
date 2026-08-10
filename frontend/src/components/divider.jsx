@@ -1,1 +1,3 @@
-export default () => <div className="divider"></div>;
+const Divider = () => <div className="divider" />;
+
+export default Divider;

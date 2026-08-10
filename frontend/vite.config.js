@@ -1,13 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import fs from 'fs'
+import { fileURLToPath } from 'url'
+
+const rootDirectory = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
     plugins: [react()],
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './src'),
+            '@': path.resolve(rootDirectory, './src'),
         },
     },
     server: {
@@ -19,10 +21,6 @@ export default defineConfig({
         include: /\.jsx?$/, // treat all .js in src/ as JSX
     },
     optimizeDeps: {
-    include: [
-        "@fullcalendar/core",
-        "@fullcalendar/daygrid",
-        "@fullcalendar/list"
-    ]
-}
+        include: ["@fullcalendar/core", "@fullcalendar/daygrid", "@fullcalendar/list"]
+    }
 })

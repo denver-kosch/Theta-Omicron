@@ -100,6 +100,8 @@ const CommitteePosition = ({position}) => {
     );
 };
 
+// Shared with the committee selector.
+// eslint-disable-next-line react-refresh/only-export-components
 export const allPositions = Object.entries(committeeMap).flatMap(([committeeName, roles]) =>
     Object.keys(roles).map(role => ({ committeeName, role }))
 );

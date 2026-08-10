@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { MapView, EventCard } from "@/components/components";
+import { EventCard } from "@/components/components";
 import api from "@/services/apiCall";
-import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
 import { fDate } from "@/services/dateFormatting"
 
 
@@ -17,9 +16,6 @@ const PortalEvent = () => {
     const [rejConfirm, setRejConfirm] = useState(false);
     const [rejReason, setRejReason] = useState('');
     const [similars, setSimilars] = useState([]);
-    //default value is lakeside 115
-    const [lat, setLat] = useState(39.99832093770602);
-    const [lng, setLng] = useState(-81.73459124217224);
     const token = useMemo(() => ({'Authorization': `Bearer ${localStorage.getItem('token')}`}), []);
 
     useEffect(() => {
@@ -44,7 +40,7 @@ const PortalEvent = () => {
             setLoading(false);
         };
         fetchEventDetails();
-    }, []);
+    }, [id, token]);
 
     const FormatDates = ({date1, date2}) => {
         const formatted1    = fDate(date1);

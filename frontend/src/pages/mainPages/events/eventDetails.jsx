@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { MapView, EventCard } from "@/components/components";
-import { setKey as setGeocodeKey, fromAddress } from "react-geocode";
+import { EventCard } from "@/components/components";
 import api from "@/services/apiCall";
 
 
@@ -10,9 +9,6 @@ const Event = () => {
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [similars, setSimilars] = useState([]);
-    //default value is lakeside 115
-    const [lat, setLat] = useState(39.99832093770602);
-    const [lng, setLng] = useState(-81.73459124217224);
 
     useEffect(() => {
         const fetchEventDetails = async () => {
