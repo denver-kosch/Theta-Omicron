@@ -1,7 +1,15 @@
-import fs from 'fs';
+import fs, { promises as fsp } from 'fs';
 import path from 'path';
+import os from 'os';
 import { connect } from 'mongoose';
 import { port, host, mongodbUri } from './config.js';
+import { pathToFileURL } from "url";
+import { execFile } from "child_process";
+import { promisify } from 'util';
+
+const runFile = promisify(execFile);
+
+const libreOfficeBin = process.env.LIBREOFFICE_BIN ?? '/Applications/LibreOffice.app/Contents/MacOS/soffice';
 
 export const connectDB = async () => {
 	try {
@@ -111,3 +119,35 @@ export const generateUserSlug = (brother) => {
 export const decodeUserSlug = (slug) => slug.split("-");
 
 export const log = (...content) => {console.log(`%c${content.join(" ")}`, "background-color:#00d138;")};
+
+export async function convertDocumentToPdf({ inputBuffer, fileName, outputDir }) {
+	await fsp.mkdir(outputDir, { recursive: true });
+
+	const workingDir = await fsp.mkdtemp(path.join(os.tmpdir(), 'document-conversion-'));
+	const profileDir = path.join(workingDir, 'libreoffice-profile');
+	const inputPath = path.join(workingDir, path.basename(fileName));
+
+	try {
+		await fsp.mkdir(profileDir);
+		await fsp.writeFile(inputPath, inputBuffer);
+
+		const { stderr } = await runFile(
+			libreOfficeBin,
+			[ '--headless', '--nologo', '--norestore', `-env:UserInstallation=${pathToFileURL(profileDir).href}`, '--convert-to', 'pdf', '--outdir', workingDir, inputPath ],
+			{ timeout: 60_000, maxBuffer: 1024 * 1024 }
+		);
+
+		const parsedName = path.parse(fileName);
+		const outputPath = path.join(outputDir, `${parsedName.name}.pdf`);
+
+		try {
+			await fsp.access(outputPath);
+		} catch {
+			throw new Error(`LibreOffice did not produce a PDF${stderr ? `: ${stderr}` : ''}`);
+		}
+
+		return outputPath;
+	} finally {
+		await fsp.rm(workingDir, { recursive: true, force: true });
+	}
+};

@@ -1,9 +1,12 @@
 import { Committee, Member, Location, Event, Minutes } from "../mongoDB/models.js";
 import { appendImgPath, decodeUserSlug, log } from "../functions.js";
 import { ObjectId } from "mongodb";
-import { dirname, host, port } from "../config.js";
+import { __dirname, host, port } from "../config.js";
 import { ApiError, generateUserSlug } from "../functions.js";
 import { extractToken } from "./authentication.js";
+import { join } from "path";
+import { existsSync } from "fs";
+
 
 
 export const getCommittee = async (req) => {
@@ -25,7 +28,7 @@ export const getCommittee = async (req) => {
 		{ $project: projections }
 		]);
 		
-		if (pics) members = members.map(doc => appendImgPath(doc, dirname, 'profilePics'));
+		if (pics) members = members.map(doc => appendImgPath(doc, __dirname, 'profilePics'));
 		const data = { members };
 		if (link) data.link = committee.link;
 
@@ -36,7 +39,7 @@ export const getCommittee = async (req) => {
 export const getBros = async (req) => {
 	const { chairmen, slugs } = req.query;
 	const bros = chairmen ? await getChairmen() : (await Member.find({status: "Initiate"}, {firstName: 1,lastName: 1,positions: 1 }).sort({lastName: 1, firstName: 1}))
-		.map(doc => appendImgPath(doc.toJSON(), dirname, 'profilePics')).map(d => {
+		.map(doc => appendImgPath(doc.toJSON(), __dirname, 'profilePics')).map(d => {
 			const arr = d.positions.map(p => 
 				p.committeeName === "Executive Committee" ? 
 				p.role : (/Committee/.test(p.committeeName) && p.role === "Chairman" ?
@@ -94,7 +97,7 @@ export const regularEvents = async (req) => {
 	if (limit) eventsQuery = eventsQuery.limit(Number(limit));
 
 	const events = (await eventsQuery)
-		.map(doc => appendImgPath(doc.toJSON(), dirname, 'events'));
+		.map(doc => appendImgPath(doc.toJSON(), __dirname, 'events'));
 
 	if (events) return {status:200, content: { events }, events};
 	else throw new ApiError(404, "Events not found");
@@ -189,8 +192,8 @@ export const getEventDetails = async (req) => {
 		let similar = [];
 	
 		const params = {'committee.id': event.committee.id, _id: {$ne: new Object(event._id)}, status: "Approved", "time.start": {$gte: new Date()}};
-		similar = (await Event.find(params, {name: 1, time: 1}).limit(5)).map(d => appendImgPath(d.toJSON(), dirname, 'events'));
-		event = appendImgPath(event, dirname, 'events');
+		similar = (await Event.find(params, {name: 1, time: 1}).limit(5)).map(d => appendImgPath(d.toJSON(), __dirname, 'events'));
+		event = appendImgPath(event, __dirname, 'events');
 
 		const token = extractToken(req);
 		const isOfficer = event.committee.officer.equals(token);
@@ -256,7 +259,7 @@ export const getChairmen = async () => {
 					positions: 1
 				}
 			}
-		])).map(doc => appendImgPath(doc, dirname, 'profilePics'));
+		])).map(doc => appendImgPath(doc, __dirname, 'profilePics'));
 		if (chairmen) return {chairmen};
 		else throw new ApiError(404, "Chairmen not found");
 };
@@ -305,8 +308,8 @@ export const getEvents = async (req) => {
 export const getMinutesRecord = (req, res) => {
 	if (!extractToken(req)) return res.status(401).send('Unauthorized');
 	const { filename } = req.params;
-	const filePath = path.join(__dirname, 'secure', 'documents', 'minutes', filename);
-	if (!filePath.startsWith(path.join(__dirname, 'secure', 'documents', 'minutes'))) return res.status(400).send('Invalid file path');
-	if (!fs.existsSync(filePath)) return res.status(404).send('File not found');
+	const filePath = join(__dirname, 'secure', 'documents', 'minutes', filename);
+	if (!filePath.startsWith(join(__dirname, 'secure', 'documents', 'minutes'))) return res.status(400).send('Invalid file path');
+	if (!existsSync(filePath)) return res.status(404).send('File not found');
 	res.sendFile(filePath);
 };

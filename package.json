@@ -10,7 +10,7 @@
     "repository": {
         "type": "git",
         "url": "git+https://github.com/denver-kosch/Theta-Omicron.git"
-    },		
+    },
     "keywords": [],
     "author": "",
     "license": "ISC",
@@ -19,13 +19,13 @@
     },
     "homepage": "https://github.com/denver-kosch/Theta-Omicron#readme",
     "devDependencies": {
-        "concurrently": "^9.2.0"
+        "concurrently": "^9.2.4"
     },
     "dependencies": {
-        "@fullcalendar/core": "^6.1.20",
-        "@fullcalendar/daygrid": "^6.1.20",
-        "@fullcalendar/list": "^6.1.20",
-        "@fullcalendar/timegrid": "^6.1.20",
+        "@fullcalendar/core": "^6.1.21",
+        "@fullcalendar/daygrid": "^6.1.21",
+        "@fullcalendar/list": "^6.1.21",
+        "@fullcalendar/timegrid": "^6.1.21",
         "https": "^1.0.0"
     }
 }

@@ -1,10 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
-import path from 'path';
+import { join } from 'path';
 import {Server} from 'socket.io';
 import { createServer } from 'http';
 import { fileURLToPath } from 'url';
+import { __dirname } from './config.js';
 import fs from 'fs';
 import { connectDB, asyncHandler } from './functions.js';
 import { check, body, validationResult } from 'express-validator';
@@ -19,10 +20,9 @@ console.time('Server Startup');
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() }); // Storing files in memory
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.json(), express.urlencoded({ extended: true }), cors());
 
-app.use('/images', express.static(path.join(__dirname, 'public/images')));
+app.use('/images', express.static(join(__dirname, 'public/images')));
 
 const server = createServer(app);
 const io = new Server(server, { cors: { origin: "*", methods: ["GET", "POST"], credentials: true } });

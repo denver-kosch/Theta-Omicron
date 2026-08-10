@@ -3,30 +3,24 @@ import { networkInterfaces } from 'os';
 import fs from "fs";
 import { fileURLToPath } from 'url';
 import path from 'path';
-import dotenv from 'dotenv';
+import { config } from 'dotenv';
 
 const getLocalIP = () => {
-        for (const interfaceName in networkInterfaces()) for (const alias of interfaces[interfaceName]) if (alias.family === 'IPv4' && !alias.internal) return alias.address;
-        return "127.0.0.1";
+    const interfaces = networkInterfaces();
+    for (const interfaceName in interfaces) for (const alias of interfaces[interfaceName]) if (alias.family === 'IPv4' && !alias.internal) return alias.address;
+    return "127.0.0.1";
 };
 
-(() => {
-    dotenv.config({ path: path.resolve('../.env')});
-    const ip = getLocalIP();
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const envPath = path.join(__dirname, '../.env');
-    const newApiUrl = `VITE_API_URL=http://${ip}`;
-    // Read the current content of the .env file
-    let envContent = fs.readFileSync(envPath, 'utf8');
+config({ path: path.resolve('../.env')});
 
-    // Check if the VITE_API_URL variable already exists
-    const regex = /^VITE_API_URL=.*$/gm;
-    envContent = regex.test(envContent) ? envContent.replace(regex, newApiUrl) : envContent += `\n${newApiUrl}\n`;
-    
-    // Write the updated content back to the .env file
-    fs.writeFileSync(envPath, envContent);
+const envPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '../.env');
+const newApiUrl = `VITE_API_URL=http://${getLocalIP()}`;
 
-    // Set the HOST environment variable and start the server
-    execSync(`vite`, { stdio: 'inherit' });
-})();
+let envContent = fs.readFileSync(envPath, 'utf8');
+
+const regex = /^VITE_API_URL=.*$/gm;
+envContent = regex.test(envContent) ? envContent.replace(regex, newApiUrl) : envContent += `\n${newApiUrl}\n`;
+
+fs.writeFileSync(envPath, envContent);
+
+execSync(`vite`, { stdio: 'inherit' });

@@ -2,7 +2,7 @@ import ENDPOINT from "@/services/serverEndpoint";
 
 export default async (api, { method = "GET", body = {}, headers = { 'Content-Type': 'application/json' } } = {}) => {
     const apiLink = `${ENDPOINT}${api}`;
-    console.log(`API Call: ${apiLink} | Method: ${method} | Body:`, body);
+    // console.log(`API Call: ${apiLink} | Method: ${method} | Body:`, body);
     try {
         const fetchOptions = {
             method,

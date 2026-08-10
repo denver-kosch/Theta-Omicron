@@ -1,6 +1,6 @@
 import { Location, Event, Committee, Member } from "../mongoDB/models.js";
 import fs from 'fs';
-import { dirname } from "../config.js";
+import { __dirname } from "../config.js";
 import { join, extname } from "path";
 import sharp from "sharp";
 import { extractToken } from "./authentication.js";
@@ -18,7 +18,7 @@ export const updateEvent = async (req) => {
 	const updates = { name, description, start, end, type, visibility, location };
 
 	try{
-		const folderPath = join(dirname, 'public', 'images', 'events');
+		const folderPath = join(__dirname, 'public', 'images', 'events');
 
 		// Delete existing image if it exists
 		const existingFiles = fs.readdirSync(folderPath).filter(f => f.startsWith(`${eventId}.`));

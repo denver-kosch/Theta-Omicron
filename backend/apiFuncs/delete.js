@@ -4,7 +4,7 @@ import { extractToken } from "./authentication.js";
 import { ObjectId } from "mongodb";
 import fs from 'fs';
 import { join } from 'path';
-import { dirname } from "../config.js";
+import { __dirname } from "../config.js";
 
 export const removeEvent = async (req) => {
 	const { id } = req.params;
@@ -32,7 +32,7 @@ export const deleteMinutes = async (req) => {
 	const minutes = await Minutes.findById(minutesId, {_id:0, filePath:1});
 	if (!minutes) throw new ApiError(404, 'Minutes not found');
 
-	const fullPath = join(dirname, 'secure', 'documents', 'minutes', minutes.filePath);
+	const fullPath = join(__dirname, 'secure', 'documents', 'minutes', minutes.filePath);
 	if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
 
 	await Minutes.findByIdAndDelete(minutesId);

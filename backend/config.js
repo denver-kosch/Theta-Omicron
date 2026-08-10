@@ -1,7 +1,7 @@
 import { config } from "dotenv";
-import { dirname as _dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { networkInterfaces } from "os";
+import { dirname } from 'path';
 
 config({ path: `../.env` });
 
@@ -12,7 +12,7 @@ const getLocalIP = () => {
 };
 
 export const tokenSecret = process.env.SESSION_SECRET;
-export const dirname = _dirname(fileURLToPath(import.meta.url));
+export const __dirname = dirname(fileURLToPath(import.meta.url));
 export const mongodbUri = process.env.MONGODB_URI;
 export const port = process.env.DB_PORT || 3307;
 export const host = getLocalIP() || 'localhost';

@@ -1,6 +1,5 @@
 
-
-const Modal = ({ isOpen, onClose, title, children }) => {
+export default ({ isOpen, onClose, title, children }) => {
     if (!isOpen) return null;
 
     return (
@@ -8,7 +7,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             <div className="modal">
                 <h3>{title}</h3>
                 {children}
-                <button onClick={onClose}>Close</button>
+                <button onClick={onClose} style={{marginTop: '10px'}}>Close</button>
             </div>
         </div>
     );
