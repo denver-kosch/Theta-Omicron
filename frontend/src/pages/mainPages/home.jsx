@@ -9,16 +9,10 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const getEvents = async () => {
-            api('events?days=200&status=Approved&limit=10')
-            .then(events => {
-                if (events.success) setEvents(events.events);
-                else console.error(events.error);
-                setLoading(false);
-            });
-        };
-        getEvents();
-        console.log("Home page loaded");
+        api('events?days=200&status=Approved&limit=10').then(result => {
+            if (result.success) setEvents(result.events);
+            else console.error(result.error);
+        }).finally(() => setLoading(false));
     }, []);
 
     const EventPanel = () => {
@@ -31,7 +25,7 @@ const Home = () => {
                     : events.map(event => (<EventCard key={event._id} event={event} />))
                     }
                 </div>
-                <div onClick={() => navigate("event/calendar")} className="moreEvents">More Events</div>
+                <button type="button" onClick={() => navigate("event/calendar")} className="moreEvents">More Events</button>
             </div>
     )};
 

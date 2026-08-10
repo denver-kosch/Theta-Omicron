@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import api from "@/services/apiCall";
 import BrothersGrid from "@/components/cardGrid";
 
@@ -7,26 +7,21 @@ const Directory = () => {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [criteria, setCriteria] = useState("");
-    const [filtered, setFiltered] = useState([]);
 
     useEffect(() => {
     const getBrothers = async () => {
-        let response = await api("brothers");
+        const response = await api("brothers");
         setIsLoading(false);
         if (response?.success) setBrothers(response.bros);
         else setError("Could not load directory at this time");
     };
     getBrothers();
     }, []);
-
-
-    useEffect(() => {
-    const filteredData = brothers.filter(item => item.firstName.toLowerCase().includes(criteria.toLowerCase()) 
-    || item.lastName.toLowerCase().includes(criteria.toLowerCase())
-    || item.positions.some(pos => pos.toLowerCase().includes(criteria.toLowerCase())));
-    setFiltered(filteredData);
-    },
-    [criteria, brothers]);
+    const filtered = useMemo(() => {
+        const query = criteria.trim().toLowerCase();
+        if (!query) return brothers;
+        return brothers.filter(({firstName, lastName, positions = []}) => firstName.toLowerCase().includes(query) || lastName.toLowerCase().includes(query) || positions.some(position => position.toLowerCase().includes(query)));
+    }, [criteria, brothers]);
 
     return (
     <div className="directoryContainer">

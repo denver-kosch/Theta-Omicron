@@ -1,5 +1,6 @@
 import '@/styles/App.scss';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { lazy, Suspense } from 'react';
 import AboutUs from '@/pages/mainPages/about/about';
 import Rush from "@/pages/mainPages/about/rush";
 import Directory from "@/pages/mainPages/directory/dir";
@@ -16,7 +17,7 @@ import AllEvents from '@/pages/portal/events/allEvents';
 import MainLayout from '@/layouts/mainLayout';
 import PortalLayout from '@/layouts/portalLayout';
 import CommitteePage from '@/pages/portal/committees/committeePage';
-import EventCal from '@/pages/mainPages/events/calendar';
+const EventCal = lazy(() => import('@/pages/mainPages/events/calendar'));
 
 
 const AppRouter = () => {
@@ -36,7 +37,7 @@ const AppRouter = () => {
                     </Route>
                     <Route path="event">
                         <Route path=":id" element={<Event />} />
-                        <Route path="calendar" element={<EventCal/>}/>
+                        <Route path="calendar" element={<Suspense fallback={<div>Loading calendar...</div>}><EventCal/></Suspense>}/>
                     </Route>
                     <Route path="portal/login" element={<PortalLogin />} />
                 </Route>

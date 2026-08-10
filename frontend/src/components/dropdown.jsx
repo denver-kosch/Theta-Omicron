@@ -12,7 +12,7 @@ const DropDown = ({content}) => {
 		</Link>
 		{isOpen &&
 		<div className="dropdown">
-			{children.map(child => <Link className="navLink" to={child.link} onClick={() => setIsOpen(false)}><h4>{child.title}</h4></Link>)}
+			{children.map(child => <Link key={child.link} className="navLink" to={child.link} onClick={() => setIsOpen(false)}><h4>{child.title}</h4></Link>)}
 		</div>
 		}
 	</div>

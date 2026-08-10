@@ -5,7 +5,7 @@ import api from "@/services/apiCall";
 import axios from "axios";
 import Modal from "@/components/modal";
 
-export default ({ style }) => {
+const MinutesDashboard = ({ style }) => {
 	const [selectedMinutes, setSelectedMinutes] = useState(null);
 	const [minutesList, setMinutesList] = useState([]);
 	const [pdfModalOpen, setPdfModalOpen] = useState(false);
@@ -87,11 +87,11 @@ export default ({ style }) => {
 			}
 		});
 
-		if (!initialData) return null;
-
 		useEffect(() => {
 			if (initialData) reset({ date: initialData.date || "", type: initialData.type || "Chapter", otherType: initialData.otherType || "", file: null });
 		}, [initialData, reset]);
+
+		if (!initialData) return null;
 
 		const submitMinutes = async (data) => {
 			try {
@@ -155,7 +155,7 @@ export default ({ style }) => {
 		);
 	};
 
-	const FullList = ({ onClose, isOpen, title }) => (
+	const FullList = ({ onClose, isOpen }) => (
 		<Modal isOpen={isOpen} onClose={onClose} title="All Uploaded Minutes">
 			{/* <h3>All Uploaded Minutes</h3> */}
 			<MinutesTable rows={filteredMinutes} onView={handleViewMinutes} onEdit={setSelectedMinutes} onDelete={handleDeleteMinutes} />
@@ -196,3 +196,5 @@ export default ({ style }) => {
 		</div>
 	)
 };
+
+export default MinutesDashboard;
